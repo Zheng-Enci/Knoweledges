@@ -361,14 +361,16 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    subgraph 离线阶段[离线阶段：知识库构建]
+    subgraph Offline["离线阶段：知识库构建"]
+        direction TB
         A[原始文档] --> B[文本提取]
         B --> C[分块处理]
         C --> D[Embedding编码]
         D --> E[向量数据库]
     end
 
-    subgraph 在线阶段[在线阶段：检索生成]
+    subgraph Online["在线阶段：检索生成"]
+        direction TB
         F[用户查询] --> G[查询编码]
         G --> H[向量检索]
         E --> H
