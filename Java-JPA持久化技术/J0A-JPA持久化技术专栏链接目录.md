@@ -69,7 +69,10 @@ graph TD
 - J6D-ACID到底是什么？：
   - [CSDN](https://blog.csdn.net/2301_79239314/article/details/159202368)
   - [掘金](https://juejin.cn/post/7618135820970098715)
+- J7A-已有数据表如何安全添加新字段：
+  - [CSDN](https://blog.csdn.net/2301_79239314/article/details/159316805)
+  - [掘金](https://juejin.cn/post/7619152366395375625)
 
 ---
 
-最后更新时间：2026-03-18
+最后更新时间：2026-03-21
