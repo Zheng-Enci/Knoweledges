@@ -109,41 +109,41 @@ graph TD
 **📚 专栏文档链接目录（按学习顺序排序）：**
 - P0A-Python学习路线完全指南-从零基础到精通的编程技能养成计划：本文档
 - P0B-Python基础知识分类：[掘金](https://juejin.cn/post/7615831974130909230)
-- P0C-Python语言特性详解：https://juejin.cn/post/7615894592198754354 ✅
-- P1A-Python特点和版本完全指南-从零基础到选择最适合的编程语言：https://juejin.cn/post/7566535266597666825 ✅
+- P0C-Python语言特性详解：[掘金](https://juejin.cn/post/7615894592198754354) ✅
+- P1A-Python特点和版本完全指南-从零基础到选择最适合的编程语言：[掘金](https://juejin.cn/post/7566535266597666825) ✅
 - P1B-Python环境配置基础完全指南-Windows系统安装与验证：[掘金](https://juejin.cn/post/7618125717469593609) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/159174477) ✅
-- P1C-Python变量和数据类型详解：https://juejin.cn/post/7615831974130941998 ✅
-- P1D1-Python字符串完全指南-从创建拼接到格式化的高效实践：https://juejin.cn/post/7566840769794342921 ✅
-- P1D2-Python转义字符完全指南-从换行符到制表符的字符串处理利器：https://juejin.cn/post/7564634569261989951 ✅
-- P1E-Python-7大运算符类别详解：is和==有什么区别？优先级陷阱如何避免？：https://juejin.cn/post/7567281062520111123 ✅
-- P1F-Python控制结构详解：https://juejin.cn/post/7615894592198803506 ✅
-- P1I-Python输入输出-什么是print()和input()？为什么大厂程序员都用f-string格式化？怎么快速掌握程序交互？：https://juejin.cn/post/7567581946144620595 ✅
-- P1J-Python注释-什么是注释？为什么大厂程序员都在写文档字符串？怎么快速掌握注释规范？：https://juejin.cn/post/7567581662101389363 ✅
-- P2A-Python列表-什么是列表？切片为什么这么强大？怎么快速掌握增删改查？：https://juejin.cn/post/7567678315303501874 ✅
-- P2D-Python_哈希表完全指南-从字典到高效查找的Python编程利器：https://juejin.cn/post/7563950984256208946 ✅
-- P2I-Python正则表达式-什么是正则表达式？为什么程序员都在用re模块？怎么快速掌握模式匹配和替换？：https://juejin.cn/post/7567769662478761993 ✅
-- P2J-Python-collections-什么是namedtuple、defaultdict和Counter？为什么一线开发者都在用？怎么快速掌握？：https://juejin.cn/post/7568315756073615410 ✅
-- P2K-Python-collections-什么是deque和OrderedDict？为什么需要双端队列和有序字典？怎么快速掌握？：https://juejin.cn/post/7568388327729545226 ✅
-- P3A-Python函数定义和调用详解：https://juejin.cn/post/7567678315303501874 ✅
+- P1C-Python变量和数据类型详解：[掘金](https://juejin.cn/post/7615831974130941998) ✅
+- P1D1-Python字符串完全指南-从创建拼接到格式化的高效实践：[掘金](https://juejin.cn/post/7566840769794342921) ✅
+- P1D2-Python转义字符完全指南-从换行符到制表符的字符串处理利器：[掘金](https://juejin.cn/post/7564634569261989951) ✅
+- P1E-Python-7大运算符类别详解：is和==有什么区别？优先级陷阱如何避免？：[掘金](https://juejin.cn/post/7567281062520111123) ✅
+- P1F-Python控制结构详解：[掘金](https://juejin.cn/post/7615894592198803506) ✅
+- P1I-Python输入输出-什么是print()和input()？为什么大厂程序员都用f-string格式化？怎么快速掌握程序交互？：[掘金](https://juejin.cn/post/7567581946144620595) ✅
+- P1J-Python注释-什么是注释？为什么大厂程序员都在写文档字符串？怎么快速掌握注释规范？：[掘金](https://juejin.cn/post/7567581662101389363) ✅
+- P2A-Python列表-什么是列表？切片为什么这么强大？怎么快速掌握增删改查？：[掘金](https://juejin.cn/post/7567678315303501874) ✅
+- P2D-Python_哈希表完全指南-从字典到高效查找的Python编程利器：[掘金](https://juejin.cn/post/7563950984256208946) ✅
+- P2I-Python正则表达式-什么是正则表达式？为什么程序员都在用re模块？怎么快速掌握模式匹配和替换？：[掘金](https://juejin.cn/post/7567769662478761993) ✅
+- P2J-Python-collections-什么是namedtuple、defaultdict和Counter？为什么一线开发者都在用？怎么快速掌握？：[掘金](https://juejin.cn/post/7568315756073615410) ✅
+- P2K-Python-collections-什么是deque和OrderedDict？为什么需要双端队列和有序字典？怎么快速掌握？：[掘金](https://juejin.cn/post/7568388327729545226) ✅
+- P3A-Python函数定义和调用详解：[掘金](https://juejin.cn/post/7615827622843940915) ✅
 - P3B-90%Python初学者参数传错位置？合格程序员都这样选择参数类型：[掘金](https://juejin.cn/post/7569548172534136872) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/154541746)
-- P3C-为什么95%初学者踩坑可变默认参数？合格程序员都用args和kwargs写出灵活函数：https://juejin.cn/post/7569886315197431859 ✅
-- P3D-Python局部变量和全局变量-什么是作用域？为什么90%初学者踩坑global关键字？怎么快速掌握LEGB规则？：https://juejin.cn/post/7570902473433677824 ✅
-- P3E-Python Lambda表达式完全指南-什么是匿名函数？为什么90%程序员都在用？怎么快速掌握函数式编程利器？：https://juejin.cn/post/7571636682694328360 ✅
-- P3F-Python内置函数完全指南-什么是内置函数？为什么90%程序员都在用？怎么快速掌握70+个核心函数？：https://juejin.cn/post/7572880767584501811 ✅
-- P3G-Python模块与包完全指南-从import到自定义模块的代码组织利器：https://juejin.cn/post/7565732382312333338 ✅
-- P3H-Python魔术方法协议-为什么内置函数必须依赖它们？直接调用会踩哪些坑？怎么写出兼容代码？：https://juejin.cn/post/7573980331755094042 ✅
-- P3H0-Python-os模块完全指南-操作系统接口与文件路径处理利器：https://juejin.cn/post/7575456858426687534 ✅
-- P3H1-Python-sys模块完全指南-系统参数与命令行参数处理利器：https://juejin.cn/post/7577737385955721226 ✅
-- P4A-Python类基础详解：https://juejin.cn/post/7615919828885307430 ✅
-- P4G-Python_try-except-finally完全指南-从异常处理到程序稳定的Python编程利器：https://juejin.cn/post/7562164252635725865 ✅
-- P5D-Python_推导式完全指南-从列表推导式到字典推导式的Python编程利器：https://juejin.cn/post/7563597691680489491 ✅
-- P5H-Python惰性求值 vs 立即求值-为什么内存优化和调试体验总是对着干？：https://juejin.cn/post/7573589277005086758 ✅
-- P5I-Python_async异步编程完全指南-从协程到高并发的Python编程利器：https://juejin.cn/post/7562283242936008723 ✅
-- P6A-FastAPI项目结构完全指南-从零基础到企业级应用的Python Web开发利器：https://juejin.cn/post/7562103549842227246 ✅
+- P3C-为什么95%初学者踩坑可变默认参数？合格程序员都用args和kwargs写出灵活函数：[掘金](https://juejin.cn/post/7569886315197431859) ✅
+- P3D-Python局部变量和全局变量-什么是作用域？为什么90%初学者踩坑global关键字？怎么快速掌握LEGB规则？：[掘金](https://juejin.cn/post/7570902473433677824) ✅
+- P3E-Python Lambda表达式完全指南-什么是匿名函数？为什么90%程序员都在用？怎么快速掌握函数式编程利器？：[掘金](https://juejin.cn/post/7571636682694328360) ✅
+- P3F-Python内置函数完全指南-什么是内置函数？为什么90%程序员都在用？怎么快速掌握70+个核心函数？：[掘金](https://juejin.cn/post/7572880767584501811) ✅
+- P3G-Python模块与包完全指南-从import到自定义模块的代码组织利器：[掘金](https://juejin.cn/post/7565732382312333338) ✅
+- P3H-Python魔术方法协议-为什么内置函数必须依赖它们？直接调用会踩哪些坑？怎么写出兼容代码？：[掘金](https://juejin.cn/post/7573980331755094042) ✅
+- P3H0-Python-os模块完全指南-操作系统接口与文件路径处理利器：[掘金](https://juejin.cn/post/7575456858426687534) ✅
+- P3H1-Python-sys模块完全指南-系统参数与命令行参数处理利器：[掘金](https://juejin.cn/post/7577737385955721226) ✅
+- P4A-Python类基础详解：[掘金](https://juejin.cn/post/7615919828885307430) ✅
+- P4G-Python_try-except-finally完全指南-从异常处理到程序稳定的Python编程利器：[掘金](https://juejin.cn/post/7562164252635725865) ✅
+- P5D-Python_推导式完全指南-从列表推导式到字典推导式的Python编程利器：[掘金](https://juejin.cn/post/7563597691680489491) ✅
+- P5H-Python惰性求值 vs 立即求值-为什么内存优化和调试体验总是对着干？：[掘金](https://juejin.cn/post/7573589277005086758) ✅
+- P5I-Python_async异步编程完全指南-从协程到高并发的Python编程利器：[掘金](https://juejin.cn/post/7562283242936008723) ✅
+- P6A-FastAPI项目结构完全指南-从零基础到企业级应用的Python Web开发利器：[掘金](https://juejin.cn/post/7562103549842227246) ✅
 
 ---
 
-最后更新时间：2026-03-17
+最后更新时间：2026-03-25
 
 
 
