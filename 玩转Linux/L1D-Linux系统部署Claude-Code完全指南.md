@@ -49,3 +49,27 @@ claude --version
 
 第四步
 claude
+
+第二个个人经验
+因为我的Claude 是内网使用 不能使用外网api 怕泄露数据 因为claude大于版本20 不能指定本地模型 而且通过配置文件也不能
+所以使用以下命令来启动claude
+”“”
+# 卸载当前版本
+npm uninstall -g @anthropic-ai/claude-code
+
+# 安装v2.0.0并锁定版本
+npm install -g @anthropic-ai/claude-code@2.0.0 --save-exact
+
+# 禁用npm自动更新
+npm config set update-notifier false
+npm config set fund false
+
+# 锁定npm包版本
+npm config set save-exact true
+
+# 启动配置（环境变量方式）
+# Claude Code使用--model命令行参数指定模型，而不是CLAUDE_MODEL环境变量
+
+ANTHROPIC_API_KEY="你的api_key" ANTHROPIC_BASE_URL="http://10.0.3.69:3000" claude --model deepseek-r1
+
+“”“
