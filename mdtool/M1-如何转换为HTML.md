@@ -8,9 +8,21 @@
 
 mdtool 提供了一个简单易用的 API，让我们只需要几行代码就能完成转换。更重要的是，它支持自定义 CSS 样式，这意味着我们可以完全控制 HTML 文档的外观和风格！🎨
 
-## 2. 基本使用方法 💡
+## 2. 安装 mdtool 📦
 
-### 2.1 导入 MDConverter 类 📦
+在使用 mdtool 之前，我们需要先安装它。安装非常简单，只需要一行命令：
+
+```bash
+pip install zec-mdtool
+```
+
+注意：由于 `mdtool` 这个包名已经被占用，所以安装时需要使用 `zec-mdtool` 这个包名。安装完成后，你就可以在代码中直接使用 `mdtool` 了！🎉
+
+## 3. 基本使用方法 💡
+
+本文只探讨如何将 Markdown 转换为 HTML 格式，其他格式（如 PDF、DOCX）的转换方法将在后续文档中介绍。📝
+
+### 3.1 导入 MDConverter 类 📦
 
 首先，我们需要从 mdtool 包中导入 MDConverter 类：
 
@@ -20,7 +32,7 @@ from mdtool import MDConverter
 
 MDConverter 是 mdtool 的核心转换器类，它负责将 Markdown 文档转换为目标格式。目前支持转换为 HTML，未来还会支持 PDF、DOCX 等格式。🔄
 
-### 2.2 创建转换器实例 🏗️
+### 3.2 创建转换器实例 🏗️
 
 创建转换器实例非常简单，我们只需要调用 MDConverter 的构造函数：
 
@@ -32,7 +44,7 @@ converter = MDConverter(css_file="custom.css")
 
 如果不提供 `css_file` 参数，mdtool 会使用内置的默认样式。默认样式虽然简洁，但可能不够美观，所以建议大家还是自定义 CSS 样式。💡
 
-### 2.3 指定输入和输出文件路径 📁
+### 3.3 指定输入和输出文件路径 📁
 
 接下来，我们需要指定输入的 Markdown 文件路径和输出的 HTML 文件路径：
 
@@ -47,7 +59,7 @@ output_file = 'examples/sample.html'
 - **输出文件路径**：如果输出目录不存在，mdtool 会自动创建。这意味着我们不需要手动创建 `examples` 目录，程序会帮我们搞定！📁
 - **相对路径**：这里使用的是相对路径，相对于当前工作目录。你也可以使用绝对路径。🔍
 
-### 2.4 执行转换操作 ⚡
+### 3.4 执行转换操作 ⚡
 
 最后，我们调用 `to_html` 方法执行转换：
 
@@ -65,7 +77,7 @@ converter.to_html(input_file, output_file, wrap_html=True)
 
 如果设置为 `False`，则只输出 HTML body 内容，适合嵌入到其他网页中。比如你可能有一个现有的网页模板，只需要将 Markdown 转换的内容嵌入到某个 `div` 中，这时就可以使用 `wrap_html=False`。🔗
 
-## 3. 完整示例代码 📝
+## 4. 完整示例代码 📝
 
 让我们把所有代码整合起来，看看完整的示例：
 
@@ -121,7 +133,7 @@ if __name__ == '__main__':
 
 这段代码非常清晰，每一步都有详细的注释说明。运行这段代码后，你会在 `examples` 目录下看到生成的 `sample.html` 文件。用浏览器打开它，你就能看到转换后的效果了！🎉
 
-## 4. 自定义 CSS 样式 🎨
+## 5. 自定义 CSS 样式 🎨
 
 自定义 CSS 样式是让 HTML 文档变得美观的关键。让我们看看如何创建一个简单的 CSS 文件：
 
@@ -129,60 +141,25 @@ if __name__ == '__main__':
 /* custom.css */
 
 body {
-    font-family: 'Microsoft YaHei', Arial, sans-serif;
-    line-height: 1.6;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    color: #333;
+    background-color: #f5f5f5;
 }
 
-h1, h2, h3 {
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 10px;
-}
-
-p {
-    margin-bottom: 1em;
+h1 {
+    color: #e74c3c;
+    border-bottom: 2px solid #e74c3c;
 }
 
 code {
-    background-color: #f4f4f4;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-family: 'Consolas', 'Monaco', monospace;
-}
-
-pre {
-    background-color: #f4f4f4;
-    padding: 15px;
-    border-radius: 5px;
-    overflow-x: auto;
-}
-
-pre code {
-    background-color: transparent;
-    padding: 0;
-}
-
-a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
+    background-color: #2c3e50;
+    color: #ecf0f1;
 }
 ```
 
 这个 CSS 文件定义了一些基本样式：
 
-- **body**：设置字体、行高、最大宽度、边距和颜色 📝
-- **标题**：设置标题颜色和底部边框 📑
-- **段落**：设置段落间距 📄
-- **代码**：设置代码块的背景色和字体 💻
-- **链接**：设置链接颜色和悬停效果 🔗
+- **body**：设置背景颜色为浅灰色 📝
+- **h1**：设置一级标题颜色为红色，并添加底部边框 📑
+- **code**：设置代码块背景色为深色，文字颜色为浅色 💻
 
 你可以根据自己的喜好调整这些样式，或者添加更多的样式规则。CSS 的强大之处在于它的灵活性，你可以创造出任何你想要的视觉效果！🎨
 
