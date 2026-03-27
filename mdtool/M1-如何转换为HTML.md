@@ -1,10 +1,10 @@
 # M1-如何转换为HTML
 
-通过上篇文档 [M0-mdtool背景及链接目录](https://github.com/Zheng-Enci/Knoweledges/blob/main/mdtool/M0-mdtool%E8%83%8C%E6%99%AF%E5%8F%8A%E9%93%BE%E6%8E%A5%E7%9B%AE%E5%BD%95.md) 的学习，我们了解了 mdtool 这个简单、高效、免费的 Markdown 转换工具库，以及为什么我们需要这样的工具。现在让我们深入探讨如何使用 mdtool 将 Markdown 文档转换为 HTML 格式吧！🚀
+通过上篇文档的学习，我们了解了 mdtool 这个简单、高效、免费的 Markdown 转换工具库，以及为什么我们需要这样的工具。现在让我们深入探讨如何使用 mdtool 将 Markdown 文档转换为 HTML 格式吧！🚀
 
 ## 1. 概述 📚
 
-将 Markdown 转换为 HTML 是 mdtool 最核心的功能之一。HTML（HyperText Markup Language，超文本标记语言）是网页的标准格式，通过将 Markdown 转换为 HTML，我们可以轻松地在浏览器中查看文档内容，或者将文档发布到网站上。🌐
+将 Markdown 转换为 HTML 是 mdtool 最核心的功能之一，也是 mdtool 开发的第一个功能。HTML（HyperText Markup Language，超文本标记语言）是网页的标准格式，通过将 Markdown 转换为 HTML，我们可以轻松地在浏览器中查看文档内容，或者将文档发布到网站上。🌐
 
 mdtool 提供了一个简单易用的 API，让我们只需要几行代码就能完成转换。更重要的是，它支持自定义 CSS 样式，这意味着我们可以完全控制 HTML 文档的外观和风格！🎨
 
