@@ -148,49 +148,7 @@ if __name__ == '__main__':
 
 这段代码非常清晰，每一步都有详细的注释说明。运行这段代码后，你会在 `examples` 目录下看到生成的 `sample.html` 文件。用浏览器打开它，你就能看到转换后的效果了！🎉
 
-## 5. 常见问题解答 ❓
-
-### 5.1 如何处理中文乱码问题？🇨🇳
-
-mdtool 默认使用 UTF-8 编码，这已经能够很好地支持中文了。如果你的 Markdown 文件使用其他编码，可以在创建转换器实例时指定编码：
-
-```python
-converter = MDConverter(css_file="custom.css", encoding='gbk')
-```
-
-不过我还是建议大家都使用 UTF-8 编码，这是目前最通用的编码格式，能够支持世界上几乎所有的语言。🌍
-
-### 5.2 如何处理图片路径？🖼️
-
-如果你的 Markdown 文档中包含图片，需要注意图片路径的问题。相对路径是相对于 HTML 文件的位置，而不是相对于 Markdown 文件的位置。所以如果你的目录结构是这样的：
-
-```
-project/
-├── sample.md
-├── custom.css
-└── images/
-    └── logo.png
-```
-
-在 `sample.md` 中引用图片时应该使用：
-
-```markdown
-![Logo](images/logo.png)
-```
-
-这样转换后的 HTML 文件无论放在哪里都能正确显示图片。🖼️
-
-### 5.3 如何生成目录？📑
-
-mdtool 目前不会自动生成目录，但你可以使用一些 Markdown 扩展语法来生成目录。比如：
-
-```markdown
-[TOC]
-```
-
-或者使用第三方工具生成目录后，再使用 mdtool 转换为 HTML。📑
-
-## 6. 总结 📝
+## 5. 总结 📝
 
 通过这篇文档的学习，我们掌握了如何使用 mdtool 将 Markdown 文档转换为 HTML 格式。主要内容包括：
 
