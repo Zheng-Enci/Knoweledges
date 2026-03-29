@@ -34,15 +34,6 @@ pip install markconv
 
 这个命令会安装 markconv 及其所有依赖，包括 pdfkit 等 PDF 转换相关的库。安装过程可能需要几分钟，耐心等待一下就好！⏳
 
-### 2.3 验证安装 ✅
-
-安装完成后，我们可以通过以下方式验证是否安装成功：
-
-1. 打开命令行，输入 `wkhtmltopdf --version`，如果显示版本信息，说明 wkhtmltopdf 安装成功
-2. 在 Python 中执行 `from markconv import MDConverter`，如果没有报错，说明 markconv 安装成功
-
-如果遇到任何问题，可以检查一下环境变量配置是否正确，或者重新安装一下。💡
-
 ## 3. 基本使用方法 💡
 
 现在我们已经完成了环境配置，可以开始使用 markconv 将 Markdown 转换为 PDF 了！使用方法和 HTML 转换非常相似，只需要几行代码就能完成。📝
