@@ -83,6 +83,11 @@ pip install markconv
 - [CSDN](https://blog.csdn.net/2301_79239314/article/details/159583909) 🇨🇳
 - [掘金](https://juejin.cn/post/7621830586782892083) 🌟
 
+### 4.2 M2-如何转换为PDF 📝
+
+- [CSDN](https://blog.csdn.net/2301_79239314/article/details/159612352) 🇨🇳
+- [掘金](https://juejin.cn/post/7622117198371553307) 🌟
+
 ---
 
-最后更新时间：2026-03-27
+最后更新时间：2026-03-29
