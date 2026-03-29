@@ -171,7 +171,7 @@ if __name__ == '__main__':
 - 执行转换操作 ⚡
 - 自定义 CSS 样式美化输出 🎨
 
-markconv 的 PDF 转换功能能够生成高质量的 PDF 文档。我们不需要复杂的配置，不需要学习繁琐的 API，只需要几行代码就能完成转换。这正是我们在[M0-markconv背景及链接目录](https://github.com/Zheng-Enci/Knoweledges/blob/main/mdtool/M0-markconv%E8%83%8C%E6%99%AF%E5%8F%8A%E9%93%BE%E6%8E%A5%E7%9B%AE%E5%BD%95.md)中提到的"简单易用"的体现！💪
+markconv 的 PDF 转换功能能够生成高质量的 PDF 文档。我们不需要复杂的配置，不需要学习繁琐的 API，只需要几行代码就能完成转换。这正是我们在[M0-markconv背景及链接目录](https://juejin.cn/post/7621470473188327467)（[CSDN链接](https://blog.csdn.net/2301_79239314/article/details/159528367)）中提到的"简单易用"的体现！💪
 
 接下来我们将学习更多关于 markconv 的功能，比如如何转换为 DOCX 等格式。敬请期待！🚀
 
