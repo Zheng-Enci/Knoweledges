@@ -8,8 +8,6 @@
 
 将 Markdown 转换为 PDF 是 markconv 的另一个核心功能，PDF（Portable Document Format，便携式文档格式）是一种跨平台的文档格式，能够在各种设备上保持一致的显示效果。通过将 Markdown 转换为 PDF，我们可以方便地分享文档、打印输出，或者归档保存。📄
 
-markconv 的 PDF 转换功能基于 wkhtmltopdf 引擎，这是一个开源的命令行工具，使用 WebKit 渲染引擎将 HTML 文档转换为 PDF 文件。它支持 HTML、CSS、JavaScript 等现代 Web 技术，能够生成高质量的 PDF 文档。这意味着我们可以在 Markdown 中使用丰富的样式和格式，转换后的 PDF 依然能够完美呈现！🎨
-
 ## 2. 环境准备 🔧
 
 在使用 markconv 的 PDF 转换功能之前，我们需要先完成一些环境配置。别担心，配置过程很简单，只需要几分钟就能搞定！⏱️
