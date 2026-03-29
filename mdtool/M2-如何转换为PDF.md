@@ -1,6 +1,6 @@
 # M2-如何转换为PDF
 
-通过上篇文档[M1-如何转换为HTML](https://juejin.cn/post/7621830586782892083)的学习，我们掌握了如何使用 markconv 将 Markdown 文档转换为 HTML 格式。现在让我们继续探索 markconv 的另一个强大功能——将 Markdown 转换为 PDF 格式！🚀
+通过上篇文档[M1-如何转换为HTML](https://juejin.cn/post/7621830586782892083)（[CSDN链接](https://blog.csdn.net/2301_79239314/article/details/159583909)）的学习，我们掌握了如何使用 markconv 将 Markdown 文档转换为 HTML 格式。现在让我们继续探索 markconv 的另一个强大功能——将 Markdown 转换为 PDF 格式！🚀
 
 ## 1. 概述 📚
 
