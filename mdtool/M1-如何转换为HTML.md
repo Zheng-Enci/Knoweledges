@@ -1,22 +1,22 @@
 # M1-如何转换为HTML
 
-通过上篇文档的学习，我们了解了 mdtool 这个简单、高效、免费的 Markdown 转换工具库，以及为什么我们需要这样的工具。现在让我们深入探讨如何使用 mdtool 将 Markdown 文档转换为 HTML 格式吧！🚀
+通过上篇文档的学习，我们了解了 markconv 这个简单、高效、免费的 Markdown 转换工具库，以及为什么我们需要这样的工具。现在让我们深入探讨如何使用 markconv 将 Markdown 文档转换为 HTML 格式吧！🚀
 
 ## 1. 概述 📚
 
-将 Markdown 转换为 HTML 是 mdtool 最核心的功能之一，也是 mdtool 开发的第一个功能。HTML（HyperText Markup Language，超文本标记语言）是网页的标准格式，通过将 Markdown 转换为 HTML，我们可以轻松地在浏览器中查看文档内容，或者将文档发布到网站上。🌐
+将 Markdown 转换为 HTML 是 markconv 最核心的功能之一，也是 markconv 开发的第一个功能。HTML（HyperText Markup Language，超文本标记语言）是网页的标准格式，通过将 Markdown 转换为 HTML，我们可以轻松地在浏览器中查看文档内容，或者将文档发布到网站上。🌐
 
-mdtool 提供了一个简单易用的 API，让我们只需要几行代码就能完成转换。更重要的是，它支持自定义 CSS 样式，这意味着我们可以完全控制 HTML 文档的外观和风格！🎨
+markconv 提供了一个简单易用的 API，让我们只需要几行代码就能完成转换。更重要的是，它支持自定义 CSS 样式，这意味着我们可以完全控制 HTML 文档的外观和风格！🎨
 
-## 2. 安装 mdtool 📦
+## 2. 安装 markconv 📦
 
-在使用 mdtool 之前，我们需要先安装它。安装非常简单，只需要一行命令：
+在使用 markconv 之前，我们需要先安装它。安装非常简单，只需要一行命令：
 
 ```bash
-pip install zec-mdtool
+pip install markconv
 ```
 
-注意：由于 `mdtool` 这个包名已经被占用，所以安装时需要使用 `zec-mdtool` 这个包名。安装完成后，你就可以在代码中直接使用 `mdtool` 了！🎉
+安装完成后，你就可以在代码中直接使用 `markconv` 了！🎉
 
 ## 3. 基本使用方法 💡
 
@@ -24,13 +24,13 @@ pip install zec-mdtool
 
 ### 3.1 导入 MDConverter 类 📦
 
-首先，我们需要从 mdtool 包中导入 MDConverter 类：
+首先，我们需要从 markconv 包中导入 MDConverter 类：
 
 ```python
-from mdtool import MDConverter
+from markconv import MDConverter
 ```
 
-MDConverter 是 mdtool 的核心转换器类，它负责将 Markdown 文档转换为目标格式。目前支持转换为 HTML，未来还会支持 PDF、DOCX 等格式。🔄
+MDConverter 是 markconv 的核心转换器类，它负责将 Markdown 文档转换为目标格式。目前支持转换为 HTML，未来还会支持 PDF、DOCX 等格式。🔄
 
 ### 3.2 创建转换器实例 🏗️
 
@@ -57,7 +57,7 @@ code {
 }
 ```
 
-`css_file` 参数指定了自定义 CSS 样式文件的路径，程序会读取该文件内容并插入到生成的 HTML 的 `<style>` 标签中。如果不提供 `css_file` 参数，mdtool 会使用内置的默认样式。💡
+`css_file` 参数指定了自定义 CSS 样式文件的路径，程序会读取该文件内容并插入到生成的 HTML 的 `<style>` 标签中。如果不提供 `css_file` 参数，markconv 会使用内置的默认样式。💡
 
 ### 3.3 指定输入和输出文件路径 📁
 
@@ -71,7 +71,7 @@ output_file = 'examples/sample.html'
 这里有几个要点需要注意：
 
 - **输入文件路径**：我们使用了原始字符串（r 前缀）来避免转义问题。这在 Windows 系统上特别有用，因为 Windows 的路径分隔符是反斜杠 `\`，而在 Python 中反斜杠是转义字符。🪟
-- **输出文件路径**：如果输出目录不存在，mdtool 会自动创建。这意味着我们不需要手动创建 `examples` 目录，程序会帮我们搞定！📁
+- **输出文件路径**：如果输出目录不存在，markconv 会自动创建。这意味着我们不需要手动创建 `examples` 目录，程序会帮我们搞定！📁
 - **相对路径**：这里使用的是相对路径，相对于当前工作目录。你也可以使用绝对路径。🔍
 
 ### 3.4 执行转换操作 ⚡
@@ -88,7 +88,7 @@ converter.to_html(input_file, output_file, wrap_html=True)
 - **output_file**：输出的 HTML 文件路径 🌐
 - **wrap_html**：是否生成完整的 HTML 文档 📦
 
-`wrap_html` 参数很重要！当设置为 `True` 时，mdtool 会生成完整的 HTML 文档，包括 `<!DOCTYPE>`、`<html>`、`<head>`、`<body>` 等标签。这样的 HTML 文件可以直接在浏览器中打开，或者发布到网站上。🌐
+`wrap_html` 参数很重要！当设置为 `True` 时，markconv 会生成完整的 HTML 文档，包括 `<!DOCTYPE>`、`<html>`、`<head>`、`<body>` 等标签。这样的 HTML 文件可以直接在浏览器中打开，或者发布到网站上。🌐
 
 如果设置为 `False`，则只输出 HTML body 内容，适合嵌入到其他网页中。比如你可能有一个现有的网页模板，只需要将 Markdown 转换的内容嵌入到某个 `div` 中，这时就可以使用 `wrap_html=False`。🔗
 
@@ -97,8 +97,8 @@ converter.to_html(input_file, output_file, wrap_html=True)
 让我们把所有代码整合起来，看看完整的示例：
 
 ```python
-# 从 mdtool 包中导入 MDConverter 类
-from mdtool import MDConverter
+# 从 markconv 包中导入 MDConverter 类
+from markconv import MDConverter
 
 
 def html_basic_example():
@@ -150,7 +150,7 @@ if __name__ == '__main__':
 
 ## 5. 总结 📝
 
-通过这篇文档的学习，我们掌握了如何使用 mdtool 将 Markdown 文档转换为 HTML 格式。主要内容包括：
+通过这篇文档的学习，我们掌握了如何使用 markconv 将 Markdown 文档转换为 HTML 格式。主要内容包括：
 
 - 导入 MDConverter 类 📦
 - 创建转换器实例并指定 CSS 样式文件 🏗️
@@ -158,9 +158,9 @@ if __name__ == '__main__':
 - 执行转换操作 ⚡
 - 自定义 CSS 样式美化输出 🎨
 
-mdtool 的设计理念就是简单、高效、免费。我们不需要复杂的配置，不需要学习繁琐的 API，只需要几行代码就能完成转换。这正是我们在 [M0-mdtool背景及链接目录](https://github.com/Zheng-Enci/Knoweledges/blob/main/mdtool/M0-mdtool%E8%83%8C%E6%99%AF%E5%8F%8A%E9%93%BE%E6%8E%A5%E7%9B%AE%E5%BD%95.md) 中提到的"简单易用"的体现！💪
+markconv 的设计理念就是简单、高效、免费。我们不需要复杂的配置，不需要学习繁琐的 API，只需要几行代码就能完成转换。这正是我们在 [M0-markconv背景及链接目录](https://github.com/Zheng-Enci/Knoweledges/blob/main/mdtool/M0-markconv%E8%83%8C%E6%99%AF%E5%8F%8A%E9%93%BE%E6%8E%A5%E7%9B%AE%E5%BD%95.md) 中提到的"简单易用"的体现！💪
 
-接下来我们将学习更多关于 mdtool 的功能，比如如何转换为 PDF、DOCX 等格式。敬请期待！🚀
+接下来我们将学习更多关于 markconv 的功能，比如如何转换为 PDF、DOCX 等格式。敬请期待！🚀
 
 ---
 
