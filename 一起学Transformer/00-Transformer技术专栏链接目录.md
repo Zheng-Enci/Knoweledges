@@ -4,7 +4,7 @@ Transformer技术学习路线与专栏文档链接目录
 
 ## 📋 专栏概述
 
-Transformer是一种基于注意力机制的深度学习架构，由Google研究团队在2017年论文《Attention Is All You Need》中首次提出。Transformer彻底改变了自然语言处理领域，是现代大语言模型（LLM）的基石架构，包括GPT、BERT、Claude等模型都基于Transformer。本专栏基于最新技术趋势，涵盖Transformer核心概念、注意力机制、模型架构、变体发展以及实战应用等关键技术，帮助开发者从入门到精通掌握Transformer技术。
+Transformer是2017年Google提出的深度学习架构，是GPT、BERT等大语言模型的基石。本专栏涵盖核心概念、注意力机制、模型架构及实战应用，帮助开发者从入门到精通掌握Transformer技术。
 
 > 📌 **文档更新说明**：本专栏文档会不定期更新，随着新文档的发布，将及时在下方链接目录中添加对应的在线文档链接。
 
