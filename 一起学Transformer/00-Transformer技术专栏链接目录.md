@@ -10,7 +10,7 @@ Transformer是一种基于注意力机制的深度学习架构，由Google研究
 
 ## 1. 为什么需要学习Transformer
 
-Transformer已成为现代人工智能领域最重要的技术架构之一。掌握Transformer技术对于AI开发者来说具有重要意义。首先，Transformer是GPT、BERT、Claude等所有主流大语言模型的基础架构，理解Transformer就是理解当代AI的核心。其次，Transformer的注意力机制已被广泛应用于计算机视觉、语音处理、生物信息学等领域，具有很强的通用性。第三，随着大语言模型在各行各业的落地，掌握Transformer技术是成为AI应用开发者的必备技能。
+Transformer已成为现代人工智能领域最重要的技术架构之一。掌握Transformer技术对于AI开发者来说具有重要意义。Transformer是GPT、BERT、Claude等所有主流大语言模型的基础架构，理解Transformer就是理解当代AI的核心。同时，Transformer的注意力机制已被广泛应用于计算机视觉、语音处理、生物信息学等领域，具有很强的通用性。随着大语言模型在各行各业的落地，掌握Transformer技术是成为AI应用开发者的必备技能。
 
 ## 2. 学习阶段概览
 
