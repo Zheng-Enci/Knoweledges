@@ -121,6 +121,17 @@ flowchart LR
 
 ## 6. Transformer发展历程 📈
 
----
+ Transformer的出现开启了一个新时代，以下是重要里程碑：
+
+| 年份 | 模型 | 重要事件 |
+|-----|------|---------|
+| **2017** | Transformer | Google提出《Attention Is All You Need》，开创全新架构 |
+| **2018** | GPT-1 / BERT | OpenAI发布GPT-1，Google发布BERT，开启预训练时代 |
+| **2019** | GPT-2 | 展示零样本学习能力，模型开源引发广泛关注 |
+| **2020** | GPT-3 | 1750亿参数，里程碑式突破，展示了大模型的强大能力 |
+| **2022** | ChatGPT | OpenAI发布ChatGPT，掀起了AI应用浪潮 |
+| **2023** | GPT-4 / Claude | 多模态大模型发布，能力进一步飞跃 |
+
+> 💡 **展望未来**：Transformer及其衍生架构将继续推动AI发展，了解其原理是进入AI领域的重要基础 💪
 
 **最后更新时间**：2026-04-04
