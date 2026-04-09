@@ -85,13 +85,13 @@ locations = {
 
 ```python
 # 方法1：使用 hash() 函数
-hash("hello")  # ✅ 可以
-hash([1, 2, 3])  # ❌ TypeError: unhashable type: 'list'
+print(hash("hello"))  # ✅ 可以，输出哈希值
+print(hash([1, 2, 3]))  # ❌ TypeError: unhashable type: 'list'
 
 # 方法2：使用 isinstance() 检查
 from collections.abc import Hashable
-isinstance("hello", Hashable)  # ✅ True
-isinstance([1, 2, 3], Hashable)  # ❌ False
+print(isinstance("hello", Hashable))  # ✅ True
+print(isinstance([1, 2, 3], Hashable))  # ❌ False
 ```
 
 ### 2.2 字典 vs 列表对比
