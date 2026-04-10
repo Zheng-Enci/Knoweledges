@@ -91,17 +91,130 @@ s6 = {{1, 2}}                      # ❌ TypeError: unhashable type: 'set'
 
 ### 3.1 使用花括号创建 🅰️
 
+这是最直接的方式，直接用花括号把元素括起来，元素之间用逗号分隔：
 
+```python
+# 基本创建
+fruits = {"apple", "banana", "orange"}
+print(fruits)  # {'banana', 'orange', 'apple'}
+
+# 数字集合
+numbers = {1, 2, 3, 4, 5}
+print(numbers)  # {1, 2, 3, 4, 5}
+
+# 混合类型（只要是不可变类型就行）
+mixed = {"hello", 123, (1, 2, 3)}
+print(mixed)  # {'hello', 123, (1, 2, 3)}
+```
+
+还有一点很方便——自动去重！如果我们写重复的元素，Python 会自动帮我们去掉：
+
+```python
+s = {1, 2, 3, 2, 1, 4, 3}
+print(s)  # {1, 2, 3, 4} - 自动去重了！
+```
+
+不过这里有个坑：**空的花括号 `{}` 创建的不是空集合，而是空字典！** 要创建空集合必须用 `set()`。
+
+```python
+# ❌ 这是字典，不是集合！
+empty_dict = {}
+print(type(empty_dict))  # <class 'dict'>
+
+# ✅ 这才是空集合
+empty_set = set()
+print(type(empty_set))  # <class 'set'>
+print(empty_set)  # set()
+```
+
+---
 
 ### 3.2 使用 set() 函数创建 🅱️
 
+`set()` 函数可以创建集合，还有几个常用用法：
 
+**1. 创建空集合**
+
+```python
+empty_set = set()
+print(empty_set)  # set()
+```
+
+**2. 从列表、元组、字符串转换**
+
+这个功能超级实用！我们可以把其他可迭代对象转成集合，自动去重：
+
+```python
+# 从列表创建（自动去重）
+lst = [1, 2, 3, 2, 1, 4]
+s1 = set(lst)
+print(s1)  # {1, 2, 3, 4}
+
+# 从元组创建
+tup = (1, 2, 3, 2, 1)
+s2 = set(tup)
+print(s2)  # {1, 2, 3}
+
+# 从字符串创建（把字符拆成集合，自动去重）
+text = "hello"
+s3 = set(text)
+print(s3)  # {'h', 'e', 'l', 'o'} - 注意 'l' 只出现一次
+```
+
+**3. 从集合创建（复制）**
+
+```python
+original = {1, 2, 3}
+copied = set(original)
+print(copied)  # {1, 2, 3}
+```
+
+---
 
 ### 3.3 集合推导式创建 🦾
 
+和列表推导式类似，集合也有推导式！语法几乎一样，只是把方括号换成花括号：
 
+```python
+# 基本语法
+squares = {x**2 for x in range(1, 6)}
+print(squares)  # {16, 1, 4, 9, 25}
+
+# 带条件筛选
+even_squares = {x**2 for x in range(1, 10) if x % 2 == 0}
+print(even_squares)  # {16, 4, 36, 64}
+
+# 从字符串过滤
+text = "hello world"
+unique_vowels = {char for char in text if char in 'aeiou'}
+print(unique_vowels)  # {'e', 'o'}
+
+# 复杂一点的条件
+pairs = {(x, y) for x in range(3) for y in range(3)}
+print(pairs)  # {(0, 0), (0, 1), (0, 2), (1, 0), ...}
+```
+
+集合推导式和列表推导式的区别：
+- 列表推导式用方括号 `[]`
+- 集合推导式用花括号 `{}`
+- 集合会自动去重，列表不会
+
+---
 
 ### 3.4 集合创建方式对比 📊
+
+我们来对比一下这三种创建方式：
+
+| 创建方式 | 适用场景 | 示例 |
+|---------|---------|------|
+| 花括号 `{}` | 已知具体元素，直观简洁 | `{1, 2, 3}` |
+| `set()` 函数 | 从其他数据转换、创建空集合 | `set([1,2,3])`、`set()` |
+| 集合推导式 | 批量生成、有筛选逻辑 | `{x**2 for x in range(5)}` |
+
+使用建议：
+- 如果知道具体元素，用花括号最直观
+- 如果要从列表去重，用 `set()`
+- 如果要批量生成有规律的元素，用推导式
 
 
 
