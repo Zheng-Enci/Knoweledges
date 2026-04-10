@@ -728,7 +728,8 @@ lst = [1, 2, 3, 2, 1, 4, 3]
 unique = list(set(lst))
 print(unique)  # [1, 2, 3, 4] - 无序
 
-# 如果需要保持顺序
+# 如果需要保持顺序，用 dict.fromkeys()
+# 原理：Python 3.7+ 字典保持插入顺序，我们利用键的唯一性来去重
 unique_ordered = list(dict.fromkeys(lst))
 print(unique_ordered)  # [1, 2, 3, 4]
 ```
@@ -740,7 +741,7 @@ text = "hello world"
 unique_chars = set(text)
 print(unique_chars)  # {'h', 'e', 'l', 'o', ' ', 'w', 'r', 'd'}
 
-# 按原顺序
+# 按原顺序 - 利用字典键的唯一性和保持顺序的特性
 unique_ordered = ''.join(dict.fromkeys(text))
 print(unique_ordered)  # helo wrd
 ```
