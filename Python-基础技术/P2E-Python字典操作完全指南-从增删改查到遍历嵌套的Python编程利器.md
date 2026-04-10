@@ -728,11 +728,143 @@ print(student)  # 输出: {'name': '李四'}
 
 ### 8.1 遍历键 🔑
 
+遍历字典的键是最常见的操作之一。可以直接遍历字典（默认遍历的就是键），也可以使用 `keys()` 方法明确指定遍历键。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95, "city": "北京"}
+
+# 方法1：直接遍历字典（默认遍历键）
+for key in student:
+    print(key)
+# 输出:
+# name
+# age
+# score
+# city
+
+# 方法2：使用 keys() 方法
+for key in student.keys():
+    print(key)
+# 输出同上
+
+# 在需要明确语义时，使用 keys() 更清晰
+print("学生信息包含以下字段：")
+for key in student.keys():
+    print(f"  - {key}")
+```
+
+**使用场景**：
+- 只关心有哪些键（字段名）
+- 需要判断某个键是否存在（结合 `in` 运算符）
+
 ### 8.2 遍历值 📊
+
+如果只关心字典中的值，可以使用 `values()` 方法进行遍历。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95, "city": "北京"}
+
+# 遍历所有值
+for value in student.values():
+    print(value)
+# 输出:
+# 张三
+# 18
+# 95
+# 北京
+
+# 实际应用：计算平均分
+scores = {"语文": 85, "数学": 92, "英语": 78, "物理": 90}
+total = sum(scores.values())
+count = len(scores)
+average = total / count
+print(f"平均分: {average}")  # 输出: 平均分: 86.25
+
+# 找出最高分
+max_score = max(scores.values())
+print(f"最高分: {max_score}")  # 输出: 最高分: 92
+```
+
+**使用场景**：
+- 只关心值，不需要键
+- 统计、计算类操作（如求和、平均值、最大值、最小值）
 
 ### 8.3 遍历键值对 🔂
 
+如果需要同时获取键和值，可以使用 `items()` 方法，它返回键值对元组。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95, "city": "北京"}
+
+# 遍历所有键值对
+for key, value in student.items():
+    print(f"{key}: {value}")
+# 输出:
+# name: 张三
+# age: 18
+# score: 95
+# city: 北京
+
+# 实际应用：筛选符合条件的数据
+scores = {"语文": 85, "数学": 92, "英语": 78, "物理": 90}
+print("及格的科目：")
+for subject, score in scores.items():
+    if score >= 80:
+        print(f"  {subject}: {score}分")
+# 输出:
+# 及格的科目：
+#   语文: 85分
+#   数学: 92分
+#   物理: 90分
+
+# 实际应用：构建新字典
+original = {"a": 1, "b": 2, "c": 3}
+doubled = {}
+for key, value in original.items():
+    doubled[key] = value * 2
+print(doubled)  # 输出: {'a': 2, 'b': 4, 'c': 6}
+```
+
+**使用场景**：
+- 需要同时使用键和值
+- 复杂的数据转换和筛选
+
 ### 8.4 字典推导式遍历 🦾
+
+字典推导式不仅可以创建字典（第三章学过），还可以用于遍历和转换数据。它的语法简洁，效率也更高。
+
+```python
+# 示例1：遍历键值对并筛选
+scores = {"语文": 85, "数学": 92, "英语": 78, "物理": 90}
+pass_scores = {subject: score for subject, score in scores.items() if score >= 80}
+print(pass_scores)  # 输出: {'语文': 85, '数学': 92, '物理': 90}
+
+# 示例2：遍历键值对并转换
+student = {"name": "张三", "age": 18, "score": 95}
+formatted = {f"学生{k}": f"值{v}" for k, v in student.items()}
+print(formatted)  # 输出: {'学生name': '值张三', '学生age': '值18', '学生score': '值95'}
+
+# 示例3：键值互换
+original = {"a": 1, "b": 2, "c": 3}
+reversed_dict = {v: k for k, v in original.items()}
+print(reversed_dict)  # 输出: {1: 'a', 2: 'b', 3: 'c'}
+
+# 示例4：合并两个字典（键不同时）
+dict1 = {"a": 1, "b": 2}
+dict2 = {"c": 3, "d": 4}
+merged = {k: v for d in [dict1, dict2] for k, v in d.items()}
+print(merged)  # 输出: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+```
+
+**对比总结**：
+
+| 遍历方式 | 适用场景 | 示例 |
+|---------|---------|------|
+| `for key in dict` | 只遍历键 | 遍历字段名 |
+| `for key in dict.keys()` | 明确遍历键 | 需要键的列表 |
+| `for value in dict.values()` | 只遍历值 | 统计计算 |
+| `for k, v in dict.items()` | 同时遍历键值 | 数据筛选转换 |
+| 字典推导式 | 简洁的转换筛选 | 一行代码完成转换 |
 
 ## 9. 字典嵌套（nested dict）🏗️
 
