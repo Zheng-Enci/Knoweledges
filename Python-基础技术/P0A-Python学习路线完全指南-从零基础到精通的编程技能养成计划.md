@@ -121,6 +121,7 @@ graph TD
 - P1J-Python注释-什么是注释？为什么大厂程序员都在写文档字符串？怎么快速掌握注释规范？：[掘金](https://juejin.cn/post/7567581662101389363) ✅
 - P2A-Python列表-什么是列表？切片为什么这么强大？怎么快速掌握增删改查？：[掘金](https://juejin.cn/post/7567678315303501874) ✅
 - P2D-Python_哈希表完全指南-从字典到高效查找的Python编程利器：[掘金](https://juejin.cn/post/7563950984256208946) ✅
+- P2E-Python字典操作完全指南-从增删改查到遍历嵌套的Python编程利器：[掘金](https://juejin.cn/spost/7626681742502625306) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/160015439) ✅
 - P2I-Python正则表达式-什么是正则表达式？为什么程序员都在用re模块？怎么快速掌握模式匹配和替换？：[掘金](https://juejin.cn/post/7567769662478761993) ✅
 - P2J-Python-collections-什么是namedtuple、defaultdict和Counter？为什么一线开发者都在用？怎么快速掌握？：[掘金](https://juejin.cn/post/7568315756073615410) ✅
 - P2K-Python-collections-什么是deque和OrderedDict？为什么需要双端队列和有序字典？怎么快速掌握？：[掘金](https://juejin.cn/post/7568388327729545226) ✅
