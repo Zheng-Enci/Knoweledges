@@ -719,17 +719,41 @@ print(s1)  # {1, 2, 3, 4, 5}
 
 ## 7. 集合去重应用 💡
 
-
+集合最大的用处就是去重，我们来看看几种常见场景 🧹
 
 ### 7.1 列表去重
 
+```python
+lst = [1, 2, 3, 2, 1, 4, 3]
+unique = list(set(lst))
+print(unique)  # [1, 2, 3, 4] - 无序
 
+# 如果需要保持顺序
+unique_ordered = list(dict.fromkeys(lst))
+print(unique_ordered)  # [1, 2, 3, 4]
+```
 
 ### 7.2 字符串去重
 
+```python
+text = "hello world"
+unique_chars = set(text)
+print(unique_chars)  # {'h', 'e', 'l', 'o', ' ', 'w', 'r', 'd'}
 
+# 按原顺序
+unique_ordered = ''.join(dict.fromkeys(text))
+print(unique_ordered)  # helo wrd
+```
 
 ### 7.3 复杂数据去重
+
+对于列表里的复杂数据（字典、元组等），可以用 `dict.fromkeys()`：
+
+```python
+data = [{'a': 1}, {'b': 2}, {'a': 1}, {'b': 2}]
+unique = list(dict.fromkeys(data))
+print(unique)  # [{'a': 1}, {'b': 2}]
+```
 
 
 
