@@ -402,18 +402,21 @@ print(result)  # {1, 2, 3, 4, 5, 6, 7}
 我们来看个图示 🎨：
 
 ```mermaid
-flowchart LR
-    A1(1) --> R1(1)
-    A2(2) --> R2(2)
-    A3(3) --> R3(3)
-    B1(3) --> R3
-    B2(4) --> R4(4)
-    B3(5) --> R5(5)
-    style R1 fill:#90EE90
-    style R2 fill:#90EE90
-    style R3 fill:#90EE90
-    style R4 fill:#90EE90
-    style R5 fill:#90EE90
+flowchart TB
+    subgraph A[集合 A = {1, 2, 3}]
+        direction LR
+        A1["1"]
+        A2["2"]
+        A3["3"]
+    end
+    subgraph B[集合 B = {3, 4, 5}]
+        direction LR
+        B1["3"]
+        B2["4"]
+        B3["5"]
+    end
+    A & B --> |并集| R[结果 = {1, 2, 3, 4, 5}]
+    style R fill:#90EE90
 ```
 
 ---
@@ -452,9 +455,20 @@ print(result)  # {3}
 图示 🎨：
 
 ```mermaid
-flowchart LR
-    A3(3) --> R(3)
-    B1(3) --> R
+flowchart TB
+    subgraph A[集合 A = {1, 2, 3}]
+        direction LR
+        A1["1"]
+        A2["2"]
+        A3["3"]
+    end
+    subgraph B[集合 B = {3, 4, 5}]
+        direction LR
+        B1["3"]
+        B2["4"]
+        B3["5"]
+    end
+    A & B --> |交集| R[结果 = {3}]
     style R fill:#90EE90
 ```
 
@@ -493,14 +507,21 @@ print(result)  # {1, 2}
 图示 🎨：
 
 ```mermaid
-flowchart LR
-    A1(1) --> R1(1)
-    A2(2) --> R2(2)
-    A3(3) -.->|排除| B1(3)
-    B2(4) -.->|不在A中| R1
-    B3(5) -.->|不在A中| R2
-    style R1 fill:#90EE90
-    style R2 fill:#90EE90
+flowchart TB
+    subgraph A[集合 A = {1, 2, 3}]
+        direction LR
+        A1["1"]
+        A2["2"]
+        A3["3"]
+    end
+    subgraph B[集合 B = {3, 4, 5}]
+        direction LR
+        B1["3"]
+        B2["4"]
+        B3["5"]
+    end
+    A --> |A-B 差集| R[结果 = {1, 2}]
+    style R fill:#90EE90
 ```
 
 ---
@@ -534,16 +555,21 @@ print(result)  # {1, 2, 4, 5}
 图示 🎨：
 
 ```mermaid
-flowchart LR
-    A1(1) --> R1(1)
-    A2(2) --> R2(2)
-    B2(4) --> R3(4)
-    B3(5) --> R4(5)
-    A3(3) -.->|排除| B1(3)
-    style R1 fill:#90EE90
-    style R2 fill:#90EE90
-    style R3 fill:#90EE90
-    style R4 fill:#90EE90
+flowchart TB
+    subgraph A[集合 A = {1, 2, 3}]
+        direction LR
+        A1["1"]
+        A2["2"]
+        A3["3"]
+    end
+    subgraph B[集合 B = {3, 4, 5}]
+        direction LR
+        B1["3"]
+        B2["4"]
+        B3["5"]
+    end
+    A & B --> |对称差集| R[结果 = {1, 2, 4, 5}]
+    style R fill:#90EE90
 ```
 
 ---
