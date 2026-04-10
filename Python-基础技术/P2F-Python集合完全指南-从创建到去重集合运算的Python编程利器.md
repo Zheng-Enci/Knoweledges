@@ -403,19 +403,19 @@ print(result)  # {1, 2, 3, 4, 5, 6, 7}
 
 ```mermaid
 flowchart TB
-    subgraph A[集合 A = {1, 2, 3}]
+    subgraph A[集合A]
         direction LR
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B[集合 B = {3, 4, 5}]
+    subgraph B[集合B]
         direction LR
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    A & B --> |并集| R[结果 = {1, 2, 3, 4, 5}]
+    A & B --> |并集| R[结果: 1,2,3,4,5]
     style R fill:#90EE90
 ```
 
@@ -456,19 +456,19 @@ print(result)  # {3}
 
 ```mermaid
 flowchart TB
-    subgraph A[集合 A = {1, 2, 3}]
+    subgraph A[集合A]
         direction LR
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B[集合 B = {3, 4, 5}]
+    subgraph B[集合B]
         direction LR
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    A & B --> |交集| R[结果 = {3}]
+    A & B --> |交集| R[结果: 3]
     style R fill:#90EE90
 ```
 
@@ -508,19 +508,19 @@ print(result)  # {1, 2}
 
 ```mermaid
 flowchart TB
-    subgraph A[集合 A = {1, 2, 3}]
+    subgraph A[集合A]
         direction LR
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B[集合 B = {3, 4, 5}]
+    subgraph B[集合B]
         direction LR
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    A --> |A-B 差集| R[结果 = {1, 2}]
+    A --> |差集| R[结果: 1,2]
     style R fill:#90EE90
 ```
 
@@ -556,19 +556,19 @@ print(result)  # {1, 2, 4, 5}
 
 ```mermaid
 flowchart TB
-    subgraph A[集合 A = {1, 2, 3}]
+    subgraph A[集合A]
         direction LR
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B[集合 B = {3, 4, 5}]
+    subgraph B[集合B]
         direction LR
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    A & B --> |对称差集| R[结果 = {1, 2, 4, 5}]
+    A & B --> |对称差集| R[结果: 1,2,4,5]
     style R fill:#90EE90
 ```
 
