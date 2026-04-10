@@ -402,25 +402,29 @@ print(result)  # {1, 2, 3, 4, 5, 6, 7}
 我们来看个图示 🎨：
 
 ```mermaid
-graph LR
-    subgraph A["集合 A: {1, 2, 3}"]
+flowchart LR
+    subgraph A[集合 A: {1, 2, 3}]
+        direction TB
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B["集合 B: {3, 4, 5}"]
+    subgraph B[集合 B: {3, 4, 5}]
+        direction TB
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    subgraph Union["并集 A | B: {1, 2, 3, 4, 5}"]
-        U1["1"]
-        U2["2"]
-        U3["3"]
-        U4["4"]
-        U5["5"]
+    subgraph Result[并集 A | B: {1, 2, 3, 4, 5}]
+        direction TB
+        R1["1"]
+        R2["2"]
+        R3["3"]
+        R4["4"]
+        R5["5"]
     end
-    A & B --> Union
+    A --> Result
+    B --> Result
 ```
 
 ---
@@ -459,21 +463,25 @@ print(result)  # {3}
 图示 🎨：
 
 ```mermaid
-graph LR
-    subgraph A["集合 A: {1, 2, 3}"]
+flowchart LR
+    subgraph A[集合 A: {1, 2, 3}]
+        direction TB
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B["集合 B: {3, 4, 5}"]
+    subgraph B[集合 B: {3, 4, 5}]
+        direction TB
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    subgraph Inter["交集 A & B: {3}"]
-        I1["3"]
+    subgraph Result[交集 A & B: {3}]
+        direction TB
+        R1["3"]
     end
-    A & B --> Inter
+    A3 --> Result
+    B1 --> Result
 ```
 
 ---
@@ -511,22 +519,27 @@ print(result)  # {1, 2}
 图示 🎨：
 
 ```mermaid
-graph LR
-    subgraph A["集合 A: {1, 2, 3}"]
+flowchart LR
+    subgraph A[集合 A: {1, 2, 3}]
+        direction TB
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B["集合 B: {3, 4, 5}"]
+    subgraph B[集合 B: {3, 4, 5}]
+        direction TB
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    subgraph Diff["差集 A - B: {1, 2}"]
-        D1["1"]
-        D2["2"]
+    subgraph Result[差集 A - B: {1, 2}]
+        direction TB
+        R1["1"]
+        R2["2"]
     end
-    A --> Diff
+    A1 --> Result
+    A2 --> Result
+    A3 -.->|被排除| B1
 ```
 
 ---
@@ -560,25 +573,31 @@ print(result)  # {1, 2, 4, 5}
 图示 🎨：
 
 ```mermaid
-graph LR
-    subgraph A["集合 A: {1, 2, 3}"]
+flowchart LR
+    subgraph A[集合 A: {1, 2, 3}]
+        direction TB
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B["集合 B: {3, 4, 5}"]
+    subgraph B[集合 B: {3, 4, 5}]
+        direction TB
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    subgraph SymDiff["对称差集 A ^ B: {1, 2, 4, 5}"]
-        S1["1"]
-        S2["2"]
-        S3["4"]
-        S4["5"]
+    subgraph Result[对称差集 A ^ B: {1, 2, 4, 5}]
+        direction TB
+        R1["1"]
+        R2["2"]
+        R3["4"]
+        R4["5"]
     end
-    A --> SymDiff
-    B --> SymDiff
+    A1 --> Result
+    A2 --> Result
+    B2 --> Result
+    B3 --> Result
+    A3 -.->|被排除| B1
 ```
 
 ---
