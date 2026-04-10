@@ -27,7 +27,7 @@ graph TD
     P2B["列表操作：增删改查、排序、反转"]
     P2C["元组 Tuple：创建、不可变性"]
     P2D["字典 Dictionary：键值对、创建、访问<br/>(P2D)"]
-    P2E["字典操作：增删改查、遍历、嵌套"]
+    P2E["字典操作：增删改查、遍历、嵌套<br/>(P2E)"]
     P2F["集合 Set：创建、去重、集合运算"]
     P2G["字符串方法：split、join、strip、replace"]
     P2H["字符串格式化：format、f-string"]
