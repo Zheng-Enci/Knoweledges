@@ -415,9 +415,123 @@ else:
 
 ### 5.1 直接赋值添加 ✍️
 
+向字典中添加元素最简单的方式是直接通过键赋值。如果键不存在，就会添加新的键值对；如果键已存在，则会更新值。
+
+```python
+# 创建空字典
+student = {}
+
+# 添加单个键值对
+student["name"] = "张三"
+student["age"] = 18
+student["score"] = 95
+
+print(student)  # 输出: {'name': '张三', 'age': 18, 'score': 95}
+
+# 多次赋值可以继续添加
+student["city"] = "北京"
+print(student)  # 输出: {'name': '张三', 'age': 18, 'score': 95, 'city': '北京'}
+```
+
+**⚠️ 注意**：如果键已存在，直接赋值会**覆盖**原来的值（这属于修改操作，见第6章）。
+
+**特点**：
+- 语法简洁，一目了然
+- 适合逐个添加键值对
+- 键不存在则添加，键存在则覆盖
+
 ### 5.2 setdefault() 方法 🔐
 
+`setdefault()` 方法用于设置字典的默认值。如果键不存在，它会添加键并设置默认值；如果键已存在，则保持原有值不变。
+
+```python
+student = {"name": "张三", "age": 18}
+
+# 键不存在，添加新键值对
+result = student.setdefault("score", 95)
+print(result)        # 输出: 95（返回设置的值）
+print(student)       # 输出: {'name': '张三', 'age': 18, 'score': 95}
+
+# 键已存在，不改变原有值
+result = student.setdefault("name", "李四")
+print(result)        # 输出: 张三（返回原有值）
+print(student)       # 输出: {'name': '张三', 'age': 18, 'score': 95}（name 未被修改）
+
+# 只传一个参数时，默认值为 None
+student.setdefault("address")
+print(student)       # 输出: {'name': '张三', 'age': 18, 'score': 95, 'address': None}
+```
+
+**`setdefault()` 的特点**：
+- 如果键不存在，添加键并设置默认值
+- 如果键已存在，返回原有值，**不修改**字典
+- 适合用于初始化字典，确保某个键有默认值
+
+**实际应用场景**：
+
+```python
+# 场景1：统计水果出现次数
+fruits = ["苹果", "香蕉", "苹果", "橙子", "香蕉", "苹果"]
+count = {}
+
+for fruit in fruits:
+    count.setdefault(fruit, 0)  # 如果键不存在，初始化为 0
+    count[fruit] += 1          # 然后加 1
+
+print(count)  # 输出: {'苹果': 3, '香蕉': 2, '橙子': 1}
+
+# 场景2：分组数据
+students = [
+    {"name": "张三", "class": "A"},
+    {"name": "李四", "class": "B"},
+    {"name": "王五", "class": "A"}
+]
+
+groups = {}
+for student in students:
+    cls = student["class"]
+    groups.setdefault(cls, []).append(student["name"])
+
+print(groups)  # 输出: {'A': ['张三', '王五'], 'B': ['李四']}
+```
+
 ### 5.3 update() 方法 🔁
+
+`update()` 方法用于将另一个字典或键值对序列合并到当前字典中。它可以一次性添加多个键值对，非常适合批量更新字典。
+
+```python
+student = {"name": "张三", "age": 18}
+
+# 使用字典更新
+student.update({"score": 95, "city": "北京"})
+print(student)  # 输出: {'name': '张三', 'age': 18, 'score': 95, 'city': '北京'}
+
+# 使用关键字参数更新
+student.update(grade="A", status="active")
+print(student)  # 输出: {'name': '张三', 'age': 18, 'score': 95, 'city': '北京', 'grade': 'A', 'status': 'active'}
+
+# 使用键值对序列更新（列表、元组均可）
+pairs = [("gender", "男"), ("height", 175)]
+student.update(pairs)
+print(student)  # 输出: {'name': '张三', 'age': 18, 'score': 95, 'city': '北京', 'grade': 'A', 'status': 'active', 'gender': '男', 'height': 175}
+
+# update() 也会覆盖已存在的键
+student.update({"age": 20, "name": "李四"})
+print(student)  # 输出: {'name': '李四', 'age': 20, 'score': 95, ...}
+```
+
+**`update()` 的特点**：
+- 可以一次性添加或更新多个键值对
+- 如果键已存在，会覆盖原有的值
+- 支持多种参数形式：字典、关键字参数、键值对序列
+
+**对比总结**：
+
+| 方法 | 适用场景 | 键存在时的行为 |
+|------|---------|---------------|
+| `dict[key] = value` | 添加或修改单个键值对 | 覆盖原有值 |
+| `setdefault(key, value)` | 确保键有默认值 | 不改变原有值 |
+| `update({...})` | 批量添加或修改 | 覆盖原有值 |
 
 ## 6. 字典修改（modifying elements）✏️
 
