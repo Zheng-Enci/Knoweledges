@@ -284,13 +284,132 @@ print(doubled)  # 输出: {'a': 2, 'b': 4, 'c': 6}
 
 ## 4. 字典查询（finding elements（查找元素））
 
+字典的查询操作是使用字典的核心目的。字典之所以高效，正是因为它可以通过键快速找到对应的值，而不需要像列表那样遍历查找。本章我们将学习字典的几种查询方式。
+
 ### 4.1 通过键获取值
+
+最直接的查询方式是使用方括号 `[]` 加键名来获取对应的值。
+
+```python
+# 创建字典
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 通过键获取值
+print(student["name"])  # 输出: 张三
+print(student["age"])   # 输出: 18
+print(student["score"])  # 输出: 95
+```
+
+**⚠️ 注意**：如果键不存在，使用 `[]` 会抛出 `KeyError` 异常。
+
+```python
+# 键不存在时，会报错
+print(student["gender"])  # ❌ KeyError: 'gender'
+```
 
 ### 4.2 get() 方法
 
+为了避免 `KeyError` 异常，字典提供了 `get()` 方法。当键不存在时，它会返回 `None`（或者指定的默认值），而不是抛出异常。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 使用 get() 方法获取值
+print(student.get("name"))    # 输出: 张三
+print(student.get("gender"))  # 输出: None（键不存在）
+
+# 指定默认值
+print(student.get("gender", "未知"))  # 输出: 未知
+```
+
+**`get()` 方法的特点**：
+- 如果键存在，返回对应的值
+- 如果键不存在，返回 `None`（或指定的默认值）
+- 不会抛出异常，代码更安全
+
+**使用场景建议**：
+- 不确定键是否存在时，使用 `get()` 方法
+- 需要设置默认值时，使用 `get(key, default)`
+
 ### 4.3 keys()、values()、items() 方法
 
+这三个方法用于获取字典的不同视图（view），方便遍历和操作字典。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# keys()：获取所有键
+print(student.keys())   # 输出: dict_keys(['name', 'age', 'score'])
+
+# values()：获取所有值
+print(student.values()) # 输出: dict_values(['张三', 18, 95])
+
+# items()：获取所有键值对
+print(student.items())  # 输出: dict_items([('name', '张三'), ('age', 18), ('score', 95)])
+```
+
+**遍历示例**：
+
+```python
+# 遍历所有键
+for key in student.keys():
+    print(key)
+
+# 遍历所有值
+for value in student.values():
+    print(value)
+
+# 遍历所有键值对
+for key, value in student.items():
+    print(f"{key}: {value}")
+```
+
+**特点说明**：
+- 返回的是**视图对象**，不是列表
+- 视图是动态的：字典改变，视图也会跟着变
+- 如果需要列表，可以手动转换：`list(student.keys())`
+
 ### 4.4 in 和 not in 运算符
+
+在 Python 中，可以使用 `in` 和 `not in` 运算符来检查键是否存在于字典中。这是 Python 官方推荐的检测方式，时间复杂度为 O(1)。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 检查键是否存在
+print("name" in student)     # 输出: True
+print("gender" in student)   # 输出: False
+
+# 检查键是否不存在
+print("gender" not in student)  # 输出: True
+```
+
+**实际应用**：
+
+```python
+# 场景1：先检查再获取（避免 KeyError）
+if "gender" in student:
+    print(student["gender"])
+else:
+    print("性别未知")
+
+# 场景2：条件判断
+if "score" in student and student["score"] >= 60:
+    print("考试及格")
+else:
+    print("需要补考")
+```
+
+**`in` vs `get()` 对比**：
+
+| 方法 | 适用场景 | 返回值 |
+|------|---------|--------|
+| `in` | 只检查键是否存在 | 布尔值 |
+| `get()` | 检查并获取值 | 值或默认值 |
+
+---
+
+💡 **学习建议**：在实际开发中，如果只是检查键是否存在，用 `in`；如果需要获取值，用 `get()` 更安全。
 
 ## 5. 字典增加（adding elements（增加元素））
 
