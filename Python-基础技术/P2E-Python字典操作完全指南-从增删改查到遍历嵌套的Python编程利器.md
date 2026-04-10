@@ -280,7 +280,7 @@ print(doubled)  # 输出: {'a': 2, 'b': 4, 'c': 6}
 
 ---
 
-💡 **学习建议**：字典推导式是 Python 的特色语法，建议熟练掌握。它的语法和列表推导式类似，学会一个就能轻松上手另一个。如果你想系统学习推导式（包括列表推导式、集合推导式），可以查阅 [P5D-Python_推导式完全指南](file:///f:/BaiduSyncdisk/ZhengEnCi/Note/Knowledge/Knowledge/Python-基础技术/P5D-Python_推导式完全指南-从列表推导式到字典推导式的Python编程利器.md)。
+💡 **学习建议**：字典推导式是 Python 的特色语法，建议熟练掌握。它的语法和列表推导式类似，学会一个就能轻松上手另一个。如果你想系统学习推导式（包括列表推导式、集合推导式），可以查阅 [P5D-Python_推导式完全指南](https://juejin.cn/post/7563597691680489491)。
 
 ## 4. 字典查询（finding elements（查找元素））
 
