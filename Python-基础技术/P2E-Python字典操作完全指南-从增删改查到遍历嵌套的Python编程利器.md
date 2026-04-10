@@ -1021,6 +1021,8 @@ total_budget = sum(info["预算"] for info in company.values())
 print(f"总预算: {total_budget}")  # 输出: 总预算: 130000
 
 # 找出员工数最多的部门
+# company.items() 返回键值对元组：(键, 值) = (部门名称, {'员工数': 10, '预算': 50000})
+# x[0] 是部门名称（键），x[1] 是员工数和预算（值，是一个字典）
 max_staff_dept = max(company.items(), key=lambda x: x[1]["员工数"])
 print(f"员工最多的部门: {max_staff_dept[0]}")  # 输出: 员工最多的部门: 部门B
 ```
