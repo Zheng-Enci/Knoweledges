@@ -606,11 +606,123 @@ print(student)  # 输出: {'name': '张三', 'age': 22, 'score': 88, 'status': '
 
 ### 7.1 pop() 方法 🏷️
 
+`pop()` 方法用于删除指定键的键值对，并返回对应的值。如果键不存在，会抛出 `KeyError` 异常。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 删除键值对，并获取被删除的值
+removed_value = student.pop("age")
+print(removed_value)  # 输出: 18
+print(student)       # 输出: {'name': '张三', 'score': 95}
+
+# 键不存在时，会抛出 KeyError
+# student.pop("gender")  # ❌ KeyError: 'gender'
+
+# 可以设置默认值，避免异常
+removed_value = student.pop("gender", None)
+print(removed_value)  # 输出: None（键不存在，返回默认值）
+```
+
+**`pop()` 的特点**：
+- 删除指定键的键值对
+- 返回被删除的值
+- 键不存在时抛出异常（可以设置默认值避免）
+
+**使用场景**：当你需要删除某个键值对，同时可能需要用到被删除的值时，使用 `pop()` 最合适。
+
 ### 7.2 popitem() 方法 📦
+
+`popitem()` 方法用于删除字典中最后一个键值对（Python 3.7+），并以元组形式返回删除的键和值。在 Python 3.7 之前，字典是无序的，删除的是任意键值对。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 删除最后一个键值对
+removed = student.popitem()
+print(removed)   # 输出: ('score', 95)（返回键值对元组）
+print(student)   # 输出: {'name': '张三', 'age': 18}
+
+# 继续删除
+removed = student.popitem()
+print(removed)   # 输出: ('age', 18)
+print(student)   # 输出: {'name': '张三'}
+
+# 字典为空时，抛出 KeyError
+# student.popitem()  # ❌ KeyError: 'popitem(): dictionary is empty'
+```
+
+**`popitem()` 的特点**：
+- 删除并返回最后一个键值对（以元组形式）
+- Python 3.7+ 保证删除顺序与插入顺序一致
+- 字典为空时抛出 `KeyError`
+
+**使用场景**：
+- 想要按插入顺序删除键值对时
+- 实现 LRU 缓存（最近最少使用）等数据结构时
 
 ### 7.3 del 语句 ❌
 
+`del` 语句用于删除字典中指定键的键值对，或者删除整个字典。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 删除指定的键值对
+del student["age"]
+print(student)  # 输出: {'name': '张三', 'score': 95}
+
+# 删除不存在的键会抛出异常
+# del student["gender"]  # ❌ KeyError: 'gender'
+
+# 删除整个字典
+del student
+# print(student)  # ❌ NameError: name 'student' is not defined
+```
+
+**`del` 的特点**：
+- 删除指定键的键值对
+- 可以删除整个字典
+- 键不存在时抛出 `KeyError`
+
+**使用场景**：
+- 明确知道要删除某个键值对
+- 需要完全删除字典变量时
+
 ### 7.4 clear() 方法 💣
+
+`clear()` 方法用于清空字典中的所有键值对，使字典变为空字典。与 `del` 不同的是，`clear()` 只删除字典中的内容，字典变量本身仍然存在。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 清空字典
+student.clear()
+print(student)  # 输出: {}（空字典）
+print(len(student))  # 输出: 0
+
+# 字典变量仍然存在，可以继续使用
+student["name"] = "李四"
+print(student)  # 输出: {'name': '李四'}
+```
+
+**`clear()` 的特点**：
+- 删除字典中所有键值对
+- 字典变为空字典 `{}`
+- 字典变量本身仍然存在
+
+**对比总结**：
+
+| 方法/语句 | 删除内容 | 返回值 | 键不存在时 |
+|----------|---------|-------|----------|
+| `pop(key)` | 指定键的键值对 | 返回被删除的值 | 抛出 KeyError |
+| `popitem()` | 最后一个键值对 | 返回键值对元组 | 抛出 KeyError |
+| `del dict[key]` | 指定键的键值对 | 无返回值 | 抛出 KeyError |
+| `clear()` | 所有键值对 | 无返回值 | 不报错 |
+
+---
+
+💡 **学习建议**：删除操作要小心，特别是 `del` 语句会直接删除变量。如果不确定键是否存在，可以使用 `pop(key, default)` 设置默认值，避免异常。
 
 ## 8. 字典遍历（traversing）🚶
 
