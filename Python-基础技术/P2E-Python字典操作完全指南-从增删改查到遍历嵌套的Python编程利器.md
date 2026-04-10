@@ -537,7 +537,70 @@ print(student)  # 输出: {'name': '李四', 'age': 20, 'score': 95, ...}
 
 ### 6.1 通过键修改值 🖊️
 
+字典的值可以通过键直接修改。直接赋值时，如果键存在，则更新值；如果键不存在，则添加新键值对（在第五章中我们学过，键不存在时就是添加）。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 修改已存在的键的值
+student["age"] = 20
+student["score"] = 88
+
+print(student)  # 输出: {'name': '张三', 'age': 20, 'score': 88}
+```
+
+**⚠️ 注意**：这里的"修改"和"添加"使用的是同样的语法，区别在于键是否存在：
+- 键不存在 → 添加新键值对
+- 键已存在 → 修改原有值
+
+**修改嵌套字典中的值**：
+
+```python
+# 嵌套字典
+user = {
+    "name": "张三",
+    "profile": {
+        "email": "zhangsan@example.com",
+        "age": 18
+    }
+}
+
+# 修改嵌套字典中的值
+user["profile"]["age"] = 20
+user["profile"]["email"] = "new_email@example.com"
+
+print(user)
+# 输出: {'name': '张三', 'profile': {'email': 'new_email@example.com', 'age': 20}}
+```
+
 ### 6.2 update() 方法修改 🔁
+
+`update()` 方法不仅可以添加元素（第五章学过），还可以用来修改元素。当提供的键在字典中已存在时，就会覆盖原来的值。
+
+```python
+student = {"name": "张三", "age": 18, "score": 95}
+
+# 使用字典修改多个值
+student.update({"age": 20, "score": 88})
+
+print(student)  # 输出: {'name': '张三', 'age': 20, 'score': 88}
+
+# 使用关键字参数修改
+student.update(age=22, status="graduated")
+
+print(student)  # 输出: {'name': '张三', 'age': 22, 'score': 88, 'status': 'graduated'}
+```
+
+**对比总结**：
+
+| 方法 | 适用场景 | 键不存在时的行为 |
+|------|---------|---------------|
+| `dict[key] = value` | 修改单个值 | 添加新键值对 |
+| `update({key: value})` | 批量修改多个值 | 添加新键值对 |
+
+---
+
+💡 **学习建议**：字典的"增"和"改"使用相同的语法（直接赋值或 update），区别在于键是否已存在。理解这一点，就掌握了字典操作的核心逻辑。
 
 ## 7. 字典删除（removing elements）🗑️
 
