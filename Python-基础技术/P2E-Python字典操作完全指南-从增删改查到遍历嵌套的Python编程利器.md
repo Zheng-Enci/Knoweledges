@@ -204,7 +204,83 @@ print(student)  # 输出: {'name': 0, 'age': 0, 'score': 0}
 
 ### 3.2 字典推导式创建
 
-（内容待补充）
+字典推导式（Dictionary Comprehension）是 Python 中一种简洁高效的语法结构，用于通过表达式快速生成字典 🦾。它将"遍历、计算与构造"浓缩成一行表达式，是 Pythonic 代码的代表写法之一。
+
+#### 3.2.1 基本语法
+
+字典推导式的基本语法如下：
+
+```python
+{key: value for item in iterable}
+```
+
+- `key`：生成字典的键
+- `value`：生成字典的值
+- `item`：遍历的元素
+- `iterable`：可迭代对象
+
+#### 3.2.2 基础示例
+
+```python
+# 示例1：从列表创建字典（键为数，值为数的平方）
+squares = {x: x**2 for x in range(5)}
+print(squares)  # 输出: {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
+
+# 示例2：将两个列表组合成字典
+keys = ["name", "age", "city"]
+values = ["张三", 25, "北京"]
+person = dict(zip(keys, values))
+print(person)  # 输出: {'name': '张三', 'age': 25, 'city': '北京'}
+
+# 示例3：将字符串转换为字符计数字典
+word = "hello"
+char_count = {char: word.count(char) for char in word}
+print(char_count)  # 输出: {'h': 1, 'e': 1, 'l': 2, 'o': 1}
+```
+
+#### 3.2.3 带条件的字典推导式
+
+可以在推导式中添加条件来过滤元素：
+
+```python
+# 示例1：只保留偶数的平方
+even_squares = {x: x**2 for x in range(10) if x % 2 == 0}
+print(even_squares)  # 输出: {0: 0, 2: 4, 4: 16, 6: 36, 8: 64}
+
+# 示例2：根据条件转换数据
+scores = {"语文": 85, "数学": 92, "英语": 78, "物理": 90}
+pass_scores = {subject: score for subject, score in scores.items() if score >= 80}
+print(pass_scores)  # 输出: {'语文': 85, '数学': 92, '物理': 90}
+```
+
+#### 3.2.4 复杂的字典推导式
+
+```python
+# 示例1：嵌套循环创建字典
+pairs = {(x, y): x + y for x in range(3) for y in range(3)}
+print(pairs)  # 输出: {(0, 0): 0, (0, 1): 1, (0, 2): 2, (1, 0): 1, ...}
+
+# 示例2：使用条件表达式（三元运算符）
+numbers = [1, 2, 3, 4, 5]
+label = {n: "偶数" if n % 2 == 0 else "奇数" for n in numbers}
+print(label)  # 输出: {1: '奇数', 2: '偶数', 3: '奇数', 4: '偶数', 5: '奇数'}
+
+# 示例3：从字典推导新字典
+original = {"a": 1, "b": 2, "c": 3}
+doubled = {k: v * 2 for k, v in original.items()}
+print(doubled)  # 输出: {'a': 2, 'b': 4, 'c': 6}
+```
+
+#### 3.2.5 字典推导式 vs 传统循环对比
+
+| 写法 | 代码 | 优点 |
+|-----|------|------|
+| 字典推导式 | `squares = {x: x**2 for x in range(5)}` | 简洁、可读性好、性能好 |
+| 传统循环 | ```python<br>squares = {}<br>for x in range(5):<br>    squares[x] = x**2<br>``` | 易于理解、适合复杂逻辑 |
+
+---
+
+💡 **学习建议**：字典推导式是 Python 的特色语法，建议熟练掌握。它的语法和列表推导式类似，学会一个就能轻松上手另一个。
 
 ## 4. 字典查询（finding elements（查找元素））
 
