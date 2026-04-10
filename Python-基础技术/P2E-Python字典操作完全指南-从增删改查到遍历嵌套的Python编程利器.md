@@ -273,10 +273,10 @@ print(doubled)  # 输出: {'a': 2, 'b': 4, 'c': 6}
 
 #### 3.2.5 字典推导式 vs 传统循环对比
 
-| 写法 | 代码 | 优点 |
+| 写法 | 示例 | 优点 |
 |-----|------|------|
-| 字典推导式 | `squares = {x: x**2 for x in range(5)}` | 简洁、可读性好、性能好 |
-| 传统循环 | ```python<br>squares = {}<br>for x in range(5):<br>    squares[x] = x**2<br>``` | 易于理解、适合复杂逻辑 |
+| 字典推导式 | `{x: x**2 for x in range(5)}` | 简洁、可读性好、性能好 |
+| 传统循环 | `squares = {}` + `for x in range(5):` + `    squares[x] = x**2` | 易于理解、适合复杂逻辑 |
 
 ---
 
