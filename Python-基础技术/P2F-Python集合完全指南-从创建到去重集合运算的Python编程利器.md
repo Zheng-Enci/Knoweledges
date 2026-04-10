@@ -762,13 +762,69 @@ print(unique)  # [{'a': 1}, {'b': 2}]
 
 ## 8. frozenset：不可变集合 🔐
 
-
+frozenset 就是"冻住"的集合——**不可变**的集合。它是 set 的兄弟，但一旦创建就不能修改 🔒
 
 ### 8.1 frozenset 的创建
 
+```python
+# 从可迭代对象创建
+fs1 = frozenset([1, 2, 3, 4, 5])
+print(fs1)  # frozenset({1, 2, 3, 4, 5})
 
+# 从字符串创建
+fs2 = frozenset("hello")
+print(fs2)  # frozenset({'h', 'e', 'l', 'o'})
+
+# 从集合创建
+fs3 = frozenset({1, 2, 3})
+print(fs3)  # frozenset({1, 2, 3})
+```
 
 ### 8.2 frozenset 的使用场景
+
+**1. 作为字典的键**
+
+因为 frozenset 是不可变的，所以它可以哈希，能作为字典的键：
+
+```python
+# 用 frozenset 作为字典的键
+favorites = {
+    frozenset(['apple', 'banana']): '水果',
+    frozenset(['chicken', 'beef']): '肉类'
+}
+print(favorites)  # {frozenset({'apple', 'banana'}): '水果', ...}
+```
+
+**2. 作为集合的元素**
+
+普通的 set 是不能作为另一个 set 的元素的（因为 set 是可变的），但 frozenset 可以：
+
+```python
+# 集合的集合 - 普通 set 不行
+set_of_sets = {frozenset([1, 2]), frozenset([3, 4])}
+print(set_of_sets)  # {frozenset({1, 2}), frozenset({3, 4})}
+```
+
+**3. 需要哈希的时候**
+
+frozenset 是可哈希的，普通 set 不行：
+
+```python
+fs = frozenset([1, 2, 3])
+print(hash(fs))  # 可以哈希
+
+s = {1, 2, 3}
+# print(hash(s))  # TypeError: unhashable type: 'set'
+```
+
+我们来看个对比表格 📊：
+
+| 特性 | set | frozenset |
+|------|-----|-----------|
+| 可变性 | 可变 | 不可变 |
+| 作为字典键 | ❌ 不行 | ✅ 可以 |
+| 作为集合元素 | ❌ 不行 | ✅ 可以 |
+| 哈希 | ❌ 不可哈希 | ✅ 可哈希 |
 
 
 
