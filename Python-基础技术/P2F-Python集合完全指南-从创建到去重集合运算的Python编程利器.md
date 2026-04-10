@@ -632,13 +632,86 @@ print(A == B)          # False
 
 ## 6. 集合方法 🔧
 
-
+我们在前面已经学过增删方法（add、remove、discard、pop、clear）和运算方法（union、intersection、difference）。现在我们来聊聊那些**原地修改**的运算方法，也就是带 `_update` 后缀的这些方法 🔧
 
 ### 6.1 增删方法
 
+这部分内容我们在 [第四章](#4-集合基本操作-🛠️) 已经详细介绍过了，这里简单回顾一下：
 
+| 方法 | 作用 |
+|------|------|
+| `add(x)` | 添加单个元素 |
+| `update(iterable)` | 添加多个元素 |
+| `remove(x)` | 删除指定元素，不存在会报错 |
+| `discard(x)` | 删除指定元素，不存在不报错 |
+| `pop()` | 随机删除并返回元素 |
+| `clear()` | 清空集合 |
+| `copy()` | 复制集合 |
 
-### 6.2 运算方法
+---
+
+### 6.2 原地运算方法
+
+这些方法会**直接修改原集合**，而不是返回一个新集合。它们的名字都有 `_update` 后缀 ⚡
+
+**1. intersection_update() - 原地求交集**
+
+```python
+s1 = {1, 2, 3, 4}
+s2 = {3, 4, 5, 6}
+
+# 求交集，并原地修改 s1
+s1.intersection_update(s2)
+print(s1)  # {3, 4}
+```
+
+**2. difference_update() - 原地求差集**
+
+```python
+s1 = {1, 2, 3, 4}
+s2 = {3, 4, 5, 6}
+
+# 求差集，并原地修改 s1
+s1.difference_update(s2)
+print(s1)  # {1, 2}
+```
+
+**3. symmetric_difference_update() - 原地求对称差集**
+
+```python
+s1 = {1, 2, 3, 4}
+s2 = {3, 4, 5, 6}
+
+# 求对称差集，并原地修改 s1
+s1.symmetric_difference_update(s2)
+print(s1)  # {1, 2, 5, 6}
+```
+
+**4. update() - 原地求并集**
+
+```python
+s1 = {1, 2, 3}
+s2 = {3, 4, 5}
+
+# 求并集，并原地修改 s1
+s1.update(s2)
+print(s1)  # {1, 2, 3, 4, 5}
+```
+
+我们来看个对比表格 📊：
+
+| 方法 | 作用 | 原集合变化 |
+|------|------|-----------|
+| `union()` | 返回并集 | 不变 |
+| `update()` | 原地并集 | 修改原集合 |
+| `intersection()` | 返回交集 | 不变 |
+| `intersection_update()` | 原地交集 | 修改原集合 |
+| `difference()` | 返回差集 | 不变 |
+| `difference_update()` | 原地差集 | 修改原集合 |
+| `symmetric_difference()` | 返回对称差集 | 不变 |
+| `symmetric_difference_update()` | 原地对称差集 | 修改原集合 |
+
+使用场景：如果我们不需要保留原集合，用原地运算方法可以节省内存；如果需要保留原集合，用返回新集合的方法。
 
 
 
