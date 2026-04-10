@@ -508,19 +508,21 @@ print(result)  # {1, 2}
 
 ```mermaid
 flowchart TB
-    subgraph A[集合A]
+    subgraph A[集合A: 1,2,3]
         direction LR
         A1["1"]
         A2["2"]
         A3["3"]
     end
-    subgraph B[集合B]
+    subgraph B[集合B: 3,4,5]
         direction LR
         B1["3"]
         B2["4"]
         B3["5"]
     end
-    A --> |差集| R[结果: 1,2]
+    A -->|减去| B
+    B -.->|被移除| B1
+    A1 & A2 --> |保留| R[结果: 1,2]
     style R fill:#90EE90
 ```
 
