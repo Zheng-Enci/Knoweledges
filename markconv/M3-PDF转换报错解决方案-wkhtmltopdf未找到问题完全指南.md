@@ -56,24 +56,39 @@ wkhtmltopdf --version
 
 ## 3. 常见问题 ❓
 
-### 3.1 安装后仍然报错？
+### 3.1 安装后仍然找不到命令？
 
-如果安装后仍然报错，可能需要：
+如果安装后运行 `wkhtmltopdf --version` 报错：`'wkhtmltopdf' is not recognized as an internal or external command`
 
-1. **重启电脑**：让环境变量生效
-2. **检查安装路径**：确认安装到 `C:\Program Files\wkhtmltopdf\`
-3. **手动指定路径**：在代码中指定 wkhtmltopdf 路径
+这说明 **没有添加到系统环境变量**。解决方法有两种：
 
-### 3.2 手动指定路径
+**方法一：手动添加到环境变量**
 
-如果不想安装到默认路径，可以在代码中指定：
+1. 找到 wkhtmltopdf 安装路径，默认为：`C:\Program Files\wkhtmltopdf\bin`
+2. 右键"此电脑" → "属性" → "高级系统设置" → "环境变量"
+3. 在"系统变量"中找到 `Path`，双击编辑
+4. 点击"新建"，添加：`C:\Program Files\wkhtmltopdf\bin`
+5. 确定保存，**重启命令行**
+
+**方法二：手动指定路径（推荐）**
+
+在代码中直接指定 wkhtmltopdf 路径，不用配置环境变量：
 
 ```python
 import pdfkit
 
-# 手动指定 wkhtmltopdf 路径
-config = pdfkit.configuration(wkhtmltopdf='你的安装路径\\wkhtmltopdf.exe')
+config = pdfkit.configuration(
+    wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+)
 ```
+
+### 3.2 安装后仍然报错？
+
+如果安装后仍然报 `No wkhtmltopdf executable found`，可能需要：
+
+1. **重启电脑**：让环境变量生效
+2. **检查安装路径**：确认安装到 `C:\Program Files\wkhtmltopdf\`
+3. **手动指定路径**：在代码中指定 wkhtmltopdf 路径
 
 ---
 
