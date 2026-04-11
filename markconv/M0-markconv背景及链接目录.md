@@ -88,7 +88,7 @@ pip install markconv
 - [CSDN](https://blog.csdn.net/2301_79239314/article/details/159612352) 🇨🇳
 - [掘金](https://juejin.cn/post/7622117198371553307) 🌟
 
-### 4.3 M3-PDF转换报错解决方案-wkhtmltopdf未找到问题完全指南 📝
+### 4.3 M3-markconv库找不到wkhtmltopdf问题 📝
 
 ---
 
