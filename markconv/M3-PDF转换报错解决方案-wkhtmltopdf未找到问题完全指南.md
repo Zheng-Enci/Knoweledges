@@ -18,6 +18,8 @@ OSError: No wkhtmltopdf executable found: "C:\\Program Files\\wkhtmltopdf\\bin\\
 
 这个错误的意思是：找不到 wkhtmltopdf 可执行文件 🔍
 
+markconv 会在默认路径 `C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe` 查找它。
+
 ### 1.2 错误原因
 
 markconv 的 PDF 转换功能底层依赖 wkhtmltopdf 工具。如果系统没有安装 wkhtmltopdf，就会报这个错误。
