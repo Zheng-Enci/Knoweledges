@@ -8,9 +8,9 @@
 
 ## 1. 问题描述 📚
 
-### 1.1 错误信息
+### 1.1 主要报错
 
-当你运行 PDF 转换代码时，可能会遇到以下错误：
+当你运行 PDF 转换代码时，会看到以下关键报错：
 
 ```
 OSError: No wkhtmltopdf executable found: "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"
@@ -18,49 +18,11 @@ OSError: No wkhtmltopdf executable found: "C:\\Program Files\\wkhtmltopdf\\bin\\
 
 这个错误的意思是：找不到 wkhtmltopdf 可执行文件 🔍
 
-### 1.2 完整报错
-
-```
-D:\ProgramData\anaconda3\python.exe C:\Users\Lenovo\Desktop\aa\main.py 
-PDF 转换基本使用示例
-==================================================
-Traceback (most recent call last):
-  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\pdfkit\configuration.py", line 35, in __init__
-    with open(self.wkhtmltopdf) as f:
-         ~~~~^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\Lenovo\Desktop\aa\main.py", line 46, in <module>
-    pdf_basic_example()
-    ~~~~~~~~~~~~~~~~~^^
-  File "C:\Users\Lenovo\Desktop\aa\main.py", line 38, in pdf_basic_example
-    converter.to_pdf(input_file, output_file)
-    ~~~~~~~~~~~~~~~~~~~^
-  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\markconv\converter.py", line 99, in to_pdf
-    pdf_exporter.export(parsed_data, output_path)
-    ~~~~~~~~~~~~~~~~~~~^
-  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\markconv\exporters\pdf_exporter.py", line 87, in export
-    self._html_to_pdf(html_content, output_path)
-    ~~~~~~~~~~~~~~~~~~~
-  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\markconv\exporters\pdf_exporter.py", line 224, in _html_to_pdf
-    config = pdfkit.configuration(wkhtmltopdf='C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe')
-  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\pdfkit\api.py", line 86, in configuration
-    return Configuration(**kwargs)
-  File "C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\pdfkit\configuration.py", line 38, in __init__
-    raise IOError('No wkhtmltopdf executable found: "%s"\n'
-    ...<3 lines>...
-                  'https://github.com/JazzCore/python-pdfkit/wiki/Installing-wkhtmltopdf' % self.wkhtmltopdf)
-OSError: No wkhtmltopdf executable found: "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe"
-```
-
-### 1.3 错误原因
+### 1.2 错误原因
 
 markconv 的 PDF 转换功能底层依赖 wkhtmltopdf 工具。如果系统没有安装 wkhtmltopdf，就会报这个错误。
 
-### 1.4 解决方案
+### 1.3 解决方案
 
 解决办法很简单：下载并安装 wkhtmltopdf 就可以！下面我们来看具体步骤 📥
 
