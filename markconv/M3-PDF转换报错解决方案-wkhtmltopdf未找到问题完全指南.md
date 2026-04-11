@@ -2,7 +2,7 @@
 
 ## 📝 摘要
 
-在使用 markconv 进行 PDF 转换时，你可能会遇到 `OSError: No wkhtmltopdf executable found` 错误。这表示系统没有安装 wkhtmltopdf 工具。本文我们将从零开始，手把手教你安装 wkhtmltopdf，解决这个报错问题 💪
+在使用 markconv 进行 PDF 转换时，你可能会遇到 `OSError: No wkhtmltopdf executable found` 错误。这表示系统没有安装 wkhtmltopdf 工具，只需要安装它就能解决 💪
 
 ---
 
