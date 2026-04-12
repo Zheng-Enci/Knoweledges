@@ -146,6 +146,39 @@ for i in range(5):
 
 ## 3. 如何判断可迭代对象 ❓
 
+可以用 `isinstance()` 配合 `collections.abc.Iterable` 来判断 🔍
+
+```python
+from collections.abc import Iterable
+
+# 测试常见对象
+print(isinstance([1, 2, 3], Iterable))  # True - 列表
+print(isinstance("hello", Iterable))     # True - 字符串
+print(isinstance((1, 2, 3), Iterable))   # True - 元组
+print(isinstance({1, 2, 3}, Iterable))   # True - 集合
+print(isinstance({"a": 1}, Iterable))   # True - 字典
+print(isinstance(range(5), Iterable))    # True - range
+print(isinstance((x for x in range(3)), Iterable))  # True - 生成器
+
+# 非可迭代对象
+print(isinstance(100, Iterable))          # False - 数字
+print(isinstance(None, Iterable))         # False - None
+```
+
+### 原理
+
+判断依据：对象是否实现了 `__iter__` 方法
+
+```python
+# 列表有 __iter__ 方法
+print(hasattr([1, 2, 3], '__iter__'))  # True
+
+# 数字没有
+print(hasattr(100, '__iter__'))  # False
+```
+
+> 💡 推荐用 `isinstance(obj, Iterable)` 的方式，更规范可靠！
+
 
 
 ## 4. 迭代器与可迭代对象的区别 🔄
