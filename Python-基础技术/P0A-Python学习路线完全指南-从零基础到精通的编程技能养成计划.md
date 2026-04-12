@@ -24,7 +24,7 @@ graph TD
     
     P2["第二阶段：数据结构<br/>(10-14天)"]
     P2A["列表 List：创建、索引、切片<br/>(P2A)"]
-    P2B["列表操作：增删改查、排序、反转"]
+    P2B["可迭代对象：列表、元组、字符串<br/>(P2B)"]
     P2C["元组 Tuple：创建、不可变性"]
     P2D["字典 Dictionary：键值对、创建、访问<br/>(P2D)"]
     P2E["字典操作：增删改查、遍历、嵌套<br/>(P2E)"]
@@ -120,6 +120,7 @@ graph TD
 - P1I-Python输入输出-什么是print()和input()？为什么大厂程序员都用f-string格式化？怎么快速掌握程序交互？：[掘金](https://juejin.cn/post/7567581946144620595) ✅
 - P1J-Python注释-什么是注释？为什么大厂程序员都在写文档字符串？怎么快速掌握注释规范？：[掘金](https://juejin.cn/post/7567581662101389363) ✅
 - P2A-Python列表-什么是列表？切片为什么这么强大？怎么快速掌握增删改查？：[掘金](https://juejin.cn/post/7567678315303501874) ✅
+- P2B-Python可迭代对象完全指南-从列表到生成器的Python编程利器：[掘金](https://juejin.cn/post/7627317516664094746) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/160089157) ✅
 - P2D-Python_哈希表完全指南-从字典到高效查找的Python编程利器：[掘金](https://juejin.cn/post/7563950984256208946) ✅
 - P2E-Python字典操作完全指南-从增删改查到遍历嵌套的Python编程利器：[掘金](https://juejin.cn/spost/7626681742502625306) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/160015439) ✅
 - P2F-Python集合完全指南-从创建到去重集合运算的Python编程利器：[掘金](https://juejin.cn/post/7626697192071348260) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/160020767) ✅
