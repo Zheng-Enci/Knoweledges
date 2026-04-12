@@ -183,6 +183,52 @@ print(hasattr(100, '__iter__'))  # False
 
 ## 4. 迭代器与可迭代对象的区别 🔄
 
+这两个概念很容易混淆，来一张图说明：
+
+```mermaid
+graph LR
+    A[可迭代对象<br/>Iterable] -->|实现__iter__| B[返回迭代器]
+    B --> C[迭代器<br/>Iterator]
+    C -->|实现__next__| D[逐个取值]
+    
+    style A fill:#e3f2fd,stroke:#1976d2
+    style C fill:#ffebee,stroke:#d32f2f
+```
+
+### 核心区别
+
+| | 可迭代对象 (Iterable) | 迭代器 (Iterator) |
+|---|---|---|
+| 实现方法 | `__iter__` | `__iter__` + `__next__` |
+| 能否获取下一个值 | ❌ 不能 | ✅ 能 |
+| 能否二次遍历 | ✅ 可以 | ❌ 只能一次 |
+| 例子 | 列表、字符串、字典 | 生成器、`iter([1,2,3])` |
+
+```python
+# 列表 → 可迭代对象
+lst = [1, 2, 3]
+print(hasattr(lst, '__iter__'))  # True
+print(hasattr(lst, '__next__'))  # False
+
+# iter() 返回的是迭代器
+it = iter(lst)
+print(hasattr(it, '__iter__'))  # True
+print(hasattr(it, '__next__'))  # True
+
+# 用 next() 获取值
+print(next(it))  # 1
+print(next(it))  # 2
+print(next(it))  # 3
+# print(next(it))  # StopIteration 异常
+```
+
+### 关系总结
+
+> **可迭代对象** 实现了 `__iter__`，可以返回 **迭代器**  
+> **迭代器** 实现了 `__next__`，可以逐个取值
+
+简单说：**迭代器 = 可迭代对象 + 取值能力** 🔧
+
 
 
 ## 5. 实际应用场景 💡
