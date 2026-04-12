@@ -235,6 +235,18 @@ print(next(it))  # 3
 
 ### 5.1 创建可迭代对象
 
+`iter()` 是 Python 内置函数，用于获取可迭代对象的迭代器：
+
+```python
+# iter(可迭代对象) → 返回迭代器
+lst = [1, 2, 3]
+it = iter(lst)  # 获取迭代器
+print(next(it))  # 1
+
+# 也可以直接用 iter(obj)
+# 相当于调用 obj.__iter__()
+```
+
 只需要实现 `__iter__` 方法，返回一个迭代器即可：
 
 ```python
