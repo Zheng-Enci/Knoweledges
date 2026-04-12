@@ -88,6 +88,8 @@ print(lines)  # ['line1', 'line2', 'line3']
 
 `join` 是 Python 中最高效的字符串拼接方法，可以把列表、元组、集合、生成器等任何可迭代对象的元素连接成一个字符串 📦（但元素必须是字符串类型）
 
+> 💡 如果不了解"可迭代对象"或"生成器"，可以查看 [P2B-Python可迭代对象完全指南](file:///f:\BaiduSyncdisk\ZhengEnCi\Note\Knowledge\Knowledges\Python-基础技术\P2B-Python可迭代对象完全指南-从列表到生成器的Python编程利器.md) 📝
+
 ### 3.1 基本用法
 
 **拼接列表**
