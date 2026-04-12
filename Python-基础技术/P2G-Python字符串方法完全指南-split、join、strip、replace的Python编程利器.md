@@ -159,6 +159,8 @@ print(csv_line)  # name,age,city
 
 ### 3.4 为什么 join 更高效？
 
+> 💡 知道了解就好，不用深究
+
 相比用 `+` 拼接多个字符串，`join` 只需要分配一次内存：
 
 ```python
