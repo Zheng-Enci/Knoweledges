@@ -329,26 +329,32 @@ print(next(it))  # 3
 # next(it)  # StopIteration
 ```
 
-### 5.3 简化：用生成器
+### 5.3 用 yield 创建生成器（推荐！）
 
-用生成器更简单，不用写类：
+用 `yield` 关键字，**不需要 iter()，不需要写类**，直接创建可迭代对象：
 
 ```python
-# 生成器函数
+# 用 yield 的函数 → 生成器
 def my_generator():
     yield 1
     yield 2
     yield 3
 
-# 使用
+# 调用函数不会执行，只是返回生成器对象
 gen = my_generator()
-print(next(gen))  # 1
-print(next(gen))  # 2
+print(gen)  # <generator object my_generator at ...>
 
-# 也可以用 for 循环
-for i in my_generator():
-    print(i)
+# 生成器本身就是迭代器，不需要 iter()
+for i in gen:
+    print(i)  # 1, 2, 3
 ```
+
+**特点**：
+- 调用函数不执行，只是返回生成器对象
+- 用 `next()` 或遍历时才执行
+- **用到才生成值**，不占内存
+
+> 💡 **最推荐的方式**，代码最简洁！
 
 > 💡 **Tip**：日常开发中，**能用生成器就尽量用生成器**，代码更简洁！
 
