@@ -250,6 +250,7 @@ print(next(it))  # 1
 只需要实现 `__iter__` 方法，返回一个迭代器即可：
 
 ```python
+# 方式一：用 iter() 返回迭代器
 class MyIterable:
     def __init__(self, data):
         self.data = data
