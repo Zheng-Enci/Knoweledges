@@ -247,6 +247,63 @@ print(cleaned)  # ['line1', 'line2', 'line3']
 
 ## 5. 替换：replace 方法 🔄
 
+`replace` 用于替换字符串中的子串 🔁
+
+### 5.1 基本用法
+
+```python
+text = "hello world"
+result = text.replace("world", "python")
+print(result)  # hello python
+```
+
+### 5.2 替换次数
+
+使用 `count` 参数可以限制替换次数：
+
+```python
+text = "aaa bbb aaa ccc aaa"
+
+# 默认：替换所有
+print(text.replace("aaa", "xxx"))  # xxx bbb xxx ccc xxx
+
+# 只替换前1次
+print(text.replace("aaa", "xxx", 1))  # xxx bbb aaa ccc aaa
+
+# 只替换前2次
+print(text.replace("aaa", "xxx", 2))  # xxx bbb xxx ccc aaa
+```
+
+### 5.3 注意事项
+
+**大小写敏感**
+
+```python
+text = "Hello hello HELLO"
+print(text.replace("hello", "hi"))  # Hello hi HELLO（只替换小写的）
+```
+
+### 5.4 实际应用
+
+**敏感词过滤**
+
+```python
+text = "这个产品太垃圾了，太差了"
+filtered = text.replace("垃圾", "**").replace("差", "*")
+print(filtered)  # 这个产品太**了，太*了
+```
+
+**格式化数据**
+
+```python
+data = "name:john, age:25, city:beijing"
+result = data.replace(", ", "\n")
+print(result)
+# name:john
+# age:25
+# city:beijing
+```
+
 ## 6. 实战案例 💡
 
 ## 7. 总结 📌
