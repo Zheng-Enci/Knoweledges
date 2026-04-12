@@ -258,10 +258,47 @@ class MyIterable:
         # 返回迭代器对象
         return iter(self.data)
 
+# 方式二：同时实现 __iter__ + __next__，返回 self
+class MyIterable2:
+    def __init__(self, data):
+        self.data = data
+        self.index = 0
+    
+    def __iter__(self):
+        return self  # 返回自身
+    
+    def __next__(self):
+        if self.index >= len(self.data):
+            raise StopIteration
+        value = self.data[self.index]
+        self.index += 1
+        return value
+
 # 使用
 obj = MyIterable([1, 2, 3])
 for i in obj:
     print(i)  # 1, 2, 3
+```
+
+### 方式三：旧式兼容（了解即可）
+
+Python 早期版本没有 `__iter__`，可以用 `__getitem__` 实现可迭代：
+
+```python
+class MyIterable3:
+    def __init__(self, data):
+        self.data = data
+    
+    def __getitem__(self, index):
+        return self.data[index]
+
+# Python 会自动从 index 0 开始尝试调用 __getitem__
+obj = MyIterable3([1, 2, 3])
+for i in obj:
+    print(i)  # 1, 2, 3
+```
+
+> 💡 这种方式是为了兼容性，了解就行，现在推荐用方式一或方式二！
 ```
 
 ### 5.2 创建迭代器
