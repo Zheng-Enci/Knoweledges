@@ -177,6 +177,74 @@ result = ''.join(words)  # 只分配一次内存
 
 ## 4. 去除空白：strip 方法 ✂️
 
+`strip` 用于去除字符串首尾的空白字符（空格、换行、制表符等）🧹
+
+### 4.1 基本用法
+
+```python
+text = "  hello world  "
+print(text.strip())  # hello world
+
+# 换行符
+text = "\nhello\n"
+print(text.strip())  # hello
+
+# 制表符
+text = "\thello\t"
+print(text.strip())  # hello
+```
+
+### 4.2 变体方法
+
+| 方法 | 说明 | 例子 |
+|------|------|------|
+| `strip()` | 去除两端 | `"  hello  "` → `"hello"` |
+| `lstrip()` | 去除左侧 | `"  hello"` → `"hello"` |
+| `rstrip()` | 去除右侧 | `"hello  "` → `"hello"` |
+
+```python
+text = "  hello world  "
+
+print(text.lstrip())  # hello world   （去左边）
+print(text.rstrip())  #   hello world （去右边）
+```
+
+### 4.3 去除指定字符
+
+可以指定要去除的字符：
+
+```python
+text = "---hello---"
+print(text.strip('-'))  # hello
+
+text = "++hello++"
+print(text.strip('+'))  # hello
+
+# 多个字符
+text = "abchelloabc"
+print(text.strip('abc'))  # hello
+```
+
+> 💡 注意：`strip('abc')` 并不是去除子串 "abc"，而是去除字符集合 {'a', 'b', 'c'}
+
+### 4.4 实际应用
+
+**处理用户输入**
+
+```python
+username = "  john  "
+username = username.strip()
+print(username)  # john
+```
+
+**读取文件行**
+
+```python
+lines = ["  line1  ", "line2\n", "  line3  "]
+cleaned = [line.strip() for line in lines]
+print(cleaned)  # ['line1', 'line2', 'line3']
+```
+
 ## 5. 替换：replace 方法 🔄
 
 ## 6. 实战案例 💡
