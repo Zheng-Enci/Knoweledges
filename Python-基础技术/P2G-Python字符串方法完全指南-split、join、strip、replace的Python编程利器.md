@@ -86,6 +86,91 @@ print(lines)  # ['line1', 'line2', 'line3']
 
 ## 3. 拼接：join 方法 🔗
 
+`join` 是 Python 中最高效的字符串拼接方法，可以把列表、元组等可迭代对象的元素连接成一个字符串 📦
+
+### 3.1 基本用法
+
+**拼接列表**
+
+```python
+words = ['hello', 'world', 'python']
+
+# 用空格连接
+result = ' '.join(words)
+print(result)  # hello world python
+
+# 用逗号连接
+result = ','.join(words)
+print(result)  # hello,world,python
+
+# 用空字符串连接
+result = ''.join(words)
+print(result)  # helloworldpython
+```
+
+**拼接元组**
+
+```python
+words = ('apple', 'banana', 'orange')
+result = ' - '.join(words)
+print(result)  # apple - banana - orange
+```
+
+### 3.2 注意事项
+
+**元素必须是字符串**
+
+```python
+# 数字列表会报错
+nums = [1, 2, 3]
+# ' '.join(nums)  # TypeError!
+
+# 需要先转换
+nums = [1, 2, 3]
+result = ' '.join(str(n) for n in nums)
+print(result)  # 1 2 3
+```
+
+### 3.3 实际应用
+
+**构建文件路径**
+
+```python
+parts = ['folder', 'subfolder', 'file.txt']
+path = '/'.join(parts)
+print(path)  # folder/subfolder/file.txt
+```
+
+**生成 URL 查询字符串**
+
+```python
+params = ['name=john', 'age=25', 'city=beijing']
+query = '&'.join(params)
+print(query)  # name=john&age=25&city=beijing
+```
+
+**CSV 数据拼接**
+
+```python
+fields = ['name', 'age', 'city']
+csv_line = ','.join(fields)
+print(csv_line)  # name,age,city
+```
+
+### 3.4 为什么 join 更高效？
+
+相比用 `+` 拼接多个字符串，`join` 只需要分配一次内存：
+
+```python
+# 低效：每次拼接都会创建新字符串
+result = ''
+for word in words:
+    result += word  # 每次都分配新内存
+
+# 高效：一次性拼接
+result = ''.join(words)  # 只分配一次内存
+```
+
 ## 4. 去除空白：strip 方法 ✂️
 
 ## 5. 替换：replace 方法 🔄
