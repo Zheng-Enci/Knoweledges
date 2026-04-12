@@ -231,7 +231,77 @@ print(next(it))  # 3
 
 
 
-## 5. 实际应用场景 💡
+## 5. 如何创建可迭代对象和迭代器 🔧
+
+### 5.1 创建可迭代对象
+
+只需要实现 `__iter__` 方法，返回一个迭代器即可：
+
+```python
+class MyIterable:
+    def __init__(self, data):
+        self.data = data
+    
+    def __iter__(self):
+        # 返回迭代器对象
+        return iter(self.data)
+
+# 使用
+obj = MyIterable([1, 2, 3])
+for i in obj:
+    print(i)  # 1, 2, 3
+```
+
+### 5.2 创建迭代器
+
+需要同时实现 `__iter__` 和 `__next__` 方法：
+
+```python
+class MyIterator:
+    def __init__(self, data):
+        self.data = data
+        self.index = 0
+    
+    def __iter__(self):
+        return self  # 返回自身
+    
+    def __next__(self):
+        if self.index >= len(self.data):
+            raise StopIteration  # 迭代结束
+        value = self.data[self.index]
+        self.index += 1
+        return value
+
+# 使用
+it = MyIterator([1, 2, 3])
+print(next(it))  # 1
+print(next(it))  # 2
+print(next(it))  # 3
+# next(it)  # StopIteration
+```
+
+### 5.3 简化：用生成器
+
+用生成器更简单，不用写类：
+
+```python
+# 生成器函数
+def my_generator():
+    yield 1
+    yield 2
+    yield 3
+
+# 使用
+gen = my_generator()
+print(next(gen))  # 1
+print(next(gen))  # 2
+
+# 也可以用 for 循环
+for i in my_generator():
+    print(i)
+```
+
+> 💡 **Tip**：日常开发中，**能用生成器就尽量用生成器**，代码更简洁！
 
 
 
