@@ -225,7 +225,7 @@ text = "abchelloabc"
 print(text.strip('abc'))  # hello
 ```
 
-> 💡 注意：`strip('abc')` 并不是去除子串 "abc"，而是去除字符集合 {'a', 'b', 'c'}
+> 💡 注意：`strip('abc')` 会从两端依次去掉 a、b、c 这三个字符，遇到其他字符就停止（不是去掉子串 "abc"）
 
 ### 4.4 实际应用
 
