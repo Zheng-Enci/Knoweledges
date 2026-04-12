@@ -97,13 +97,15 @@ for key in {"name": "Tom", "age": 18}:
 
 > 💡 知道了解就好，不用深究
 
-迭代器只能遍历**一次**，用完就没了 🚫
+迭代器**无法二次使用**，用完就没了 🚫
 
 ```python
 it = iter([1, 2, 3])
 for i in it:
     print(i)  # 1, 2, 3
-for i in it:  # 什么都没了
+
+# 二次使用：什么都不输出，也不会报错
+for i in it:
     print(i)  # 不输出
 ```
 
