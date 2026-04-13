@@ -292,16 +292,18 @@ name = "Alice"
 age = 25
 
 # 使用三引号
-bio = f"""\nName: {name}
-Age: {age}
-Profession: Python Developer\n"""
+bio = f"""
+    Name: {name}
+    Age: {age}
+    Profession: Python Developer
+"""
 
 print(bio)
 # 输出：
-# 
-# Name: Alice
-# Age: 25
-# Profession: Python Developer
+#
+#     Name: Alice
+#     Age: 25
+#     Profession: Python Developer
 # ```
 
 ### 4.8 转义字符 🎯
