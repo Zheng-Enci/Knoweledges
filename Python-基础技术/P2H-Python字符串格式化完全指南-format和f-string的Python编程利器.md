@@ -182,6 +182,13 @@ age = 20
 status = "adult" if age >= 18 else "minor"
 print(f"Status: {status}")  # Status: adult
 
+# 函数调用
+def greet(name):
+    return f"Hello, {name}!"
+
+name = "Alice"
+print(f"Message: {greet(name)}")  # Message: Hello, Alice!
+
 # 调用字符串方法
 name = "alice"
 print(f"Name: {name.title()}")  # Name: Alice
