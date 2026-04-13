@@ -125,6 +125,7 @@ graph TD
 - P2E-Python字典操作完全指南-从增删改查到遍历嵌套的Python编程利器：[掘金](https://juejin.cn/spost/7626681742502625306) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/160015439) ✅
 - P2F-Python集合完全指南-从创建到去重集合运算的Python编程利器：[掘金](https://juejin.cn/post/7626697192071348260) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/160020767) ✅
 - P2G-Python字符串方法完全指南-split、join、strip、replace的Python编程利器：[微信公众号](https://mp.weixin.qq.com/s/NuMqLyowLyML91o02a4R5w) | [CSDN](https://zheng-en-ci.blog.csdn.net/article/details/160089716) | [掘金](https://juejin.cn/post/7627870163740753970) ✅
+- P2H-Python字符串格式化完全指南-format和f-string的Python编程利器：[微信公众号](https://mp.weixin.qq.com/s/04NbwreopEBmaifulZY1mg) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/160112452) | [掘金](https://juejin.cn/post/7627774689625391131) ✅
 - P2I-Python正则表达式-什么是正则表达式？为什么程序员都在用re模块？怎么快速掌握模式匹配和替换？：[掘金](https://juejin.cn/post/7567769662478761993) ✅
 - P2J-Python-collections-什么是namedtuple、defaultdict和Counter？为什么一线开发者都在用？怎么快速掌握？：[掘金](https://juejin.cn/post/7568315756073615410) ✅
 - P2K-Python-collections-什么是deque和OrderedDict？为什么需要双端队列和有序字典？怎么快速掌握？：[掘金](https://juejin.cn/post/7568388327729545226) ✅
@@ -147,7 +148,7 @@ graph TD
 
 ---
 
-最后更新时间：2026-04-12
+最后更新时间：2026-04-13
 
 
 
