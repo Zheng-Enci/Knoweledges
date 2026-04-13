@@ -209,7 +209,9 @@ print(f"Number: {1000000:,}")  # Number: 1,000,000
 # 百分比（.数字%）
 print(f"Percent: {0.25:.1%}")  # Percent: 25.0%
 
-# 进制转换（x=hexadecimal十六进制，b=binary二进制，o=octal八进制，d=decimal十进制）
+# 进制转换（c=character字符，d=decimal十进制，x=hexadecimal十六进制，b=binary二进制，o=octal八进制）
+print(f"Char: {66:#c}")  # Char: B
+print(f"Dec: {255:#d}")  # Dec: 255
 print(f"Hex: {255:#x}")  # Hex: 0xff
 print(f"Bin: {255:#b}")  # Bin: 0b11111111
 print(f"Oct: {255:#o}")  # Oct: 0o377
