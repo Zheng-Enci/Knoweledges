@@ -30,7 +30,15 @@ print("Hello, %s! You are %d years old." % (name, age))
 | `%s` | 字符串 | `"%s" % "hello"` → `"hello"` |
 | `%d` | 整数 | `"%d" % 3.14` → `"3"` |
 | `%f` | 浮点数 | `"%.2f" % 3.1415` → `"3.14"` |
-| `%r` | repr 字符串 | `"%r" % "hello"` → `"'hello'"` |
+| `%r` | repr 字符串（带引号） | `"%r" % "hello"` → `"'hello'"` |
+
+```python
+# %s vs %r 的区别
+print("%s" % "hello")  # hello（只是值）
+print("%r" % "hello")  # 'hello'（带引号，repr 形式）
+```
+
+> 💡 `%r` 会显示对象的"官方表示形式"，字符串会带引号，常用于调试
 
 ```python
 # 浮点数精度
