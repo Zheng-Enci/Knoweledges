@@ -165,10 +165,10 @@ print(f"Hello, {name}! You are {age} years old.")
 
 ### 4.2 表达式嵌入
 
-> 💡 f-string 支持直接嵌入 Python 表达式，这是它最强大的特点！
+> 💡 f-string 支持直接嵌入 Python 表达式，**表达式会在运行时计算返回值**，这是它最强大的特点！
 
 ```python
-# 算术运算
+# 算术运算（计算表达式的值）
 a = 5
 b = 3
 print(f"{a} + {b} = {a + b}")  # 5 + 3 = 8
