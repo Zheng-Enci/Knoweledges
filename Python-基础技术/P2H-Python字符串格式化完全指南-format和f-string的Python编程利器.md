@@ -142,90 +142,31 @@ print("{:,}".format(1000000))      # 1,000,000
 print("{:.1%}".format(0.25))       # 25.0%
 ```
 
+
+
 ## 4. f-string 方法 🔥
 
 ### 4.1 基本用法
 
-```python
-name = "Alice"
-age = 25
 
-# f-string 基本语法
-print(f"Hello, {name}! You are {age} years old.")
-# 输出：Hello, Alice! You are 25 years old.
-```
 
 ### 4.2 表达式嵌入
 
-```python
-# 可以在 f-string 中嵌入表达式
->a = 5
-b = 3
-print(f"{a} + {b} = {a + b}")  # 5 + 3 = 8
 
-# 调用函数
-words = ["hello", "world"]
-print(f"{words}".upper())  # ['HELLO', 'WORLD']
-
-# 使用条件表达式
-age = 20
-status = "adult" if age >= 18 else "minor"
-print(f"Status: {status}")  # Status: adult
-```
 
 ### 4.3 格式规格
 
-```python
-# 浮点数精度
-pi = 3.14159
-print(f"{pi:.2f}")  # 3.14
-print(f"{pi:.3f}")  # 3.142
 
-# 千位分隔符
-print(f"{1000000:,}")  # 1,000,000
-
-# 百分比
-print(f"{0.25:.1%}")  # 25.0%
-
-# 进制转换
-print(f"{255:#x}")  # 0xff
-print(f"{255:#b}")  # 0b11111111
-```
 
 ### 4.4 对齐与填充
 
-```python
-# 对齐方式
-print(f"{ 'hi':>10}")   # '        hi'（右对齐）
-print(f"{ 'hi':<10}")   # 'hi        '（左对齐）
-print(f"{ 'hi':^10}")   # '    hi    '（居中）
 
-# 填充字符
-print(f"{ 'hi':*>10}")  # '********hi'
-print(f"{ 'hi':*<10}")  # 'hi********'
-print(f"{ 'hi':*^10}")  # '****hi****'
-
-# 数字填充
-print(f"{42:05d}")  # 00042
-print(f"{42:+5d}")  # '  +42'
-```
 
 ## 5. 两者对比 ⚖️
 
-| 特性 | % 格式化 | format | f-string |
-|------|---------|--------|----------|
-| 可读性 | 一般 | 较好 | 最好 |
-| 性能 | 较快 | 较快 | 最快 |
-| 表达式支持 | ❌ | ❌ | ✅ |
-| Python版本 | 2.x+ | 2.6+ | 3.6+ |
 
-> 💡 推荐使用 f-string，语法简洁，性能最优！
 
 ## 6. 总结 📌
-
-- **% 格式化**：了解即可，旧项目可能遇到
-- **format 方法**：功能强大，但语法较繁琐
-- **f-string**：首选方案，简单直观性能好
 
 ---
 
