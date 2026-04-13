@@ -30,7 +30,7 @@ graph TD
     P2E["字典操作：增删改查、遍历、嵌套<br/>(P2E)"]
     P2F["集合 Set：创建、去重、集合运算<br/>(P2F)"]
     P2G["字符串方法：split、join、strip、replace"]
-    P2H["字符串格式化：format、f-string"]
+    P2H["字符串格式化：format、f-string<br/>(P2H)"]
     P2I["正则表达式 re：模式匹配、搜索、替换<br/>(P2I)"]
     P2J["collections：namedtuple、defaultdict、Counter<br/>(P2J)"]
     P2K["collections：deque、OrderedDict<br/>(P2K)"]
