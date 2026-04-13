@@ -70,7 +70,75 @@ print("Name: %(name)s, Age: %(age)d" % data)
 
 ## 3. format 方法 🎯
 
+`format` 方法是 Python 2.6 引入的格式化方式，比 `%` 更灵活强大 💪
+
 ### 3.1 基本用法
+
+```python
+# 空的占位符，按顺序填充
+print("Hello, {}!".format("Alice"))  # Hello, Alice!
+
+# 多个占位符
+print("{} + {} = {}".format(1, 2, 3))  # 1 + 2 = 3
+```
+
+### 3.2 位置参数
+
+通过索引指定参数位置：
+
+```python
+# 使用索引
+print("{0} {1} {0}".format("Hello", "World"))
+# 输出：Hello World Hello
+
+# 调换顺序
+print("{1} {0}".format("World", "Hello"))  # Hello World
+```
+
+### 3.3 关键字参数
+
+通过名称指定参数：
+
+```python
+# 使用关键字参数
+print("{name} is {age} years old".format(name="Tom", age=20))
+# 输出：Tom is 20 years old
+
+# 混合使用
+print("{0} is {age} years old".format("Bob", age=25))
+# 输出：Bob is 25 years old
+
+# 用字典传参
+data = {"name": "Lily", "age": 18}
+print("{name} is {age}".format(**data))
+# 输出：Lily is 18
+```
+
+### 3.4 格式规格
+
+控制数字格式：
+
+```python
+# 浮点数精度
+print("{:.2f}".format(3.14159))  # 3.14
+print("{:.3f}".format(3.14159))  # 3.142
+
+# 对齐与宽度
+print("{:>10}".format("hi"))       # '        hi'（右对齐）
+print("{:10}".format("hi"))        # 'hi        '（左对齐）
+print("{:^10}".format("hi"))       # '    hi    '（居中）
+
+# 填充
+print("{:*>10}".format("hi"))      # '********hi'
+print("{:*<10}".format("hi"))      # 'hi********'
+print("{:*^10}".format("hi"))      # '****hi****'
+
+# 千位分隔符
+print("{:,}".format(1000000))      # 1,000,000
+
+# 百分比
+print("{:.1%}".format(0.25))       # 25.0%
+```
 
 
 
