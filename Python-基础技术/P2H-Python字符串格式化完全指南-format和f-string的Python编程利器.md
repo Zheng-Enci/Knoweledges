@@ -173,7 +173,7 @@ a = 5
 b = 3
 print(f"{a} + {b} = {a + b}")  # 5 + 3 = 8
 
-# 函数调用
+# 变量引用
 words = ["hello", "world"]
 print(f"Words: {words}")  # Words: ['hello', 'world']
 
