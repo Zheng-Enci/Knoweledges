@@ -239,17 +239,114 @@ print(f"{42:+5d}")  # 显示正负号 → '  +42'
 print(f"{-42:+5d}") # 负数示例 → ' -42'
 ```
 
+### 4.5 调试模式（= 说明符）🔍
 
+Python 3.8 引入的 `=` 说明符是调试神器，可以同时显示变量名和值 📝
 
-### 4.2 表达式嵌入
+```python
+name = "Alice"
+score = 95.5
 
+# 常规方式：需要手动写变量名
+print(f"name={name}, score={score}")
+# 输出：name=Alice, score=95.5
 
+# 使用 = 说明符：自动显示变量名
+print(f"{name=}, {score=}")
+# 输出：name='Alice', score=95.5
 
-### 4.3 格式规格
+# 表达式也可以用
+x = 10
+print(f"{x * 2 = }")
+# 输出：x * 2 = 20
+```
 
+> 💡 这个功能对于调试代码特别方便，一行代码就能看到变量名和值！
 
+### 4.6 字典与对象访问 📂
 
-### 4.4 对齐与填充
+f-string 可以直接访问字典和对象的属性 👀
+
+```python
+# 访问字典
+user_info = {"name": "Bob", "id": 123}
+print(f"User: {user_info['name']}, ID: {user_info['id']}")
+# 输出：User: Bob, ID: 123
+
+# 访问对象属性
+class User:
+    def __init__(self, name):
+        self.name = name
+
+user = User("Charlie")
+print(f"Object name: {user.name}")
+# 输出：Object name: Charlie
+```
+
+### 4.7 多行 f-string 📄
+
+用三引号 `"""` 或 `'''` 创建多行字符串 🖊️
+
+```python
+name = "Alice"
+age = 25
+
+# 使用三引号
+bio = f"""Name: {name}
+Age: {age}
+Profession: Python Developer"""
+
+print(bio)
+# 输出：
+# Name: Alice
+# Age: 25
+# Profession: Python Developer
+```
+
+### 4.8 转义字符 🎯
+
+想在 f-string 中显示花括号或引号需要特殊处理 ⚠️
+
+```python
+# 显示花括号：用双花括号 {{ }}
+print(f"使用花括号: {{ }}")
+# 输出：使用花括号: { }
+
+# 显示双引号：外层用单引号
+print(f'双引号: "hello"')
+# 输出：双引号: "hello"
+
+# 显示单引号：外层用双引号
+print(f"单引号: 'hello'")
+# 输出：单引号: 'hello'
+```
+
+> 💡 注意：f-string 的花括号内不能使用反斜杠 `\` 转义！
+
+### 4.9 日期时间格式化 📅
+
+f-string 可以直接格式化 datetime 对象 🕐
+
+```python
+from datetime import datetime
+
+now = datetime.now()
+
+# 完整日期时间
+print(f"当前时间：{now:%Y-%m-%d %H:%M:%S}")
+# 输出：当前时间：2024-05-20 14:30:00
+
+# 仅日期
+print(f"今日日期：{now:%Y年%m月%d日}")
+# 输出：今日日期：2024年05月20日
+
+# 星期几
+print(f"今天是：{now:%A}")
+# 输出：今天是：Monday（英文）
+
+print(f"今天是：{now:%w}")
+# 输出：今天是：1（数字，0为周日）
+```
 
 
 
@@ -261,4 +358,4 @@ print(f"{-42:+5d}") # 负数示例 → ' -42'
 
 ---
 
-最后更新时间：2026-04-12
+最后更新时间：2026-04-13
