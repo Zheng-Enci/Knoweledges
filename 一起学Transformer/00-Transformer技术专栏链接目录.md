@@ -45,6 +45,10 @@ flowchart TD
 - **掘金**：[01a1-LSTM与GRU门控机制详解](https://juejin.cn/post/7631179225043927067)
 - **CSDN**：[01a1-LSTM与GRU门控机制详解](https://blog.csdn.net/2301_79239314/article/details/160415547)
 
+### 01b-上下文向量与信息瓶颈
+- **掘金**：[01b-上下文向量与信息瓶颈](https://juejin.cn/post/7631595203976101915)
+- **CSDN**：[01b-上下文向量与信息瓶颈](https://blog.csdn.net/2301_79239314/article/details/160419503)
+
 ### 02-序列到序列模型
 
 ### 03-注意力机制基础
@@ -73,4 +77,4 @@ flowchart TD
 
 ---
 
-**最后更新时间**：2026-04-21
+**最后更新时间**：2026-04-22
