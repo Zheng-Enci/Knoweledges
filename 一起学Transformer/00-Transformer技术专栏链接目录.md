@@ -34,6 +34,8 @@ flowchart TD
 ## 📚 专栏文档链接目录（按学习顺序排序）
 
 ### 01-Transformer基础概念
+- **掘金**：[01-Transformer基础概念](https://juejin.cn/post/7624451674656784394)
+- **CSDN**：[01-Transformer基础概念](https://blog.csdn.net/2301_79239314/article/details/159824877)
 
 ### 01a-编码器解码器架构详解
 - **掘金**：[01a-编码器解码器架构详解](https://juejin.cn/spost/7631034166373597210)
