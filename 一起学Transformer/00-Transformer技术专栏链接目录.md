@@ -41,6 +41,10 @@ flowchart TD
 - **掘金**：[01a-编码器解码器架构详解](https://juejin.cn/spost/7631034166373597210)
 - **CSDN**：[01a-编码器解码器架构详解](https://blog.csdn.net/2301_79239314/article/details/160380736)
 
+### 01a1-LSTM与GRU门控机制详解
+- **掘金**：[01a1-LSTM与GRU门控机制详解](https://juejin.cn/post/7631179225043927067)
+- **CSDN**：[01a1-LSTM与GRU门控机制详解](https://blog.csdn.net/2301_79239314/article/details/160415547)
+
 ### 02-序列到序列模型
 
 ### 03-注意力机制基础
