@@ -976,13 +976,529 @@ L₁ ──→ y₁ ──→ h₁ ──→ Wₕₕ (直接路径)
 
 BPTT 是 RNN 训练的核心，它通过将 RNN 沿时间展开，应用标准反向传播算法。然而，梯度连乘效应导致了梯度消失/爆炸问题，这也是 LSTM 和 GRU 等变体出现的原因（我们将在第 6 章详细讨论）。
 
-## 6. RNN的变体
+## 6. RNN的变体 🔄
 
-### 6.1 双向RNN（Bi-RNN）
+前面我们学习了标准RNN的基本结构和工作原理。但在实际应用中，标准RNN往往无法满足复杂任务的需求。本节将介绍三种重要的RNN变体：**双向RNN**、**深层RNN**和**递归神经网络**，它们分别从信息利用、特征提取和数据结构三个维度扩展了RNN的能力。😊
 
-### 6.2 深层RNN
+### 6.1 双向RNN（Bi-RNN） 🔀
 
-### 6.3 递归神经网络
+#### 6.1.1 为什么需要双向RNN
+
+标准RNN有一个明显的局限：**只能利用过去的信息，无法看到未来的上下文**。
+
+**举个例子：**
+- 句子："我今天很**开心**"。
+- 标准RNN处理到"开心"时，只能看到"我今天很"。
+- 但如果能看到后面的内容（比如"因为考试通过了"），对"开心"的理解会更准确！
+
+**现实场景：**
+- 📝 **命名实体识别**："我在**北京大学**读书" —— 看到"读书"才能确定"北京大学"是学校名
+- 🎭 **情感分析**："这部电影**不是**很好看" —— 必须看到"不是"才能正确判断情感
+- 🗣️ **语音识别**：识别当前发音时，后面的音频信息也有帮助
+
+#### 6.1.2 双向RNN的核心思想
+
+双向RNN（Bidirectional RNN，Bi-RNN）的核心思想很简单：**同时运行两个RNN，一个正向处理，一个反向处理，最后合并结果**。
+
+```
+双向RNN结构示意图：
+
+        正向RNN（从左到右）
+        ───────────────────────→
+   x₁ → [RNN] → h₁ᶠ → [RNN] → h₂ᶠ → [RNN] → h₃ᶠ
+         ↑       ↑       ↑       ↑       ↑
+        x₁      x₂      x₃      x₄      x₅
+         ↓       ↓       ↓       ↓       ↓
+   x₅ → [RNN] → h₅ᵇ → [RNN] → h₄ᵇ → [RNN] → h₃ᵇ
+        ←────────────────────────
+        反向RNN（从右到左）
+
+        ↓           ↓           ↓
+      合并        合并        合并
+        ↓           ↓           ↓
+       h₁          h₂          h₃
+     (h₁ᶠ,h₅ᵇ)   (h₂ᶠ,h₄ᵇ)   (h₃ᶠ,h₃ᵇ)
+```
+
+**两个方向的RNN：**
+
+| 方向 | 处理顺序 | 获得的信息 | 符号 |
+|------|---------|-----------|------|
+| **前向RNN** | 从左到右 | 上文信息（过去） | $h_t^f$ |
+| **反向RNN** | 从右到左 | 下文信息（未来） | $h_t^b$ |
+
+#### 6.1.3 数学表达
+
+双向RNN的数学表达非常直观：
+
+**前向RNN（处理顺序：x₁ → x₂ → ... → xₜ）：**
+
+$$
+h_t^f = \tanh(W_{xh}^f x_t + W_{hh}^f h_{t-1}^f + b_h^f)
+$$
+
+**反向RNN（处理顺序：xₜ → xₜ₋₁ → ... → x₁）：**
+
+$$
+h_t^b = \tanh(W_{xh}^b x_t + W_{hh}^b h_{t+1}^b + b_h^b)
+$$
+
+**合并隐藏状态（三种常用方式）：**
+
+| 合并方式 | 公式 | 适用场景 |
+|---------|------|---------|
+| **拼接** | $h_t = [h_t^f; h_t^b]$ | 需要保留双向完整信息 |
+| **相加** | $h_t = h_t^f + h_t^b$ | 维度不变，计算简单 |
+| **平均** | $h_t = (h_t^f + h_t^b) / 2$ | 平衡双向贡献 |
+
+#### 6.1.4 PyTorch实现
+
+```python
+import torch
+import torch.nn as nn
+
+class BiRNNModel(nn.Module):
+    """
+    双向RNN模型
+    
+    Args:
+        input_size: 输入维度
+        hidden_size: 隐藏层维度（每个方向的维度）
+        output_size: 输出维度
+        num_layers: RNN层数
+    """
+    def __init__(self, input_size, hidden_size, output_size, num_layers=1):
+        super(BiRNNModel, self).__init__()
+        
+        # 双向RNN
+        self.rnn = nn.RNN(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            batch_first=True,
+            bidirectional=True  # 关键参数：启用双向
+        )
+        
+        # 输出层
+        # 注意：双向RNN的输出维度是 2 * hidden_size
+        self.fc = nn.Linear(hidden_size * 2, output_size)
+    
+    def forward(self, x):
+        """
+        前向传播
+        
+        Args:
+            x: 输入张量，形状 (batch_size, seq_len, input_size)
+        
+        Returns:
+            output: 每个时间步的输出，形状 (batch_size, seq_len, output_size)
+            hidden: 最后时刻的隐藏状态
+        """
+        # RNN输出
+        # rnn_out: (batch_size, seq_len, hidden_size * 2)
+        rnn_out, hidden = self.rnn(x)
+        
+        # 通过全连接层
+        output = self.fc(rnn_out)
+        
+        return output, hidden
+
+
+# 使用示例
+if __name__ == "__main__":
+    # 参数设置
+    batch_size = 2
+    seq_len = 5
+    input_size = 100
+    hidden_size = 128
+    output_size = 50
+    
+    # 创建模型
+    model = BiRNNModel(input_size, hidden_size, output_size)
+    
+    # 生成随机输入
+    inputs = torch.randn(batch_size, seq_len, input_size)
+    
+    # 前向传播
+    outputs, hidden = model(inputs)
+    
+    print(f"输入形状: {inputs.shape}")      # torch.Size([2, 5, 100])
+    print(f"输出形状: {outputs.shape}")     # torch.Size([2, 5, 50])
+    
+    # 注意：双向RNN的隐藏状态包含两个方向
+    # hidden: (num_layers * 2, batch_size, hidden_size)
+    print(f"隐藏状态形状: {hidden.shape}")  # torch.Size([2, 2, 128])
+```
+
+#### 6.1.5 双向RNN的优缺点
+
+**优点：**
+- ✅ **上下文理解更全面**：同时利用过去和未来的信息
+- ✅ **预测更准确**：在NLP任务中通常比单向RNN效果好
+- ✅ **实现简单**：PyTorch/TensorFlow都内置支持
+
+**缺点：**
+- ❌ **需要完整序列**：必须等整个序列输入后才能开始计算
+- ❌ **计算量大**：相当于运行两个RNN，参数和计算都翻倍
+- ❌ **不适合实时任务**：如实时语音识别、股票实时预测
+
+**适用场景 vs 不适用场景：**
+
+| 场景 | 是否适用 | 原因 |
+|------|---------|------|
+| 文本分类 | ✅ 适用 | 可以看到完整句子 |
+| 命名实体识别 | ✅ 适用 | 需要上下文判断实体类型 |
+| 机器翻译 | ✅ 适用 | 源语言句子完整可见 |
+| 实时语音识别 | ❌ 不适用 | 无法提前看到未来音频 |
+| 股票实时预测 | ❌ 不适用 | 无法预知未来价格 |
+
+> 💡 **实践建议**：
+> - 如果任务允许看到完整序列（如文本分类、NER），**优先使用双向RNN**
+> - 如果需要实时处理（如流式语音识别），**只能使用单向RNN**
+> - 双向RNN通常能带来 **5%-15%** 的性能提升
+
+### 6.2 深层RNN 🏗️
+
+#### 6.2.1 为什么需要深层RNN
+
+标准RNN只有**一个隐藏层**，表达能力有限。就像单层神经网络无法解决复杂问题一样，单层RNN也难以捕捉复杂的序列模式。
+
+**深层RNN（Deep RNN）** 通过堆叠多个RNN层，让网络能够学习**层次化的特征表示**。
+
+**类比理解：**
+- 📖 **单层RNN**：像一个人读一遍书，获得基础理解
+- 📚 **深层RNN**：像多个人依次读书，每个人在前人理解的基础上深入思考
+
+#### 6.2.2 深层RNN的结构
+
+深层RNN将多个RNN层**垂直堆叠**，每一层的输出作为下一层的输入。
+
+```
+深层RNN结构（3层）：
+
+输入层：  x₁ ────── x₂ ────── x₃ ────── x₄
+          ↓          ↓          ↓          ↓
+         [RNN]      [RNN]      [RNN]      [RNN]   ← 第1层
+          ↓          ↓          ↓          ↓
+         h₁¹        h₂¹        h₃¹        h₄¹
+          ↓          ↓          ↓          ↓
+         [RNN]      [RNN]      [RNN]      [RNN]   ← 第2层
+          ↓          ↓          ↓          ↓
+         h₁²        h₂²        h₃²        h₄²
+          ↓          ↓          ↓          ↓
+         [RNN]      [RNN]      [RNN]      [RNN]   ← 第3层
+          ↓          ↓          ↓          ↓
+         h₁³        h₂³        h₃³        h₄³
+          ↓          ↓          ↓          ↓
+输出层：  y₁         y₂         y₃         y₄
+```
+
+**信息流动：**
+- ⏱️ **时间维度**：每层内部，信息沿时间步传递（hₜ → hₜ₊₁）
+- ⬆️ **深度维度**：层与层之间，信息向上传递（h¹ → h² → h³）
+
+#### 6.2.3 数学表达
+
+对于第 $l$ 层、第 $t$ 个时间步：
+
+$$
+h_t^{(l)} = \tanh(W_{xh}^{(l)} h_t^{(l-1)} + W_{hh}^{(l)} h_{t-1}^{(l)} + b_h^{(l)})
+$$
+
+其中：
+- $h_t^{(l-1)}$：来自**下层**同一时刻的输出（深度传递）
+- $h_{t-1}^{(l)}$：来自**本层**上一时刻的隐藏状态（时间传递）
+
+**各层学习的内容：**
+
+| 层数 | 学习的内容 | 示例（文本） |
+|------|-----------|-------------|
+| **第1层** | 低级特征 | 词性、短语边界 |
+| **第2层** | 中级特征 | 语法结构、短句关系 |
+| **第3层** | 高级特征 | 语义意图、段落主题 |
+| **第4层+** | 更抽象的表示 | 文章风格、情感基调 |
+
+#### 6.2.4 PyTorch实现
+
+```python
+import torch
+import torch.nn as nn
+
+class DeepRNNModel(nn.Module):
+    """
+    深层RNN模型
+    
+    Args:
+        input_size: 输入维度
+        hidden_size: 隐藏层维度
+        output_size: 输出维度
+        num_layers: RNN层数（深度）
+        dropout: 层间dropout概率
+    """
+    def __init__(self, input_size, hidden_size, output_size, 
+                 num_layers=2, dropout=0.3):
+        super(DeepRNNModel, self).__init__()
+        
+        # 深层RNN
+        self.rnn = nn.RNN(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,      # 层数
+            batch_first=True,
+            dropout=dropout if num_layers > 1 else 0  # 层间dropout
+        )
+        
+        # 输出层
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        """
+        前向传播
+        
+        Args:
+            x: 输入张量，形状 (batch_size, seq_len, input_size)
+        
+        Returns:
+            output: 输出张量，形状 (batch_size, seq_len, output_size)
+            hidden: 最后时刻的隐藏状态，形状 (num_layers, batch_size, hidden_size)
+        """
+        # RNN输出
+        # rnn_out: (batch_size, seq_len, hidden_size)
+        # hidden: (num_layers, batch_size, hidden_size)
+        rnn_out, hidden = self.rnn(x)
+        
+        # 通过全连接层
+        output = self.fc(rnn_out)
+        
+        return output, hidden
+
+
+# 深层LSTM（更常用）
+class DeepLSTMModel(nn.Module):
+    """深层LSTM模型"""
+    def __init__(self, input_size, hidden_size, output_size, 
+                 num_layers=3, dropout=0.3, bidirectional=False):
+        super(DeepLSTMModel, self).__init__()
+        
+        self.lstm = nn.LSTM(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout if num_layers > 1 else 0,
+            bidirectional=bidirectional
+        )
+        
+        # 双向时输出维度翻倍
+        multiplier = 2 if bidirectional else 1
+        self.fc = nn.Linear(hidden_size * multiplier, output_size)
+    
+    def forward(self, x):
+        lstm_out, (hidden, cell) = self.lstm(x)
+        output = self.fc(lstm_out)
+        return output, hidden
+
+
+# 使用示例
+if __name__ == "__main__":
+    # 参数
+    batch_size = 2
+    seq_len = 10
+    input_size = 100
+    hidden_size = 128
+    output_size = 50
+    num_layers = 3  # 3层深层RNN
+    
+    # 创建模型
+    model = DeepRNNModel(input_size, hidden_size, output_size, num_layers)
+    
+    # 输入
+    inputs = torch.randn(batch_size, seq_len, input_size)
+    
+    # 前向传播
+    outputs, hidden = model(inputs)
+    
+    print(f"输入形状: {inputs.shape}")       # torch.Size([2, 10, 100])
+    print(f"输出形状: {outputs.shape}")      # torch.Size([2, 10, 50])
+    print(f"隐藏状态: {hidden.shape}")       # torch.Size([3, 2, 128])
+    # 注意：hidden包含3层的最终状态
+```
+
+#### 6.2.5 深层RNN的设计建议
+
+**层数选择：**
+
+| 任务复杂度 | 推荐层数 | 说明 |
+|-----------|---------|------|
+| 简单任务 | 1-2层 | 文本分类、短序列标注 |
+| 中等任务 | 2-3层 | 机器翻译、语音识别 |
+| 复杂任务 | 3-4层 | 长文本生成、复杂序列建模 |
+| 极复杂任务 | 4层+ | 需要配合残差连接、层归一化 |
+
+**注意事项：**
+- ⚠️ **梯度问题**：层数过多会导致梯度消失/爆炸，建议使用LSTM/GRU
+- ⚠️ **过拟合风险**：深层网络容易过拟合，需要配合Dropout
+- ⚠️ **计算成本**：层数增加会线性增加计算量
+
+> 💡 **实践建议**：
+> - 从2层开始尝试，逐步增加
+> - 深层网络（3层+）建议使用LSTM或GRU
+> - 配合Dropout（0.2-0.5）防止过拟合
+> - 对于非常深的网络，考虑使用残差连接
+
+### 6.3 递归神经网络 🌳
+
+#### 6.3.1 递归神经网络 vs 循环神经网络
+
+虽然名字相似，但**递归神经网络（Recursive Neural Network）**和**循环神经网络（Recurrent Neural Network）**是两种不同的架构。
+
+| 特性 | 循环神经网络（RNN） | 递归神经网络（Recursive NN） |
+|------|-------------------|---------------------------|
+| **结构** | 链式结构（序列） | 树形结构（层次） |
+| **处理对象** | 线性序列 | 层次化数据 |
+| **连接方式** | 时间步之间循环连接 | 父节点与子节点递归连接 |
+| **典型应用** | 文本、语音、时间序列 | 句法树、表达式、层次结构 |
+
+**核心区别：**
+- 🔄 **RNN**：处理**序列**数据，信息沿时间传递
+- 🌳 **Recursive NN**：处理**树形**数据，信息沿树结构传递
+
+#### 6.3.2 递归神经网络的结构
+
+递归神经网络专门设计用于处理具有**层次结构**的数据，如句子的语法树、数学表达式等。
+
+```
+递归神经网络处理句法树示例：
+
+句子："猫 追 老鼠"
+
+句法树结构：
+         [S]                    ← 根节点（句子）
+         / \
+       [NP][VP]                 ← 短语级别
+       /    /  \
+     [N]  [V]  [NP]
+      |    |    /  \
+     "猫" "追" [N]  [N]
+               |     |
+             "老"   "鼠"
+
+递归神经网络计算过程：
+
+1. 叶子节点（词向量）：
+   "猫" → v₁    "追" → v₂    "老" → v₃    "鼠" → v₄
+
+2. 向上递归计算：
+   [N] "老鼠" = f(v₃, v₄) → h₁
+   
+   [NP] = f(v₁) → h₂（"猫"）
+   
+   [VP] = f(v₂, h₁) → h₃（"追老鼠"）
+   
+   [S] = f(h₂, h₃) → h₄（整句语义）
+
+3. 最终得到句子表示 h₄
+```
+
+**递归计算的核心思想：**
+- 🍃 **叶子节点**：输入数据（如词向量）
+- 🌿 **内部节点**：递归组合子节点的表示
+- 🌳 **根节点**：整个结构的最终表示
+
+#### 6.3.3 数学表达
+
+对于二叉树结构的递归神经网络：
+
+**父节点计算：**
+
+$$
+p = \tanh(W [c_1; c_2] + b)
+$$
+
+其中：
+- $c_1, c_2$：两个子节点的表示
+- $[c_1; c_2]$：子节点向量的拼接
+- $W, b$：共享的参数
+- $p$：父节点的表示
+
+**递归过程：**
+```
+从叶子到根，逐层计算：
+
+叶子层：   w₁    w₂    w₃    w₄
+           ↓     ↓     ↓     ↓
+第1层：         p₁ = f(w₂, w₃)
+                ↓
+第2层：    p₂ = f(w₁, p₁)    p₃ = f(w₄, w₅)
+           ↓                  ↓
+根节点：   root = f(p₂, p₃)
+```
+
+#### 6.3.4 应用场景
+
+递归神经网络特别适合处理具有**显式层次结构**的数据：
+
+| 应用场景 | 树结构 | 说明 |
+|---------|--------|------|
+| **句法分析** | 句法树 | 根据语法规则解析句子结构 |
+| **情感分析** | 情感树 | 不同短语可能有不同情感 |
+| **数学表达式** | 表达式树 | 计算表达式的值 |
+| **分子结构** | 分子树 | 化学分子的层次结构 |
+| **代码分析** | AST抽象语法树 | 程序代码的结构分析 |
+
+**情感分析示例：**
+
+```
+句子："这部电影不是很好看"
+
+句法树：
+         [S: 中性]
+         /       \
+    [NP: 中性]  [VP: 负面]
+       |         /      \
+   "这部电影"  [Adv:否定] [Adj:正面]
+                |           |
+             "不是"       "很好看"
+
+分析：
+- "很好看"本身是正面
+- 但"不是"否定后，VP变成负面
+- 最终整句情感为负面
+```
+
+#### 6.3.5 递归神经网络的优缺点
+
+**优点：**
+- ✅ **结构匹配**：天然适合层次化数据
+- ✅ **可解释性强**：树的结构直观展示组合过程
+- ✅ **灵活处理变长**：不同深度的树都能处理
+
+**缺点：**
+- ❌ **需要预解析树**：通常需要先知道树结构（如句法树）
+- ❌ **计算复杂**：树的遍历比序列复杂
+- ❌ **应用受限**：只适用于有显式层次结构的数据
+
+> 💡 **实践建议**：
+> - 如果数据有明确的树结构（如句法树），Recursive NN效果很好
+> - 如果没有预定义的树结构，可以考虑**Tree-LSTM**等变体
+> - 在实际NLP任务中，由于句法解析的误差，Recursive NN使用不如RNN/LSTM广泛
+
+### 6.4 三种变体对比总结
+
+| 特性 | 双向RNN | 深层RNN | 递归神经网络 |
+|------|---------|---------|-------------|
+| **核心改进** | 双向信息 | 多层堆叠 | 树形结构 |
+| **信息流动** | 时间+反向 | 时间+深度 | 树结构向上 |
+| **适用数据** | 完整序列 | 任意序列 | 层次化数据 |
+| **计算成本** | 2× | N×（层数） | 树深度× |
+| **实时性** | ❌ 不适合 | ✅ 适合 | ✅ 适合 |
+| **典型应用** | NER、分类 | 翻译、语音 | 句法分析 |
+| **实现难度** | 简单 | 简单 | 较复杂 |
+
+**选择建议：**
+- 📝 **文本分类/NER**：双向RNN
+- 🗣️ **机器翻译/语音识别**：深层RNN（配合LSTM/GRU）
+- 🌳 **句法分析/情感树**：递归神经网络
 
 ## 7. RNN的应用场景
 
