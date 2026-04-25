@@ -53,6 +53,10 @@ flowchart TD
 - **掘金**：[01c-循环神经网络RNN详解](https://juejin.cn/post/7632201056928268334)
 - **CSDN**：[01c-循环神经网络RNN详解](https://blog.csdn.net/2301_79239314/article/details/160481070)
 
+### 01d-前馈神经网络
+- **掘金**：[01d-前馈神经网络](https://juejin.cn/post/7632239365552488494)
+- **CSDN**：[01d-前馈神经网络](https://blog.csdn.net/2301_79239314/article/details/160500890)
+
 ### 02-序列到序列模型
 
 ### 03-注意力机制基础
