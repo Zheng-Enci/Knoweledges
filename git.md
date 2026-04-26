@@ -326,9 +326,8 @@ Git 基础配置参考资料：
 > | 项目 | 地址 | 特点 |
 > |:-----|:-----|:-----|
 > | **Web-Development 迷你项目** | `https://gitcode.com/gh_mirrors/webde/Web-Development` | HTML/CSS 实战教程，克隆即用 |
-> | **樱花个人引导页** | `https://gitee.com/suinian_Nian/Personal_Sakura_Guide_Page` | 纯前端，双击 `index.html` 即可运行 |
 > 
-> 这些项目都是**纯前端项目**，克隆后双击 HTML 文件就能在浏览器打开，非常适合新手练习！
+> 这是一个**纯前端项目**，克隆后双击 HTML 文件就能在浏览器打开，非常适合新手练习！
 
 ### 4.2 基本工作流程（add/commit）
 
