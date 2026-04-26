@@ -314,12 +314,21 @@ Git 基础配置参考资料：
 > **克隆远程仓库**：
 > 
 > ```bash
-> # 克隆 GitHub/Gitee 上的仓库到本地
-> git clone https://github.com/username/repo.git
+> # 克隆 Gitee 上的项目到本地
+> git clone https://gitee.com/username/repo.git
 > 
 > # 克隆时指定本地文件夹名
-> git clone https://github.com/username/repo.git my-folder
+> git clone https://gitee.com/username/repo.git my-folder
 > ```
+> 
+> 💡 **推荐新手尝试的知名项目**：
+> 
+> | 项目 | 地址 | 特点 |
+> |:-----|:-----|:-----|
+> | **Web-Development 迷你项目** | `https://gitcode.com/gh_mirrors/webde/Web-Development` | HTML/CSS 实战教程，克隆即用 |
+> | **樱花个人引导页** | `https://gitee.com/suinian_Nian/Personal_Sakura_Guide_Page` | 纯前端，双击 `index.html` 即可运行 |
+> 
+> 这些项目都是**纯前端项目**，克隆后双击 HTML 文件就能在浏览器打开，非常适合新手练习！
 
 ### 4.2 基本工作流程（add/commit）
 
