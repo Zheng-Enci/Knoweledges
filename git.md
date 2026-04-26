@@ -864,9 +864,44 @@ $ git status
 $ git log --oneline -3
 ```
 
+**`git commit` 预期输出**：
+```
+git commit -m "在 README.md 文件末尾增加了一行 Hello git"
+[master b2d2322f] 在 README.md 文件末尾增加了一行 Hello git
+ 1 file changed, 1 insertion(+)
+```
+
 **说明**：
-- `-m` 后面必须写提交信息，说明这次提交做了什么
-- 提交后，`git status` 应该显示 "nothing to commit"
+- `[master b2d2322f]`：表示在 master 分支上创建了新提交，commit ID 是 b2d2322f
+- `1 file changed, 1 insertion(+)`：1个文件被修改，增加了1行
+
+**`git status` 预期输出**：
+```
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+```
+
+**说明**：
+- `Your branch is ahead of 'origin/master' by 1 commit`：本地分支比远程分支领先1个提交
+- `use "git push" to publish your local commits`：提示可以使用 `git push` 推送提交到远程
+- `nothing to commit, working tree clean`：工作区干净，没有未提交的修改
+
+**`git log --oneline -3` 预期输出**：
+```
+git log --oneline -3
+b2d2322f (HEAD -> master) 在 README.md 文件末尾增加了一行 Hello git
+0c09fcf1 (origin/master, origin/HEAD) 添加开发成员王乐宸
+338b28ae docs: 将README中相对路径链接改为GitCode完整URL
+```
+
+**说明**：
+- 最新的提交显示在最上面
+- `(HEAD -> master)` 表示当前 HEAD 指向 master 分支的最新提交
+- `(origin/master, origin/HEAD)` 表示远程仓库的最新提交位置
 
 ---
 
