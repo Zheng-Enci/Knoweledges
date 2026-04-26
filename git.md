@@ -1074,7 +1074,10 @@ $ git reset --soft HEAD~1
 # 或者回退到上一个版本（丢弃修改）
 $ git reset --hard HEAD~1
 
-# 3. 查看提交历史确认
+# 3. 回退到指定版本（使用 commit ID）
+$ git reset --hard abc1234
+
+# 4. 查看提交历史确认
 $ git log --oneline
 ```
 
