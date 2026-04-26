@@ -153,6 +153,56 @@ Git 与 GitHub 关系参考资料：
 
 ### 2.2 基础配置
 
+> **为什么需要配置用户名和邮箱？**
+> 
+> Git 是分布式版本控制系统，每次提交代码时都需要记录"是谁提交的"。如果不配置，会导致：
+> - 提交记录显示为 unknown 或系统默认用户名
+> - 无法与 GitHub/Gitee 等平台账号正确关联
+> - 团队协作时难以追溯代码来源
+
+> **全局配置（推荐）**：
+> 
+> 使用 `--global` 参数配置，适用于当前用户在本机上的所有 Git 仓库：
+> 
+> ```bash
+> # 设置用户名（建议使用真实姓名或常用昵称）
+> git config --global user.name "Your Name"
+> 
+> # 设置邮箱（建议使用 GitHub/Gitee 绑定的邮箱）
+> git config --global user.email "your.email@example.com"
+> ```
+> 
+> 💡 **建议**：首次安装 Git 后，第一时间执行这两个命令！
+
+> **验证配置**：
+> 
+> ```bash
+> # 查看用户名
+> git config --global user.name
+> 
+> # 查看邮箱
+> git config --global user.email
+> 
+> # 查看所有配置
+> git config --list
+> ```
+
+> **本地配置（按项目设置）**：
+> 
+> 如果某个项目需要使用不同的身份（如工作项目用公司邮箱），可在项目目录下单独配置：
+> 
+> ```bash
+> cd /path/to/your/project
+> git config user.name "Work Name"
+> git config user.email "work@company.com"
+> ```
+> 
+> 本地配置优先级高于全局配置，仅对当前仓库生效。
+
+Git 基础配置参考资料：
+- [Git 用户名与邮箱配置指南--CSDN](https://blog.csdn.net/wenxuankeji/article/details/153337947)
+- [Git 提交时为什么必须设置用户名和邮箱--CSDN](https://wenku.csdn.net/answer/z3rz3f2macyt)
+
 ---
 
 ## 3. Git 基础操作 📝
