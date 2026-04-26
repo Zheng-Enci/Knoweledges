@@ -325,7 +325,6 @@ Git 基础配置参考资料：
 > 
 > | 项目 | 地址 | Star | 特点 |
 > |:-----|:-----|:-----|:-----|
-> | **Luckysheet** | `https://gitee.com/mengshukeji/Luckysheet` | 23K+ | 🚀 纯前端在线 Excel，功能强大，双击即用 |
 > | **DataV 大屏模板** | `https://gitee.com/daidaibg/IofTV-Screen` | 5K+ | 🔥 数据可视化大屏，效果炫酷 |
 > | **Layui** | `https://gitee.com/layui/layui` | 23K+ | 经典 Web UI 组件库，原生 JS |
 > 
