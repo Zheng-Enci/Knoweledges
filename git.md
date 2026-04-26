@@ -233,12 +233,36 @@ Git 基础配置参考资料：
 - [Git 用户名与邮箱配置指南--CSDN](https://blog.csdn.net/wenxuankeji/article/details/153337947)
 - [Git 提交时为什么必须设置用户名和邮箱--CSDN](https://wenku.csdn.net/answer/z3rz3f2macyt)
 - [Git配置层级：system、global、local配置的优先级处理--CSDN](https://blog.csdn.net/gitblog_00908/article/details/151811087)
-- [Git 用户名与邮箱配置指南--CSDN](https://blog.csdn.net/wenxuankeji/article/details/153337947)
-- [Git 提交时为什么必须设置用户名和邮箱--CSDN](https://wenku.csdn.net/answer/z3rz3f2macyt)
 
 ---
 
-## 3. Git 基础操作 📝
+## 3. .git 目录是什么？📁
+
+> 当你执行 `git init` 后，Git 会在当前目录创建一个隐藏的 `.git` 文件夹。这个文件夹就是 **Git 的版本库**，包含了项目所有的版本控制信息和历史记录。
+
+> **.git 目录的核心文件和文件夹**：
+> 
+> | 文件/文件夹 | 作用 |
+> |:------------|:-----|
+> | **HEAD** | 指向当前所在的分支 |
+> | **config** | 该仓库的本地配置文件 |
+> | **index** | 暂存区（Stage）的信息 |
+> | **objects/** | 存储所有文件内容和版本数据 |
+> | **refs/** | 存储分支和标签的引用 |
+> | **hooks/** | 钩子脚本（如提交前自动检查） |
+
+> 💡 **重要提示**：
+> - `.git` 是**隐藏文件夹**，Windows 需要在文件资源管理器中开启"显示隐藏文件"才能看到
+> - **不要手动修改** `.git` 目录下的内容，否则可能导致版本库损坏
+> - 删除 `.git` 文件夹 = 删除整个版本历史，项目变成普通文件夹
+
+.git 目录参考资料：
+- [.git 文件夹解析教程--CSDN](https://blog.csdn.net/Rysxt_/article/details/151074098)
+- [仓库创建与配备-.git目录的结构与作用--51CTO](https://blog.51cto.com/u_15469972/14471718)
+
+---
+
+## 4. Git 基础操作 📝
 
 ### 3.1 仓库初始化
 
