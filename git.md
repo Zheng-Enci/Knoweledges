@@ -705,6 +705,28 @@ a4e75d22 docs: 润色JS/TS混用说明的表述
 - `:...skipping...` 表示还有更多内容，按 `q` 退出查看
 - `--oneline` 模式只显示一行，更简洁
 
+**`git log -3` 预期输出**：
+```
+git log -3
+commit 0c09fcf104bcc80ce028d872c2f41b4ca4101737 (HEAD -> master, origin/master, origin/HEAD)
+Author: 王乐宸 <1954326264@qq.com>
+Date:   Sat Apr 25 17:12:04 2026 +0800
+
+    添加开发成员王乐宸
+
+commit 338b28ae59cda617c5f1faeed6198238643e2f54
+Author: ZhengEnCi <zheng_enci@qq.com>
+Date:   Thu Apr 23 21:18:02 2026 +0800
+
+    docs: 将README中相对路径链接改为GitCode完整URL
+
+commit 4f89057690c87a1d2ed2990bca0ca6f27c9ed6cd
+Author: ZhengEnCi <zheng_enci@qq.com>
+Date:   Thu Apr 23 21:16:36 2026 +0800
+
+    docs: 修正README中English Version链接的分支名为master
+```
+
 ---
 
 #### 第四步：修改文件并查看差异（练习 `git diff`）
