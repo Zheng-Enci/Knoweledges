@@ -339,11 +339,11 @@ $ git clone https://gitee.com/username/repo.git my-folder
 $ git clone --depth 1 https://gitee.com/username/repo.git
 ```
 
-💡 **推荐新手尝试的项目**：
+💡 可以试试克隆这个项目：
 
-| 项目 | 地址 | 特点 |
-|:-----|:-----|:-----|
-| **AI Workshop 学生管理系统前端** | `https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end` | 纯前端项目，克隆即用 |
+```bash
+git clone https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
+```
 
 ---
 
