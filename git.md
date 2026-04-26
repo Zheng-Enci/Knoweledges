@@ -580,6 +580,36 @@ $ git reset --hard abc1234
 
 ⚠️ **警告**：`--hard` 会永久删除未提交的修改，使用前请确认！
 
+---
+
+### 4.5 综合实践
+
+> 通过一个完整的练习，巩固本章学到的 Git 基础命令。
+
+#### 第一步：克隆仓库
+
+**目标**：将远程仓库下载到本地。
+
+**操作**：
+
+> 💡 **克隆位置说明**：在哪个目录执行 `git clone`，项目就会下载到哪个目录下。
+> 
+> 例如：在桌面执行，项目就会下载到 `C:\Users\你的用户名\Desktop\ai-workshop-student-management-system-front-end`
+
+```bash
+# 先进入桌面（示例）
+$ cd C:\Users\zheng\Desktop
+
+# 克隆 AI Workshop 学生管理系统前端项目
+$ git clone https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
+```
+
+**验证**：
+```bash
+# 确认 .git 文件夹存在（Git 仓库的标志）
+$ ls -la
+```
+
 Git 基础操作参考资料：
 - [Git 从入门到封神--CSDN](https://blog.csdn.net/2301_81028896/article/details/157034702)
 - [Git教程(入门)--腾讯云](https://developer.cloud.tencent.com/article/2622894)
