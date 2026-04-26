@@ -120,6 +120,23 @@ Git 与 GitHub 关系参考资料：
 > 4. 下载完成后，双击安装包，一路点击 **"Next"** 即可（保持默认设置）
 > 
 > 5. 安装完成后，在命令行输入 `git --version` 验证是否安装成功
+> 
+> **关于 winget 命令安装**：
+> 
+> winget 其实是**自动化下载安装器**，它会自动从 GitHub 下载 `Git-2.54.0-64-bit.exe` 并执行安装，本质上和手动下载是一样的：
+> 
+> ```
+> C:\Users\zheng>winget install --id Git.Git -e --source winget
+> Found Git [Git.Git] Version 2.54.0
+> Downloading https://github.com/git-for-windows/git/releases/download/...
+> Successfully installed
+> ```
+> 
+> ✅ **winget 的优势**：
+> - ⚡ **更快**：命令行下载速度通常比浏览器快
+> - 🖱️ **省事**：一键完成下载+安装，无需手动点击
+> - 🔄 **易更新**：`winget upgrade Git.Git` 一键更新到最新版
+> - 📋 **好管理**：`winget list` 查看所有已安装软件
 
 ### 2.2 基础配置
 
