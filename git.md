@@ -201,19 +201,38 @@ Git 与 GitHub 关系参考资料：
 > git config --list
 > ```
 
-> **本地配置（按项目设置）**：
+> **Git 配置的三个级别**：
 > 
-> 如果某个项目需要使用不同的身份（如工作项目用公司邮箱），可在项目目录下单独配置：
+> Git 支持三个级别的配置，优先级从高到低：**Local > Global > System**
+> 
+> | 级别 | 参数 | 作用范围 | 配置文件位置 |
+> |:-----|:-----|:---------|:-------------|
+> | **Local（本地）** | `--local` | 当前仓库 | `.git/config` |
+> | **Global（全局）** | `--global` | 当前用户所有仓库 | `~/.gitconfig` |
+> | **System（系统）** | `--system` | 系统所有用户 | `/etc/gitconfig` |
+> 
+> 💡 **使用建议**：
+> - 个人开发：用 `--global` 设置默认身份
+> - 多身份场景：工作项目用 `--local` 单独配置公司邮箱
+> - System 级别：企业统一配置时使用（需管理员权限）
+
+> **本地配置示例（工作/个人分离）**：
 > 
 > ```bash
-> cd /path/to/your/project
+> # 进入工作项目目录
+> cd /path/to/work-project
+> 
+> # 单独配置工作身份（不加 --global，默认就是 --local）
 > git config user.name "Work Name"
 > git config user.email "work@company.com"
 > ```
 > 
-> 本地配置优先级高于全局配置，仅对当前仓库生效。
+> 这样工作项目用公司邮箱，其他项目用个人邮箱，互不干扰。
 
 Git 基础配置参考资料：
+- [Git 用户名与邮箱配置指南--CSDN](https://blog.csdn.net/wenxuankeji/article/details/153337947)
+- [Git 提交时为什么必须设置用户名和邮箱--CSDN](https://wenku.csdn.net/answer/z3rz3f2macyt)
+- [Git配置层级：system、global、local配置的优先级处理--CSDN](https://blog.csdn.net/gitblog_00908/article/details/151811087)
 - [Git 用户名与邮箱配置指南--CSDN](https://blog.csdn.net/wenxuankeji/article/details/153337947)
 - [Git 提交时为什么必须设置用户名和邮箱--CSDN](https://wenku.csdn.net/answer/z3rz3f2macyt)
 
