@@ -121,7 +121,7 @@ Git 与 GitHub 关系参考资料：
 >    - **Setup 版本**：直接在命令行输入 `git --version`
 >    - **Portable 版本**：进入解压后的 `bin` 目录，使用完整路径运行，如 `D:\Git\bin\git.exe --version`
 > 
->    > 💡 **为什么不推荐给 Portable 配置环境变量？**
+>    > 💡 **可以给 Portable 配置环境变量，但不推荐**
 >    > 
 >    > 如果配置了环境变量，拔出 U 盘后：
 >    > - 环境变量里还残留着 U 盘路径（如 `D:\Git\bin`）
