@@ -619,6 +619,259 @@ $ git clone https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-
 > - 如何安装和使用
 > - 项目的功能特点
 
+---
+
+#### 第二步：查看仓库状态（练习 `git status`）
+
+**目标**：使用 `git status` 查看当前仓库的状态。
+
+**操作**：
+```bash
+# 确保你在项目目录下
+$ cd ai-workshop-student-management-system-front-end
+
+# 查看仓库状态
+$ git status
+```
+
+**预期输出**：
+```
+git status
+Refresh index: 100% (410/410), done.
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+```
+
+**说明**：
+- `On branch master`：当前在 master 分支上（分支相关内容在后面详细讲解）
+- `nothing to commit`：没有需要提交的修改
+- `working tree clean`：工作区很干净
+
+---
+
+#### 第三步：查看提交历史（练习 `git log`）
+
+**目标**：使用 `git log` 查看项目的提交历史。
+
+**操作**：
+```bash
+# 查看完整提交历史
+$ git log
+
+# 查看简洁版（推荐）
+$ git log --oneline
+
+# 查看最近3条提交
+$ git log -3
+```
+
+**预期输出**（部分）：
+```
+commit 0c09fcf104bcc80ce028d872c2f41b4ca4101737 (HEAD -> master, origin/master, origin/HEAD)
+Author: 王乐宸 <1954326264@qq.com>
+Date:   Sat Apr 25 17:12:04 2026 +0800
+
+    添加开发成员王乐宸
+
+commit 338b28ae59cda617c5f1faeed6198238643e2f54
+Author: ZhengEnCi <zheng_enci@qq.com>
+Date:   Thu Apr 23 21:18:02 2026 +0800
+
+    docs: 将README中相对路径链接改为GitCode完整URL
+:...skipping...
+```
+
+**`git log --oneline` 预期输出**（部分）：
+```
+git log --oneline
+0c09fcf1 (HEAD -> master, origin/master, origin/HEAD) 添加开发成员王乐宸
+338b28ae docs: 将README中相对路径链接改为GitCode完整URL
+4f890576 docs: 修正README中English Version链接的分支名为master
+c9663890 docs: 将README中English Version链接改为GitCode完整URL
+bcd6303c docs: 重命名README_CN.md为README_EN.md
+3f8e25c7 docs: 将README_CN.md翻译为英文版
+5bb92d32 docs: 修复README.md中Logo路径
+455c85ba docs: 在README.md标题区域添加项目Logo
+6cc9a2e5 docs: 将'开发团队'改为'我'
+656dcd3c docs: 润色设计原则表述
+a4e75d22 docs: 润色JS/TS混用说明的表述
+...
+```
+
+**说明**：
+- 每条记录包含：commit ID、作者、日期、提交信息
+- `:...skipping...` 表示还有更多内容，按 `q` 退出查看
+- `--oneline` 模式只显示一行，更简洁
+
+---
+
+#### 第四步：修改文件并查看差异（练习 `git diff`）
+
+**目标**：修改文件后，使用 `git diff` 查看修改内容。
+
+**操作**：
+```bash
+# 1. 先用文本编辑器打开 README.md，随便添加一行文字
+
+# 2. 保存后，查看工作区的修改
+$ git diff
+
+# 3. 再次查看仓库状态
+$ git status
+```
+
+**预期输出**：
+```
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+        modified:   README.md
+```
+
+---
+
+#### 第五步：添加到暂存区（练习 `git add`）
+
+**目标**：使用 `git add` 将修改添加到暂存区。
+
+**操作**：
+```bash
+# 将修改后的 README.md 添加到暂存区
+$ git add README.md
+
+# 或者添加所有修改
+$ git add .
+
+# 查看状态，确认已暂存
+$ git status
+```
+
+**预期输出**：
+```
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+```
+
+---
+
+#### 第六步：提交修改（练习 `git commit`）
+
+**目标**：使用 `git commit` 将暂存区的修改提交到本地仓库。
+
+**操作**：
+```bash
+# 提交修改，并写提交信息
+$ git commit -m "修改了 README.md 文件"
+
+# 查看提交后的状态
+$ git status
+
+# 查看最新的提交历史
+$ git log --oneline -3
+```
+
+**说明**：
+- `-m` 后面必须写提交信息，说明这次提交做了什么
+- 提交后，`git status` 应该显示 "nothing to commit"
+
+---
+
+#### 第七步：撤销暂存（练习 `git reset HEAD`）
+
+**目标**：练习将文件从暂存区移回工作区。
+
+**操作**：
+```bash
+# 1. 再次修改 README.md
+
+# 2. 添加到暂存区
+$ git add README.md
+
+# 3. 查看状态，确认已暂存
+$ git status
+
+# 4. 撤销暂存（从暂存区移回工作区）
+$ git reset HEAD README.md
+
+# 5. 查看状态，确认已回到工作区
+$ git status
+```
+
+**说明**：
+- `git reset HEAD` 不会丢失文件内容，只是取消暂存
+- 文件修改仍然保留在工作区
+
+---
+
+#### 第八步：撤销工作区修改（练习 `git checkout --`）
+
+**目标**：练习撤销工作区的修改，恢复到最后一次提交的状态。
+
+**操作**：
+```bash
+# 1. 确认 README.md 在工作区有修改（未 add）
+$ git status
+
+# 2. 查看具体修改了什么
+$ git diff README.md
+
+# 3. 撤销工作区的修改（⚠️ 会丢失修改！）
+$ git checkout -- README.md
+
+# 4. 查看状态，确认已恢复
+$ git status
+
+# 5. 打开文件确认内容已恢复
+```
+
+⚠️ **警告**：`git checkout --` 会永久丢失未提交的修改，请谨慎使用！
+
+---
+
+#### 第九步：版本回退（练习 `git reset --hard`）
+
+**目标**：练习回退到之前的版本。
+
+**操作**：
+```bash
+# 1. 先多做几次提交（重复第四步到第六步几次）
+
+# 2. 查看提交历史，找到要回退的版本
+$ git log --oneline
+
+# 3. 回退到上一个版本（保留修改）
+$ git reset --soft HEAD~1
+
+# 或者回退到上一个版本（丢弃修改）
+$ git reset --hard HEAD~1
+
+# 4. 查看提交历史确认
+$ git log --oneline
+```
+
+⚠️ **警告**：`--hard` 会永久删除未提交的修改，使用前请确认！
+
+---
+
+#### 练习总结
+
+通过以上步骤，你已经练习了本章的所有核心命令：
+
+| 命令 | 作用 | 练习步骤 |
+|:-----|:-----|:---------|
+| `git status` | 查看仓库状态 | 第二步、第四步、第五步 |
+| `git log` | 查看提交历史 | 第三步、第六步、第九步 |
+| `git diff` | 查看文件差异 | 第四步 |
+| `git add` | 添加到暂存区 | 第五步、第七步 |
+| `git commit` | 提交到本地仓库 | 第六步、第九步 |
+| `git reset HEAD` | 撤销暂存 | 第七步 |
+| `git checkout --` | 撤销工作区修改 | 第八步 |
+| `git reset --hard` | 版本回退 | 第九步 |
+
+💡 **建议**：多重复练习几次，直到这些命令变得熟练！
+
 Git 基础操作参考资料：
 - [Git 从入门到封神--CSDN](https://blog.csdn.net/2301_81028896/article/details/157034702)
 - [Git教程(入门)--腾讯云](https://developer.cloud.tencent.com/article/2622894)
