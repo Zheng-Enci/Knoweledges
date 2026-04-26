@@ -605,10 +605,19 @@ $ git clone https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-
 ```
 
 **验证**：
-```bash
-# 确认 .git 文件夹存在（Git 仓库的标志）
-$ ls -la
-```
+
+> 克隆完成后，在桌面打开 `ai-workshop-student-management-system-front-end` 文件夹，查看以下内容：
+> 
+> - **项目文件**（如 `index.html`、`css`、`js` 等）
+> - **`README.md` 文件**（项目的"说明书"，介绍项目是什么、怎么用）
+> - **隐藏的 `.git` 文件夹**（Git 仓库的标志，需要在文件资源管理器中开启"显示隐藏的项目"）
+> 
+> 💡 **关于 README.md**：
+> 
+> 一个规范的开源项目通常都会有 `README.md` 文件，它是项目的**入口和名片**，用来告诉访问者：
+> - 这个项目是做什么的
+> - 如何安装和使用
+> - 项目的功能特点
 
 Git 基础操作参考资料：
 - [Git 从入门到封神--CSDN](https://blog.csdn.net/2301_81028896/article/details/157034702)
