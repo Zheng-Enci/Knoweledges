@@ -1048,7 +1048,12 @@ nothing to commit, working tree clean
 
 **说明**：
 - `nothing to commit, working tree clean`：工作区已恢复干净，修改已被丢弃
-- 文件内容已恢复到上次提交时的状态
+- 文件内容已恢复到**最近一次提交（HEAD）**时的状态
+
+💡 **`git checkout --` 原理**：
+- 用**暂存区**的内容覆盖工作区的文件
+- 如果文件**没有被 add** 到暂存区，则用**最近一次提交（HEAD）**的内容覆盖
+- 这会**永久丢弃**工作区中未提交的修改
 
 ⚠️ **警告**：`git checkout --` 会永久丢失未提交的修改，请谨慎使用！
 
