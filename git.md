@@ -99,6 +99,24 @@ Git 与 GitHub 关系参考资料：
 
 ### 2.1 Windows 安装
 
+> **安装步骤**：
+> 
+> 1. 访问官方下载页面：[https://git-scm.com/install/windows](https://git-scm.com/install/windows)
+> 
+> 2. 点击 **"Click here to download"** 下载最新版本（通常下载 x64 版本即可）
+> 
+> 3. 或者选择 **"Other Git for Windows downloads"** 中的特定版本：
+>    - **Standalone Installer**
+>      - Git for Windows/x64 Setup（64位系统推荐）
+>      - Git for Windows/ARM64 Setup（ARM设备）
+>    - **Portable ("thumbdrive edition")** - 免安装便携版
+>      - Git for Windows/x64 Portable
+>      - Git for Windows/ARM64 Portable
+> 
+> 4. 下载完成后，双击安装包，一路点击 **"Next"** 即可（保持默认设置）
+> 
+> 5. 安装完成后，在命令行输入 `git --version` 验证是否安装成功
+
 ### 2.2 基础配置
 
 ---
