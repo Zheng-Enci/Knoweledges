@@ -911,7 +911,7 @@ b2d2322f (HEAD -> master) 在 README.md 文件末尾增加了一行 Hello git
 
 **操作**：
 ```bash
-# 1. 再次修改 README.md
+# 1. 删除刚才添加的 "Hello git" 这一行
 
 # 2. 添加到暂存区
 $ git add README.md
