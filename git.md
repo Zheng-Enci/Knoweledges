@@ -123,6 +123,10 @@ Git 与 GitHub 关系参考资料：
 > 
 > **关于 winget 命令安装**：
 > 
+> > 💡 **什么是 winget？**
+> > 
+> > winget 是**微软官方推出的 Windows 包管理器**（Windows Package Manager），对标 Linux 的 `apt` / `yum`、macOS 的 `Homebrew`。它是 Windows 10/11 系统自带的命令行工具，让你用一行命令就能搜索、安装、更新、卸载软件。
+> 
 > winget 其实是**自动化下载安装器**，它会自动从 GitHub 下载 `Git-2.54.0-64-bit.exe` 并执行安装，本质上和手动下载是一样的：
 > 
 > ```
