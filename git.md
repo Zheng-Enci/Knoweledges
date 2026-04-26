@@ -242,11 +242,137 @@ Git 基础配置参考资料：
 
 ### 3.1 仓库初始化
 
+> **创建新仓库**：
+> 
+> ```bash
+> # 在当前目录初始化 Git 仓库
+> git init
+> 
+> # 创建新目录并初始化
+> git init my-project
+> ```
+> 
+> 执行后会在目录下生成 `.git` 隐藏文件夹，这就是 Git 的版本库。
+
+> **克隆远程仓库**：
+> 
+> ```bash
+> # 克隆 GitHub/Gitee 上的仓库到本地
+> git clone https://github.com/username/repo.git
+> 
+> # 克隆时指定本地文件夹名
+> git clone https://github.com/username/repo.git my-folder
+> ```
+
 ### 3.2 基本工作流程（add/commit）
+
+> Git 工作区有三个概念：
+> 
+> | 区域 | 说明 | 对应命令 |
+> |:-----|:-----|:---------|
+> | **工作区** | 你看到的实际文件 | 直接编辑文件 |
+> | **暂存区** | 准备提交的修改 | `git add` |
+> | **本地仓库** | 提交后的版本历史 | `git commit` |
+
+> **添加文件到暂存区**：
+> 
+> ```bash
+> # 添加单个文件
+> git add filename.txt
+> 
+> # 添加所有修改
+> git add .
+> 
+> # 添加所有 .py 文件
+> git add *.py
+> ```
+
+> **提交到本地仓库**：
+> 
+> ```bash
+> # 提交并写说明（必须加 -m）
+> git commit -m "完成了登录功能"
+> 
+> # 添加并提交（合并 add 和 commit）
+> git commit -am "修复了样式bug"
+> ```
 
 ### 3.3 查看状态与历史
 
+> **查看当前状态**：
+> 
+> ```bash
+> # 查看哪些文件被修改、哪些在暂存区
+> git status
+> ```
+
+> **查看提交历史**：
+> 
+> ```bash
+> # 查看完整历史
+> git log
+> 
+> # 简洁显示（一行一个提交）
+> git log --oneline
+> 
+> # 查看最近3条
+> git log -3
+> 
+> # 图形化显示分支
+> git log --oneline --graph
+> ```
+
+> **查看文件差异**：
+> 
+> ```bash
+> # 查看工作区与暂存区的差异
+> git diff
+> 
+> # 查看暂存区与上次提交的差异
+> git diff --cached
+> ```
+
 ### 3.4 撤销与回退
+
+> **撤销工作区的修改**（未 add）：
+> 
+> ```bash
+> # 撤销单个文件的修改
+> git checkout -- filename.txt
+> 
+> # 撤销所有修改
+> git checkout -- .
+> ```
+
+> **撤销暂存区的文件**（已 add 未 commit）：
+> 
+> ```bash
+> # 把文件从暂存区移回工作区
+> git reset HEAD filename.txt
+> ```
+
+> **回退到历史版本**：
+> 
+> ```bash
+> # 查看提交历史，找到 commit id
+> git log --oneline
+> 
+> # 软回退（保留修改，回到暂存区）
+> git reset --soft HEAD~1
+> 
+> # 硬回退（丢弃修改，彻底回到上一版本）
+> git reset --hard HEAD~1
+> 
+> # 回退到指定版本
+> git reset --hard abc1234
+> ```
+
+> ⚠️ **注意**：`--hard` 会永久删除未提交的修改，使用前请确认！
+
+Git 基础操作参考资料：
+- [Git 从入门到封神--CSDN](https://blog.csdn.net/2301_81028896/article/details/157034702)
+- [Git教程(入门)--腾讯云](https://developer.cloud.tencent.com/article/2622894)
+- [Revert and undo changes--GitLab Docs](https://docs.gitlab.com/ee/topics/git/undo.html)
 
 ---
 
