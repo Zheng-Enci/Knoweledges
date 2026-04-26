@@ -323,11 +323,13 @@ Git 基础配置参考资料：
 > 
 > 💡 **推荐新手尝试的知名项目**：
 > 
-> | 项目 | 地址 | 特点 |
-> |:-----|:-----|:-----|
-> | **Web-Development 迷你项目** | `https://gitcode.com/gh_mirrors/webde/Web-Development` | HTML/CSS 实战教程，克隆即用 |
+> | 项目 | 地址 | Star | 特点 |
+> |:-----|:-----|:-----|:-----|
+> | **Luckysheet** | `https://gitee.com/mengshukeji/Luckysheet` | 23K+ | 🚀 纯前端在线 Excel，功能强大，双击即用 |
+> | **DataV 大屏模板** | `https://gitee.com/daidaibg/IofTV-Screen` | 5K+ | 🔥 数据可视化大屏，效果炫酷 |
+> | **Layui** | `https://gitee.com/layui/layui` | 23K+ | 经典 Web UI 组件库，原生 JS |
 > 
-> 这是一个**纯前端项目**，克隆后双击 HTML 文件就能在浏览器打开，非常适合新手练习！
+> 这些都是**纯前端项目**，克隆后双击 HTML 文件就能在浏览器打开，非常适合新手学习！
 
 ### 4.2 基本工作流程（add/commit）
 
