@@ -992,6 +992,63 @@ $ git status
 # 5. 打开文件确认内容已恢复
 ```
 
+**第1步预期输出**：
+```
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+**第2步预期输出**：
+```
+git diff README.md
+diff --git a/README.md b/README.md
+index 779455c8..d8b93b7a 100644
+--- a/README.md
++++ b/README.md
+@@ -551,5 +551,4 @@ API 接口定义在 `src/api/` 目录：
+ 
+ Made with ❤ by 郑恩赐
+ 
+-</div>
+-Hello git
+\ No newline at end of file
++</div>
+\ No newline at end of file
+```
+
+**说明**：
+- `-</div>` 和 `-Hello git`：表示这两行被删除了
+- `+</div>`：表示修改后只剩下这一行
+
+**第3步预期输出**：
+```
+git checkout -- README.md
+# 没有任何输出，表示执行成功
+```
+
+**第4步预期输出**：
+```
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+```
+
+**说明**：
+- `nothing to commit, working tree clean`：工作区已恢复干净，修改已被丢弃
+- 文件内容已恢复到上次提交时的状态
+
 ⚠️ **警告**：`git checkout --` 会永久丢失未提交的修改，请谨慎使用！
 
 ---
