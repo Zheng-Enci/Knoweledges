@@ -1106,13 +1106,329 @@ Git 基础操作参考资料：
 
 ## 5. 分支管理 🌿
 
+分支是 Git 最强大的功能之一。你可以把它理解为**平行宇宙**——在同一个项目中，不同的分支可以同时进行不同的开发工作，互不干扰。
+
 ### 5.1 分支基础
+
+#### 什么是分支？
+
+分支就像是一条独立的时间线：
+- **主分支（master/main）**：项目的稳定版本，随时可以发布
+- **开发分支（develop）**：日常开发的主线
+- **功能分支（feature）**：开发新功能时使用
+- **修复分支（hotfix）**：紧急修复线上问题
+
+💡 **类比**：想象你在写一本小说，主分支是已出版的版本，功能分支是你在写的番外篇，两者互不影响。
+
+#### 查看分支
+
+```bash
+# 查看本地所有分支
+$ git branch
+
+# 查看所有分支（包括远程）
+$ git branch -a
+
+# 查看分支详情（含最后一次提交）
+$ git branch -v
+```
+
+**预期输出**：
+```
+git branch
+* master
+  dev
+  feature-login
+```
+
+**说明**：
+- `*` 表示当前所在的分支
+- `master` 是主分支
+- `dev` 和 `feature-login` 是其他分支
+
+#### 创建分支
+
+```bash
+# 方式1：仅创建分支（不切换）
+$ git branch <分支名>
+
+# 示例：创建 feature-login 分支
+$ git branch feature-login
+```
+
+#### 切换分支
+
+```bash
+# 切换到指定分支
+$ git checkout <分支名>
+
+# 示例：切换到 feature-login 分支
+$ git checkout feature-login
+```
+
+**预期输出**：
+```
+git checkout feature-login
+Switched to branch 'feature-login'
+```
+
+#### 创建并切换分支（推荐）
+
+```bash
+# 一步完成创建和切换
+$ git checkout -b <分支名>
+
+# 示例：创建并切换到 dev 分支
+$ git checkout -b dev
+```
+
+**预期输出**：
+```
+git checkout -b dev
+Switched to a new branch 'dev'
+```
+
+💡 **建议**：日常开发中推荐使用 `git checkout -b`，一步到位！
+
+#### 删除分支
+
+```bash
+# 删除已合并的分支
+$ git branch -d <分支名>
+
+# 强制删除未合并的分支
+$ git branch -D <分支名>
+```
+
+⚠️ **注意**：不能删除当前所在的分支，需要先切换到其他分支。
+
+---
 
 ### 5.2 分支合并
 
+当功能开发完成后，需要将分支合并回主分支。
+
+#### 合并分支
+
+```bash
+# 1. 先切换到目标分支（如 master）
+$ git checkout master
+
+# 2. 合并指定分支到当前分支
+$ git merge <分支名>
+
+# 示例：将 dev 分支合并到 master
+$ git checkout master
+$ git merge dev
+```
+
+**预期输出**（无冲突）：
+```
+git merge dev
+Updating abc1234..def5678
+Fast-forward
+ src/login.js | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+```
+
+**说明**：
+- `Fast-forward`：表示快速合并，没有冲突
+- 列出了修改的文件和变更统计
+
+#### 合并模式
+
+| 模式 | 说明 | 使用场景 |
+|:-----|:-----|:---------|
+| **Fast-forward** | 快速合并，直接移动指针 | 目标分支没有新提交 |
+| **Three-way merge** | 三方合并，创建新的合并提交 | 两个分支都有新提交 |
+| **Squash merge** | 压缩合并，将多个提交合并为一个 | 保持主分支历史简洁 |
+
+#### 查看合并历史
+
+```bash
+# 查看分支合并图
+$ git log --oneline --graph --all
+```
+
+**预期输出**：
+```
+git log --oneline --graph --all
+*   def5678 (HEAD -> master) Merge branch 'dev'
+|\
+| * abc1234 (dev) 添加用户登录功能
+| * 7890abc 添加登录页面
+* | 4567def (master) 修复首页样式
+|/
+* 1234abc 初始提交
+```
+
+**说明**：
+- `*` 表示提交节点
+- `|` 和 `\` 表示分支走向
+- 可以清楚地看到分支的创建、开发和合并过程
+
+---
+
 ### 5.3 分支策略
 
+好的分支策略能让团队协作更高效。
+
+#### Git Flow 工作流
+
+Git Flow 是一种经典的分支管理模型，包含五类分支：
+
+| 分支类型 | 名称 | 作用 | 生命周期 |
+|:---------|:-----|:-----|:---------|
+| **主分支** | `master` | 存放稳定、可发布的代码 | 长期存在 |
+| **开发分支** | `develop` | 集成所有开发完成的特性 | 长期存在 |
+| **功能分支** | `feature/*` | 开发新功能 | 临时，合并后删除 |
+| **发布分支** | `release/*` | 准备发布的版本 | 临时，发布后删除 |
+| **热修复分支** | `hotfix/*` | 紧急修复生产环境问题 | 临时，修复后删除 |
+
+**工作流程**：
+```
+1. 从 develop 创建 feature 分支开发新功能
+2. 功能完成后合并回 develop
+3. 发布时从 develop 创建 release 分支
+4. release 完成后合并到 master 和 develop
+5. 线上问题从 master 创建 hotfix 分支修复
+6. hotfix 完成后合并到 master 和 develop
+```
+
+#### GitHub Flow 工作流
+
+GitHub Flow 是一种更简单的分支策略：
+
+1. **master 分支**始终保持可部署状态
+2. 从 master 创建功能分支进行开发
+3. 完成后提交 Pull Request
+4. 代码审查通过后合并到 master
+5. 立即部署
+
+💡 **适用场景**：
+- Git Flow：大型项目，版本发布周期较长
+- GitHub Flow：小型项目，持续部署
+
+#### 分支命名规范
+
+| 分支类型 | 命名示例 | 说明 |
+|:---------|:---------|:-----|
+| 功能分支 | `feature/login-page` | feature/功能描述 |
+| 修复分支 | `fix/header-style` | fix/修复描述 |
+| 热修复分支 | `hotfix/payment-bug` | hotfix/修复描述 |
+| 发布分支 | `release/v1.2.0` | release/版本号 |
+
+---
+
 ### 5.4 冲突解决
+
+当两个分支修改了同一文件的同一位置时，就会产生冲突。
+
+#### 冲突是如何产生的？
+
+```
+        A---B---C feature
+       /
+  D---E---F---G master
+```
+
+- 分支 `feature` 修改了某文件
+- 分支 `master` 也修改了同一文件的同一位置
+- 合并时 Git 无法自动判断该保留哪个版本
+
+#### 解决冲突的步骤
+
+**1. 查看冲突文件**
+
+```bash
+$ git status
+```
+
+**预期输出**：
+```
+git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   src/login.js
+```
+
+**2. 打开冲突文件**
+
+冲突文件会包含特殊标记：
+```javascript
+<<<<<<< HEAD
+// master 分支的内容
+function login() {
+    return "old login";
+}
+=======
+// feature 分支的内容
+function login() {
+    return "new login with OAuth";
+}
+>>>>>>> feature
+```
+
+**标记说明**：
+- `<<<<<<< HEAD` 到 `=======`：当前分支的内容
+- `=======` 到 `>>>>>>> feature`：要合并的分支的内容
+
+**3. 手动编辑解决冲突**
+
+删除冲突标记，保留正确的代码：
+```javascript
+// 解决后的内容
+function login() {
+    return "new login with OAuth";
+}
+```
+
+**4. 标记冲突已解决**
+
+```bash
+# 添加已解决的文件
+$ git add src/login.js
+
+# 完成合并
+$ git commit -m "解决 login.js 合并冲突"
+```
+
+#### 使用合并工具
+
+```bash
+# 启动图形化合并工具
+$ git mergetool
+```
+
+常用的合并工具：
+- **VS Code**：内置 Git 合并功能
+- **Beyond Compare**：专业的文件对比工具
+- **KDiff3**：开源的合并工具
+
+#### 取消合并
+
+如果冲突太复杂，可以取消合并：
+```bash
+# 取消当前合并（保留修改）
+$ git merge --abort
+```
+
+#### 预防冲突的建议
+
+1. **频繁同步**：经常从主分支拉取最新代码
+2. **小步提交**：每次修改尽量小，减少冲突范围
+3. **及时合并**：功能完成后尽快合并
+4. **沟通协调**：多人协作时提前沟通分工
+
+分支管理参考资料：
+- [Git入门--分支管理--CSDN](https://bbs.csdn.net/topics/619739251)
+- [Git 分支管理终极指南--CSDN](https://blog.csdn.net/2301_79248256/article/details/155818051)
+- [Git分支管理从基础操作到团队协作工作流实践--阿里云](https://developer.aliyun.com/article/1665687)
+- [Git 高级合并--Git官方文档](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E9%AB%98%E7%BA%A7%E5%90%88%E5%B9%B6.html)
 
 ---
 
