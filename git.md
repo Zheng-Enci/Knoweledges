@@ -106,14 +106,16 @@ Git 与 GitHub 关系参考资料：
 > 2. 点击 **"Click here to download"** 下载最新版本（例如 x64 版本）
 > 
 > 3. 或者选择 **"Other Git for Windows downloads"** 中的特定版本：
->    - **Standalone Installer**
->      - Git for Windows/x64 Setup
->      - Git for Windows/ARM64 Setup
->    - **Portable ("thumbdrive edition")**
->      - Git for Windows/x64 Portable
->      - Git for Windows/ARM64 Portable
->    - **Using winget tool**
->      - `winget install --id Git.Git -e --source winget`
+> 
+>    | 版本类型 | 具体选项 | 说明 |
+>    |:---------|:---------|:-----|
+>    | **Standalone Installer** | Git for Windows/x64 Setup | 标准安装版（64位），适合大多数电脑 |
+>    | | Git for Windows/ARM64 Setup | 标准安装版（ARM架构），适合ARM设备 |
+>    | **Portable** | Git for Windows/x64 Portable | 便携免安装版，解压即用，适合U盘携带 |
+>    | | Git for Windows/ARM64 Portable | ARM便携版 |
+>    | **Using winget** | `winget install --id Git.Git -e --source winget` | 命令行一键安装 |
+> 
+>    💡 **如何选择**：普通电脑选 **x64 Setup**；需要U盘携带选 **Portable**；ARM设备选 **ARM64** 版本
 > 
 > 4. 下载完成后，双击安装包，一路点击 **"Next"** 即可（保持默认设置）
 > 
