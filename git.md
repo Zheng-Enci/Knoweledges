@@ -159,7 +159,17 @@ Git 与 GitHub 关系参考资料：
 
 > **为什么需要配置用户名和邮箱？**
 > 
-> Git 是分布式版本控制系统，每次提交代码时都需要记录"是谁提交的"。如果不配置，会导致：
+> Git 是分布式版本控制系统，每次提交代码时都需要记录"是谁提交的"。**如果不配置，会导致提交失败**，报错信息如下：
+> 
+> ```
+> *** Please tell me who you are.
+> 
+> Run
+>   git config --global user.name "Your Name"
+>   git config --global user.email "you@example.com"
+> ```
+> 
+> 配置后可以避免：
 > - 提交记录显示为 unknown 或系统默认用户名
 > - 无法与 GitHub/Gitee 等平台账号正确关联
 > - 团队协作时难以追溯代码来源
