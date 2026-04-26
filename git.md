@@ -926,7 +926,46 @@ $ git reset HEAD README.md
 $ git status
 ```
 
+**第3步预期输出**（暂存状态）：
+```
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+```
+
+**第4步预期输出**：
+```
+git reset HEAD README.md
+Unstaged changes after reset:
+M       README.md
+```
+
 **说明**：
+- `Unstaged changes after reset`：表示已成功撤销暂存
+- `M       README.md`：M 表示文件被修改（Modified）
+
+**第5步预期输出**（撤销暂存后）：
+```
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+**说明**：
+- `Changes not staged for commit`：文件已回到工作区，不在暂存区
 - `git reset HEAD` 不会丢失文件内容，只是取消暂存
 - 文件修改仍然保留在工作区
 
