@@ -246,11 +246,10 @@ Git 基础配置参考资料：
 
 > 💡 **Git 命令的本质**
 > 
-> 你使用的所有 Git 命令，本质上都是在操作 `.git` 目录：
-> - `git add` → 修改 `.git/index`（暂存区）
-> - `git commit` → 在 `.git/objects/` 创建提交对象
-> - `git checkout` → 根据 `.git/objects/` 恢复文件
-> - `git log` → 读取 `.git/objects/` 和 `.git/refs/` 的历史
+> 你使用的所有 Git 命令，本质上都是在**读取或修改 `.git` 目录中的文件**。比如：
+> - 提交代码时，Git 会把代码内容写入 `.git/objects/`
+> - 查看历史时，Git 会从 `.git/objects/` 和 `.git/refs/` 中读取记录
+> - 切换分支时，Git 会根据 `.git/HEAD` 的指向恢复文件
 
 > **.git 目录的核心文件和文件夹**：
 > 
