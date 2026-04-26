@@ -1097,23 +1097,6 @@ $ git log --oneline
 
 ---
 
-#### 练习总结
-
-通过以上步骤，你已经练习了本章的所有核心命令：
-
-| 命令 | 作用 | 练习步骤 |
-|:-----|:-----|:---------|
-| `git status` | 查看仓库状态 | 第二步、第四步、第五步 |
-| `git log` | 查看提交历史 | 第三步、第六步、第九步 |
-| `git diff` | 查看文件差异 | 第四步 |
-| `git add` | 添加到暂存区 | 第五步、第七步 |
-| `git commit` | 提交到本地仓库 | 第六步、第九步 |
-| `git reset HEAD` | 撤销暂存 | 第七步 |
-| `git checkout --` | 撤销工作区修改 | 第八步 |
-| `git reset --hard` | 版本回退 | 第九步 |
-
-💡 **建议**：多重复练习几次，直到这些命令变得熟练！
-
 Git 基础操作参考资料：
 - [Git 从入门到封神--CSDN](https://blog.csdn.net/2301_81028896/article/details/157034702)
 - [Git教程(入门)--腾讯云](https://developer.cloud.tencent.com/article/2622894)
