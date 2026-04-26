@@ -747,17 +747,49 @@ Date:   Thu Apr 23 21:16:36 2026 +0800
 
 **操作**：
 ```bash
-# 1. 先用文本编辑器打开 README.md，随便添加一行文字
-
-# 2. 保存后，查看工作区的修改
+# 1. 先执行 git diff，确认当前没有修改
 $ git diff
 
-# 3. 再次查看仓库状态
+# 2. 用文本编辑器打开 README.md，随便添加一行文字，然后保存
+
+# 3. 再次执行 git diff，查看工作区的修改
+$ git diff
+
+# 4. 查看仓库状态
 $ git status
 ```
 
-**预期输出**：
+**第1步预期输出**（修改前）：
 ```
+git diff
+# 没有任何输出，表示工作区没有修改
+```
+
+**第3步预期输出**（修改后）：
+```
+git diff
+diff --git a/README.md b/README.md
+index abc1234..def5678 100644
+--- a/README.md
++++ b/README.md
+@@ -1,5 +1,6 @@
+ # 项目标题
+ 
++这是我添加的一行文字
+ ## 项目简介
+ 
+ 这是一个示例项目。
+```
+
+**说明**：
+- `---` 表示原文件内容
+- `+++` 表示修改后的内容
+- `+` 开头的行表示新增的内容
+- `-` 开头的行表示删除的内容
+
+**第4步预期输出**：
+```
+git status
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
         modified:   README.md
