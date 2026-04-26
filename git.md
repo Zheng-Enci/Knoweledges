@@ -21,6 +21,22 @@
 > | **分支管理** | 轻松创建、切换、合并分支 |
 > | **速度快** | 本地操作，秒级响应 |
 
+> **Git 与代码托管平台的关系**：
+> 
+> Git 是版本控制工具，而 **GitHub、GitCode、Gitee** 等是基于 Git 的**远程代码托管平台**。
+> 
+> 可以把 Git 比作"邮件客户端"，而这些平台就是"邮箱服务商"：
+> - **GitHub**：全球最大的代码托管平台，开源生态丰富
+> - **GitCode**：华为云与 CSDN 联合打造，国内访问速度快
+> - **Gitee（码云）**：国内最大的代码托管平台，本土化服务好
+> - **GitLab**：支持私有化部署，企业常用
+> 
+> 这些平台都支持 Git 协议，你可以用相同的 Git 命令与它们交互。
+
+代码托管平台参考资料：
+- [同样是代码托管，GitLab、GitHub、Gitee、GitCode之间有什么区别--CSDN](https://blog.csdn.net/BradenHan/article/details/136673828)
+- [2025 Gitee 与 GitHub 全面对比--掘金](https://juejin.cn/post/7570984341414887439)
+
 Git 简介参考资料：
 - [Git 是什么--Microsoft Learn](https://docs.microsoft.com/zh-cn/devops/develop/git/what-is-git)
 - [Git版本控制系统详解--CSDN](https://blog.csdn.net/xingzhemengyou1/article/details/159800029)
