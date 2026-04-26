@@ -855,7 +855,7 @@ Changes to be committed:
 **操作**：
 ```bash
 # 提交修改，并写提交信息
-$ git commit -m "修改了 README.md 文件"
+$ git commit -m "在 README.md 文件末尾增加了一行 Hello git"
 
 # 查看提交后的状态
 $ git status
