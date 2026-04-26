@@ -769,16 +769,15 @@ git diff
 ```
 git diff
 diff --git a/README.md b/README.md
-index abc1234..def5678 100644
+index 686311c9..779455c8 100644
 --- a/README.md
 +++ b/README.md
-@@ -1,5 +1,6 @@
- # 项目标题
+@@ -552,3 +552,4 @@ API 接口定义在 `src/api/` 目录：
+ Made with ❤ by 郑恩赐
  
+ </div>
 +Hello git
- ## 项目简介
- 
- 这是一个示例项目。
+\ No newline at end of file
 ```
 
 **说明**：
