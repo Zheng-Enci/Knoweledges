@@ -804,6 +804,14 @@ Changes not staged for commit:
 no changes added to commit (use "git add" and/or "git commit -a")
 ```
 
+**说明**：
+- `On branch master`：当前在 master 分支上
+- `Your branch is up to date with 'origin/master'`：本地分支与远程分支同步
+- `Changes not staged for commit`：有修改但未添加到暂存区
+- `modified: README.md`：README.md 文件被修改了
+- `use "git add <file>..."`：提示可以使用 `git add` 添加文件到暂存区
+- `use "git restore <file>..."`：提示可以使用 `git restore` 撤销修改
+
 ---
 
 #### 第五步：添加到暂存区（练习 `git add`）
