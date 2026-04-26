@@ -88,7 +88,7 @@ Git 简介参考资料：
 > | **关系** | 独立存在 | 基于 Git 构建，依赖 Git 实现版本控制 |
 
 Git 与 GitHub 关系参考资料：
-- 【编程史】Git是啥?它和GitHub关系是?--掘金](https://juejin.cn/post/7515461483893145610)
+- [【编程史】Git是啥?它和GitHub关系是?--掘金](https://juejin.cn/post/7515461483893145610)
 - [Git 和 GitHub 入门教程--CSDN](https://blog.csdn.net/hhw_hhw/article/details/148510950)
 
 ---
