@@ -667,8 +667,9 @@ $ git log --oneline
 $ git log -3
 ```
 
-**预期输出**（部分）：
+**`git log` 预期输出**（部分）：
 ```
+git log
 commit 0c09fcf104bcc80ce028d872c2f41b4ca4101737 (HEAD -> master, origin/master, origin/HEAD)
 Author: 王乐宸 <1954326264@qq.com>
 Date:   Sat Apr 25 17:12:04 2026 +0800
@@ -705,7 +706,7 @@ a4e75d22 docs: 润色JS/TS混用说明的表述
 - `:...skipping...` 表示还有更多内容，按 `q` 退出查看
 - `--oneline` 模式只显示一行，更简洁
 
-**`git log` 预期输出**：
+**`git log -3` 预期输出**：
 ```
 git log -3
 commit 0c09fcf104bcc80ce028d872c2f41b4ca4101737 (HEAD -> master, origin/master, origin/HEAD)
