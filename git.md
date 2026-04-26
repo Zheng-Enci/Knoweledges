@@ -1065,18 +1065,16 @@ nothing to commit, working tree clean
 
 **操作**：
 ```bash
-# 1. 先多做几次提交（重复第四步到第六步几次）
-
-# 2. 查看提交历史，找到要回退的版本
+# 1. 查看提交历史，找到要回退的版本
 $ git log --oneline
 
-# 3. 回退到上一个版本（保留修改）
+# 2. 回退到上一个版本（保留修改）
 $ git reset --soft HEAD~1
 
 # 或者回退到上一个版本（丢弃修改）
 $ git reset --hard HEAD~1
 
-# 4. 查看提交历史确认
+# 3. 查看提交历史确认
 $ git log --oneline
 ```
 
