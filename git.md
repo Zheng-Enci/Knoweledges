@@ -832,10 +832,19 @@ $ git status
 
 **预期输出**：
 ```
+git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
 Changes to be committed:
   (use "git restore --staged <file>..." to unstage)
         modified:   README.md
 ```
+
+**说明**：
+- `Changes to be committed`：修改已添加到暂存区，等待提交
+- `use "git restore --staged <file>..."`：提示可以使用 `git restore --staged` 撤销暂存
+- 与 `Changes not staged` 不同，现在文件已经在暂存区了
 
 ---
 
