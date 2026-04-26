@@ -111,8 +111,8 @@ Git 与 GitHub 关系参考资料：
 >    |:---------|:---------|:-----|
 >    | **Standalone Installer** | Git for Windows/x64 Setup | 标准安装版（64位），适合大多数电脑 |
 >    | | Git for Windows/ARM64 Setup | 标准安装版（ARM架构），适合ARM设备 |
->    | **Portable** | Git for Windows/x64 Portable | 便携免安装版，解压即用，适合U盘携带 |
->    | | Git for Windows/ARM64 Portable | ARM便携版 |
+>    | **Portable** | Git for Windows/x64 Portable | 便携版，双击解压出文件夹，无需安装，适合U盘携带 |
+>    | | Git for Windows/ARM64 Portable | ARM便携版，解压即用，不修改系统环境 |
 >    | **Using winget** | `winget install --id Git.Git -e --source winget` | 命令行一键安装 |
 > 
 >    💡 **如何选择**：普通电脑选 **x64 Setup**；需要U盘携带选 **Portable**；ARM设备选 **ARM64** 版本
