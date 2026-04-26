@@ -1065,8 +1065,8 @@ nothing to commit, working tree clean
 
 **操作**：
 ```bash
-# 1. 查看提交历史，找到要回退的版本
-$ git log --oneline
+# 1. 查看最近5次提交历史
+$ git log --oneline -5
 
 # 2. 回退到上一个版本（保留修改）
 $ git reset --soft HEAD~1
