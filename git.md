@@ -117,7 +117,9 @@ Git 与 GitHub 关系参考资料：
 > 
 >    💡 **如何选择**：普通电脑选 **x64 Setup**；需要U盘携带选 **Portable**；ARM设备选 **ARM64** 版本
 > 
-> 4. 安装完成后，在命令行输入 `git --version` 验证是否安装成功
+> 4. **验证安装**：
+>    - **Setup 版本**：直接在命令行输入 `git --version`
+>    - **Portable 版本**：进入解压后的 `bin` 目录，使用完整路径运行，如 `D:\Git\bin\git.exe --version`（不推荐配置环境变量，保持便携性）
 > 
 > **关于 winget 命令安装**：
 > 
