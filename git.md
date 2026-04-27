@@ -2087,6 +2087,7 @@ $ git remote set-url origin https://gitcode.com/你的用户名/test.git
 $ git remote rename origin gitcode
 
 # 删除远程仓库关联（断开本地仓库与远程仓库的连接，不会删除远程仓库本身）
+# 断开连接后：git push 和 git pull 命令将无法使用，直到重新关联新的远程仓库
 $ git remote remove origin
 ```
 
