@@ -1432,6 +1432,379 @@ $ git merge --abort
 
 ---
 
+### 5.5 综合实践 🎯
+
+> 通过一个完整的练习，巩固本章学到的分支管理命令。
+
+#### 第一步：查看当前分支（练习 `git branch`）
+
+**目标**：使用 `git branch` 查看当前仓库的所有分支。
+
+**操作**：
+```bash
+# 确保你在项目目录下
+$ cd ai-workshop-student-management-system-front-end
+
+# 查看本地分支
+$ git branch
+
+# 查看所有分支（包括远程）
+$ git branch -a
+
+# 查看分支详情
+$ git branch -v
+```
+
+**预期输出**：
+```
+git branch
+* master
+
+git branch -a
+* master
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+
+git branch -v
+* master                0c09fcf 添加开发成员王乐宸
+```
+
+**说明**：
+- `*` 表示当前在 master 分支上
+- `remotes/origin/master` 是远程分支
+- 最后一列显示该分支最后一次提交的说明
+
+---
+
+#### 第二步：创建功能分支（练习 `git checkout -b`）
+
+**目标**：创建并切换到一个新的功能分支。
+
+**操作**：
+```bash
+# 创建并切换到 feature-readme 分支
+$ git checkout -b feature-readme
+```
+
+**预期输出**：
+```
+git checkout -b feature-readme
+Switched to a new branch 'feature-readme'
+```
+
+**验证**：
+```bash
+# 确认当前分支
+$ git branch
+```
+
+**预期输出**：
+```
+git branch
+* feature-readme
+  master
+```
+
+**说明**：
+- `*` 现在在 feature-readme 分支上
+- master 分支仍然存在
+
+---
+
+#### 第三步：在功能分支上修改文件（练习 `git add` 和 `git commit`）
+
+**目标**：在功能分支上做一些修改并提交。
+
+**操作**：
+```bash
+# 1. 用记事本或 VS Code 打开 README.md
+# 2. 在文件末尾添加一行："Feature: 优化 README 格式"
+
+# 3. 查看状态
+$ git status
+
+# 4. 添加到暂存区
+$ git add README.md
+
+# 5. 提交修改
+$ git commit -m "feat: 优化 README 格式"
+```
+
+**预期输出**：
+```
+git status
+On branch feature-readme
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+        modified:   README.md
+
+git add README.md
+
+git commit -m "feat: 优化 README 格式"
+[feature-readme 1234abc] feat: 优化 README 格式
+ 1 file changed, 1 insertion(+)
+```
+
+---
+
+#### 第四步：切换回主分支（练习 `git checkout`）
+
+**目标**：切换回 master 分支，观察文件变化。
+
+**操作**：
+```bash
+# 切换回 master 分支
+$ git checkout master
+
+# 查看 README.md 文件
+# 你会发现刚才添加的那行文字不见了！
+```
+
+**预期输出**：
+```
+git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+```
+
+**说明**：
+- 切换回 master 后，刚才在 feature-readme 分支上的修改**不可见**
+- 这就是分支的隔离性，不同分支互不影响
+
+---
+
+#### 第五步：再次切换并添加更多提交
+
+**目标**：在功能分支上添加更多提交。
+
+**操作**：
+```bash
+# 1. 切换回 feature-readme 分支
+$ git checkout feature-readme
+
+# 2. 再次修改 README.md，添加："Feature: 添加项目介绍"
+
+# 3. 提交
+$ git add README.md
+$ git commit -m "feat: 添加项目介绍"
+
+# 4. 查看提交历史
+$ git log --oneline -3
+```
+
+**预期输出**：
+```
+git checkout feature-readme
+Switched to branch 'feature-readme'
+
+git log --oneline -3
+1234def (HEAD -> feature-readme) feat: 添加项目介绍
+1234abc feat: 优化 README 格式
+0c09fcf (origin/master, origin/HEAD, master) 添加开发成员王乐宸
+```
+
+**说明**：
+- feature-readme 分支现在比 master 分支多了 2 个提交
+- master 分支还停留在 `0c09fcf`
+
+---
+
+#### 第六步：合并分支（练习 `git merge`）
+
+**目标**：将 feature-readme 分支合并到 master 分支。
+
+**操作**：
+```bash
+# 1. 切换回 master 分支
+$ git checkout master
+
+# 2. 合并 feature-readme 分支
+$ git merge feature-readme
+
+# 3. 查看提交历史
+$ git log --oneline --graph -5
+```
+
+**预期输出**（无冲突）：
+```
+git checkout master
+Switched to branch 'master'
+
+git merge feature-readme
+Updating 0c09fcf..1234def
+Fast-forward
+ README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+
+git log --oneline --graph -5
+* 1234def (HEAD -> master, feature-readme) feat: 添加项目介绍
+* 1234abc feat: 优化 README 格式
+* 0c09fcf (origin/master, origin/HEAD) 添加开发成员王乐宸
+```
+
+**说明**：
+- `Fast-forward` 表示快速合并
+- master 分支现在包含了 feature-readme 的所有提交
+- 打开 README.md，你会看到刚才添加的两行内容都出现了
+
+---
+
+#### 第七步：删除功能分支（练习 `git branch -d`）
+
+**目标**：功能分支的使命完成了，删除它。
+
+**操作**：
+```bash
+# 删除已合并的功能分支
+$ git branch -d feature-readme
+
+# 查看剩余分支
+$ git branch
+```
+
+**预期输出**：
+```
+git branch -d feature-readme
+Deleted branch feature-readme (was 1234def).
+
+git branch
+* master
+```
+
+**说明**：
+- feature-readme 分支已被删除
+- 但合并后的提交仍然保留在 master 分支上
+- 现在只剩下 master 分支
+
+---
+
+#### 第八步：创建冲突并解决（练习冲突解决）
+
+**目标**：模拟并解决一个合并冲突。
+
+**操作**：
+```bash
+# 1. 创建并切换到冲突测试分支
+$ git checkout -b conflict-test
+
+# 2. 修改 README.md 的第一行，改为："# AI Workshop 学生管理系统 - 冲突测试分支"
+
+# 3. 提交
+$ git add README.md
+$ git commit -m "test: 在冲突测试分支修改标题"
+
+# 4. 切换回 master
+$ git checkout master
+
+# 5. 在 master 上也修改 README.md 的第一行，改为："# AI Workshop 学生管理系统 - 主分支"
+
+# 6. 提交
+$ git add README.md
+$ git commit -m "test: 在主分支修改标题"
+
+# 7. 尝试合并（会产生冲突）
+$ git merge conflict-test
+```
+
+**预期输出**（有冲突）：
+```
+git merge conflict-test
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+**解决冲突**：
+```bash
+# 1. 查看冲突状态
+$ git status
+
+# 2. 打开 README.md，你会看到冲突标记
+# <<<<<<< HEAD
+# # AI Workshop 学生管理系统 - 主分支
+# =======
+# # AI Workshop 学生管理系统 - 冲突测试分支
+# >>>>>>> conflict-test
+
+# 3. 手动编辑，保留你想要的内容，删除冲突标记
+# 例如保留："# AI Workshop 学生管理系统"
+
+# 4. 标记冲突已解决
+$ git add README.md
+
+# 5. 完成合并
+$ git commit -m "解决合并冲突，统一标题格式"
+```
+
+**预期输出**：
+```
+git add README.md
+
+git commit -m "解决合并冲突，统一标题格式"
+[master 5678abc] 解决合并冲突，统一标题格式
+```
+
+**查看合并历史**：
+```bash
+$ git log --oneline --graph -5
+```
+
+**预期输出**：
+```
+git log --oneline --graph -5
+*   5678abc (HEAD -> master) 解决合并冲突，统一标题格式
+|\
+| * 2345def (conflict-test) test: 在冲突测试分支修改标题
+* | 3456abc test: 在主分支修改标题
+|/
+* 1234def feat: 添加项目介绍
+```
+
+**说明**：
+- `|` 和 `\` 显示了分支的分离和合并过程
+- 冲突已解决，两个分支的修改被整合在一起
+
+---
+
+#### 第九步：清理测试分支
+
+**目标**：删除测试用的冲突分支。
+
+**操作**：
+```bash
+# 删除 conflict-test 分支
+$ git branch -d conflict-test
+
+# 查看最终状态
+$ git branch
+$ git log --oneline --graph -5
+```
+
+**预期输出**：
+```
+git branch -d conflict-test
+Deleted branch conflict-test (was 2345def).
+
+git branch
+* master
+
+git log --oneline --graph -5
+*   5678abc (HEAD -> master) 解决合并冲突，统一标题格式
+|\
+| * 2345def test: 在冲突测试分支修改标题
+* | 3456abc test: 在主分支修改标题
+|/
+* 1234def feat: 添加项目介绍
+```
+
+---
+
+分支管理实践参考资料：
+- [Git入门--分支管理--CSDN](https://bbs.csdn.net/topics/619739251)
+- [Git 分支管理终极指南--CSDN](https://blog.csdn.net/2301_79248256/article/details/155818051)
+
+---
+
 ## 6. 远程仓库 🌐
 
 ### 6.1 远程仓库配置
