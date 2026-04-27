@@ -2205,6 +2205,7 @@ $ git push origin :feature-branch
 $ git checkout -b feature-branch origin/feature-branch
 
 # 或简写（自动创建并切换）
+# --track 表示建立追踪关系，自动创建与远程分支同名的本地分支并切换
 $ git checkout --track origin/feature-branch
 
 # 更新本地分支列表（清理已删除的远程分支）
