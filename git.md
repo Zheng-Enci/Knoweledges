@@ -2143,6 +2143,7 @@ $ git pull origin master
 $ git fetch origin
 
 # 查看远程分支（fetch 后可用）
+# -r 是 --remotes 的简写，表示只显示远程分支（remote branches）
 $ git branch -r
   origin/master
   origin/feature-branch
