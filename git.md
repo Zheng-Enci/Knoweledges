@@ -1650,17 +1650,20 @@ $ git log --oneline --graph -5
 ```
 git checkout master
 Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
 
 git merge feature-readme
-Updating 0c09fcf..1234def
+Updating 0c09fcf1..03c62bf9
 Fast-forward
  README.md | 2 ++
  1 file changed, 2 insertions(+)
 
 git log --oneline --graph -5
-* 1234def (HEAD -> master, feature-readme) feat: 添加项目介绍
-* 1234abc feat: 优化 README 格式
-* 0c09fcf (origin/master, origin/HEAD) 添加开发成员王乐宸
+* 03c62bf9 (HEAD -> master, feature-readme) feat: 添加项目介绍
+* 3d3dc5e6 feat: 优化 README 格式
+* 0c09fcf1 (origin/master, origin/HEAD) 添加开发成员王乐宸
+* 338b28ae docs: 将README中相对路径链接改为GitCode完整URL
+* 4f890576 docs: 修正README中English Version链接的分支名为master
 ```
 
 **说明**：
