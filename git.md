@@ -1612,10 +1612,16 @@ $ git log --oneline -3
 git checkout feature-readme
 Switched to branch 'feature-readme'
 
+git add README.md
+
+git commit -m "feat: 添加项目介绍"
+[feature-readme 03c62bf9] feat: 添加项目介绍
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
 git log --oneline -3
-1234def (HEAD -> feature-readme) feat: 添加项目介绍
-1234abc feat: 优化 README 格式
-0c09fcf (origin/master, origin/HEAD, master) 添加开发成员王乐宸
+03c62bf9 (HEAD -> feature-readme) feat: 添加项目介绍
+3d3dc5e6 feat: 优化 README 格式
+0c09fcf1 (origin/master, origin/HEAD, master) 添加开发成员王乐宸
 ```
 
 **说明**：
