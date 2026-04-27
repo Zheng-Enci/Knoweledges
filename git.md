@@ -2386,14 +2386,8 @@ $ git remote set-url origin https://gitcode.com/ZhengEnCi/ai-workshop-student-ma
 # 3. 验证修改成功
 $ git remote -v
 
-# 4. 拉取最新代码
-$ git pull origin master
-
-# 5. 查看提交历史，找到要回退到的版本号（例如 a1b2c3d）
-$ git log --oneline -10
-
-# 6. 回退到指定版本（替换为实际的版本号）
-$ git reset --hard a1b2c3d
+# 4. 回退到指定版本（实际的版本号为 0c09fcf1）
+$ git reset --hard 0c09fcf1
 ```
 
 **预期输出**：
@@ -2404,26 +2398,14 @@ git remote -v
 origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (fetch)
 origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (push)
 
-git pull origin master
-From https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end
- * branch            master     -> FETCH_HEAD
-Already up to date.
-
-git log --oneline -10
-a1b2c3d 添加开发成员王乐宸
-b2c3d4e 修复登录bug
-...
-
-git reset --hard a1b2c3d
-HEAD is now at a1b2c3d 添加开发成员王乐宸
+git reset --hard 0c09fcf1
+HEAD is now at 0c09fcf1 添加开发成员王乐宸
 ```
 
 **说明**：
 - `git remote set-url` 修改远程仓库地址为 ai workshop 的链接
-- `git pull` 拉取最新代码，确保本地与远程同步
-- `git log --oneline` 查看简洁的提交历史
 - `git reset --hard` 强制回退到指定版本（⚠️ 会丢弃该版本之后的所有修改）
-- 此时本地代码回退到了指定版本，但远程仓库地址仍是 ai workshop 的，下一步将修改为你自己的地址
+- 此时本地代码回退到了指定版本，远程仓库地址是 ai workshop 的，下一步将修改为你自己的地址
 
 ---
 
