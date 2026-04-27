@@ -2201,6 +2201,7 @@ $ git push origin :feature-branch
 
 ```bash
 # 拉取远程新分支到本地
+# -b 是 --branch 的简写，表示创建新分支并切换到该分支
 $ git checkout -b feature-branch origin/feature-branch
 
 # 或简写（自动创建并切换）
