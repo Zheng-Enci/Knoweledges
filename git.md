@@ -2361,6 +2361,352 @@ $ git push origin master
 
 ---
 
+### 7.5 综合实践 🎯
+
+> 通过一个完整的练习，巩固本章学到的远程仓库操作命令。
+
+💡 **准备工作**：
+
+确保你已经完成了第六章的练习，在 GitCode 上创建了自己的仓库，并将本地项目推送到了远程。如果还没有，请先完成第六章的操作。
+
+---
+
+#### 第一步：查看远程仓库配置（练习 `git remote`）
+
+**目标**：使用 `git remote` 查看当前仓库的远程配置。
+
+**操作**：
+```bash
+# 1. 进入项目目录
+$ cd ai-workshop-student-management-system-front-end
+
+# 2. 查看远程仓库名称
+$ git remote
+
+# 3. 查看详细信息
+$ git remote -v
+```
+
+**预期输出**：
+```
+git remote
+origin
+
+git remote -v
+origin  https://gitcode.com/你的用户名/test.git (fetch)
+origin  https://gitcode.com/你的用户名/test.git (push)
+```
+
+**说明**：
+- `origin` 是远程仓库的默认别名
+- `fetch` 表示拉取地址，`push` 表示推送地址
+- 如果显示的是原来的地址，说明你还没有修改为自己的仓库
+
+---
+
+#### 第二步：修改远程仓库地址（练习 `git remote set-url`）
+
+**目标**：将远程仓库地址修改为你自己的 GitCode 仓库。
+
+**操作**：
+```bash
+# 1. 修改远程仓库 URL（替换为你的实际地址）
+$ git remote set-url origin https://gitcode.com/你的用户名/test.git
+
+# 2. 验证修改成功
+$ git remote -v
+```
+
+**预期输出**：
+```
+git remote set-url origin https://gitcode.com/你的用户名/test.git
+
+git remote -v
+origin  https://gitcode.com/你的用户名/test.git (fetch)
+origin  https://gitcode.com/你的用户名/test.git (push)
+```
+
+**说明**：
+- `set-url` 用于修改已存在的远程仓库地址
+- 这样可以将代码推送到你自己的仓库，而不是原来的仓库
+
+---
+
+#### 第三步：拉取远程最新代码（练习 `git pull`）
+
+**目标**：从远程仓库拉取最新代码，确保本地与远程同步。
+
+**操作**：
+```bash
+# 拉取远程 master 分支的最新代码
+$ git pull origin master
+```
+
+**预期输出**（已是最新）：
+```
+git pull origin master
+From https://gitcode.com/你的用户名/test
+ * branch            master     -> FETCH_HEAD
+Already up to date.
+```
+
+**预期输出**（有更新）：
+```
+git pull origin master
+From https://gitcode.com/你的用户名/test
+ * branch            master     -> FETCH_HEAD
+Updating a1b2c3d..e4f5g6h
+Fast-forward
+ src/App.vue | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+**说明**：
+- `Already up to date` 表示本地已经是最新的
+- `Fast-forward` 表示快速合并，没有冲突
+
+---
+
+#### 第四步：创建功能分支并推送（练习 `git push -u`）
+
+**目标**：创建一个新的功能分支，修改代码后推送到远程仓库。
+
+**操作**：
+```bash
+# 1. 创建并切换到新分支
+$ git checkout -b feature-update-readme
+
+# 2. 修改 README.md 文件（添加一行内容）
+
+# 3. 查看状态
+$ git status
+
+# 4. 添加到暂存区
+$ git add README.md
+
+# 5. 提交修改
+$ git commit -m "docs: 更新 README 说明"
+
+# 6. 推送到远程（-u 建立追踪关系）
+$ git push -u origin feature-update-readme
+```
+
+**预期输出**：
+```
+git checkout -b feature-update-readme
+Switched to a new branch 'feature-update-readme'
+
+git push -u origin feature-update-readme
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 312 bytes | 312.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+remote: Start Git Hooks Checking
+remote:                                                         [PASSED]
+To https://gitcode.com/你的用户名/test.git
+ * [new branch]      feature-update-readme -> feature-update-readme
+branch 'feature-update-readme' set up to track 'origin/feature-update-readme'.
+```
+
+**说明**：
+- `-u` 参数建立了本地分支与远程分支的追踪关系
+- 下次在这个分支上可以直接使用 `git push` 和 `git pull`，无需指定 origin 和分支名
+- 刷新 GitCode 页面，可以看到新的分支
+
+---
+
+#### 第五步：查看远程分支（练习 `git branch -r`）
+
+**目标**：查看远程仓库有哪些分支。
+
+**操作**：
+```bash
+# 查看远程分支
+$ git branch -r
+
+# 查看所有分支（本地+远程）
+$ git branch -a
+```
+
+**预期输出**：
+```
+git branch -r
+  origin/feature-update-readme
+  origin/master
+
+git branch -a
+* feature-update-readme
+  master
+  remotes/origin/feature-update-readme
+  remotes/origin/master
+```
+
+**说明**：
+- `origin/feature-update-readme` 是远程分支
+- `feature-update-readme` 是本地分支
+- `*` 表示当前所在的分支
+
+---
+
+#### 第六步：切换回主分支并拉取新分支（练习 `git checkout --track`）
+
+**目标**：切换回 master 分支，然后拉取远程的新分支到本地。
+
+**操作**：
+```bash
+# 1. 切换回 master 分支
+$ git checkout master
+
+# 2. 拉取远程的 feature-update-readme 分支到本地
+$ git checkout --track origin/feature-update-readme
+
+# 3. 查看所有本地分支
+$ git branch
+```
+
+**预期输出**：
+```
+git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+
+git checkout --track origin/feature-update-readme
+Switched to a new branch 'feature-update-readme'
+branch 'feature-update-readme' set up to track 'origin/feature-update-readme'.
+
+git branch
+* feature-update-readme
+  master
+```
+
+**说明**：
+- `--track` 自动创建与远程分支同名的本地分支并建立追踪关系
+- 现在本地有两个分支：master 和 feature-update-readme
+
+---
+
+#### 第七步：删除远程分支（练习 `git push --delete`）
+
+**目标**：删除远程仓库的功能分支（模拟功能合并后的清理）。
+
+**操作**：
+```bash
+# 1. 先切换回 master 分支
+$ git checkout master
+
+# 2. 删除远程分支
+$ git push origin --delete feature-update-readme
+
+# 3. 查看远程分支（确认已删除）
+$ git branch -r
+```
+
+**预期输出**：
+```
+git push origin --delete feature-update-readme
+To https://gitcode.com/你的用户名/test.git
+ - [deleted]         feature-update-readme
+
+git branch -r
+  origin/master
+```
+
+**说明**：
+- `--delete` 用于删除远程分支
+- 远程分支删除后，本地分支仍然存在
+- 刷新 GitCode 页面，可以看到分支已消失
+
+---
+
+#### 第八步：清理本地分支（练习 `git branch -d`）
+
+**目标**：删除本地不再需要的功能分支。
+
+**操作**：
+```bash
+# 删除本地分支
+$ git branch -d feature-update-readme
+
+# 查看本地分支（确认已删除）
+$ git branch
+```
+
+**预期输出**：
+```
+git branch -d feature-update-readme
+Deleted branch feature-update-readme (was a1b2c3d).
+
+git branch
+* master
+```
+
+**说明**：
+- `-d` 删除已合并的分支
+- 如果分支未合并，需要使用 `-D` 强制删除
+- 不能删除当前所在的分支
+
+---
+
+#### 第九步：添加多个远程仓库（拓展练习）
+
+**目标**：同时关联 GitCode 和 Gitee 两个远程仓库。
+
+**操作**：
+```bash
+# 1. 添加 Gitee 远程仓库（假设你在 Gitee 也有同名仓库）
+$ git remote add gitee https://gitee.com/你的用户名/test.git
+
+# 2. 查看所有远程仓库
+$ git remote -v
+
+# 3. 推送到 Gitee
+$ git push gitee master
+```
+
+**预期输出**：
+```
+git remote -v
+gitee   https://gitee.com/你的用户名/test.git (fetch)
+gitee   https://gitee.com/你的用户名/test.git (push)
+origin  https://gitcode.com/你的用户名/test.git (fetch)
+origin  https://gitcode.com/你的用户名/test.git (push)
+
+git push gitee master
+Enumerating objects: 19005, done.
+...
+To https://gitee.com/你的用户名/test.git
+   a1b2c3d..e4f5g6h  master -> master
+```
+
+**说明**：
+- 可以同时关联多个远程仓库，实现代码多平台备份
+- 推送到不同平台时需要指定远程仓库名称（origin 或 gitee）
+
+---
+
+#### 练习总结
+
+通过本练习，你掌握了以下远程仓库操作：
+
+| 命令 | 作用 |
+|:-----|:-----|
+| `git remote` | 查看远程仓库配置 |
+| `git remote -v` | 查看详细的远程仓库地址 |
+| `git remote set-url` | 修改远程仓库地址 |
+| `git pull origin master` | 拉取远程最新代码 |
+| `git push -u origin 分支名` | 推送并建立追踪关系 |
+| `git branch -r` | 查看远程分支 |
+| `git checkout --track` | 拉取远程分支到本地 |
+| `git push --delete` | 删除远程分支 |
+| `git remote add` | 添加多个远程仓库 |
+
+💡 **下一步**：尝试在 GitCode 上创建一个 Pull Request（合并请求），体验完整的团队协作流程！
+
+---
+
 ## 8. 高级特性 🚀
 
 ### 8.1 标签管理
