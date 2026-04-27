@@ -2729,26 +2729,6 @@ To https://gitee.com/你的用户名/test.git
 
 ---
 
-#### 练习总结
-
-通过本练习，你掌握了以下远程仓库操作：
-
-| 命令 | 作用 |
-|:-----|:-----|
-| `git remote` | 查看远程仓库配置 |
-| `git remote -v` | 查看详细的远程仓库地址 |
-| `git remote set-url` | 修改远程仓库地址 |
-| `git pull origin master` | 拉取远程最新代码 |
-| `git push -u origin 分支名` | 推送并建立追踪关系 |
-| `git branch -r` | 查看远程分支 |
-| `git checkout --track` | 拉取远程分支到本地 |
-| `git push --delete` | 删除远程分支 |
-| `git remote add` | 添加多个远程仓库 |
-
-💡 **下一步**：尝试在 GitCode 上创建一个 Pull Request（合并请求），体验完整的团队协作流程！
-
----
-
 ## 8. 高级特性 🚀
 
 ### 8.1 标签管理
