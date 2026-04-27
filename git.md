@@ -1797,11 +1797,31 @@ $ git commit -m "解决合并冲突，整合两边内容"
 
 **预期输出**：
 ```
+git status
+On branch master
+Your branch is ahead of 'origin/master' by 3 commits.
+  (use "git push" to publish your local commits)
+
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
 git add README.md
 
-git commit -m "解决合并冲突，统一标题格式"
-[master 5678abc] 解决合并冲突，统一标题格式
+git commit -m "解决合并冲突，整合两边内容"
+[master 23bd091f] 解决合并冲突，整合两边内容
 ```
+
+**说明**：
+- `You have unmerged paths`：表示存在未解决的合并冲突
+- `both modified: README.md`：README.md 文件在两个分支都被修改了
+- 解决冲突后，`git add` 标记冲突已解决，`git commit` 完成合并
 
 **查看合并历史**：
 ```bash
@@ -1811,12 +1831,13 @@ $ git log --oneline --graph -5
 **预期输出**：
 ```
 git log --oneline --graph -5
-*   5678abc (HEAD -> master) 解决合并冲突，统一标题格式
+*   23bd091f (HEAD -> master) 解决合并冲突，整合两边内容
 |\
-| * 2345def (conflict-test) test: 在冲突测试分支修改标题
-* | 3456abc test: 在主分支修改标题
+| * 277f3195 (conflict-test) test: 在冲突测试分支添加内容
+* | 119491f3 test: 在主分支添加内容
 |/
-* 1234def feat: 添加项目介绍
+* 03c62bf9 feat: 添加项目介绍
+* 3d3dc5e6 feat: 优化 README 格式
 ```
 
 **说明**：
