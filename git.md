@@ -1967,31 +1967,34 @@ GitCode 使用参考资料：
 
 #### 6.1.2 本地项目推送到 GitCode（完整示例）
 
-假设你已经有一个本地项目，想推送到 GitCode：
+假设你已经克隆了 `ai-workshop-student-management-system-front-end` 项目，想推送到你自己的 GitCode 仓库：
 
 ```bash
-# 1. 进入本地项目目录
-$ cd my-project
+# 1. 进入项目目录
+$ cd ai-workshop-student-management-system-front-end
 
-# 2. 初始化 Git 仓库（如果还没初始化）
-$ git init
+# 2. 查看当前远程仓库地址（这是原来的地址）
+$ git remote -v
+origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (fetch)
+origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (push)
 
-# 3. 添加所有文件到暂存区
-$ git add .
+# 3. 移除原来的远程仓库关联
+$ git remote remove origin
 
-# 4. 提交到本地仓库
-$ git commit -m "Initial commit"
+# 4. 关联你自己的 GitCode 远程仓库（替换为你的实际地址）
+$ git remote add origin https://gitcode.com/你的用户名/ai-workshop-student-management-system-front-end.git
 
-# 5. 关联 GitCode 远程仓库（替换为你的实际地址）
-$ git remote add origin https://gitcode.com/你的用户名/项目名.git
+# 5. 推送到你的 GitCode 仓库
+$ git push -u origin master
 
-# 6. 推送到 GitCode（默认分支可能是 main 或 master）
-$ git push -u origin main
-
-# 如果提示分支不存在，先创建 main 分支：
-$ git branch -M main
-$ git push -u origin main
+# 如果提示分支不存在，先创建 master 分支：
+$ git branch -M master
+$ git push -u origin master
 ```
+
+**验证推送成功**：
+- 打开 GitCode 网站，进入你的项目页面
+- 应该能看到刚才推送的文件和提交记录
 
 **验证推送成功**：
 - 打开 GitCode 网站，进入你的项目页面
