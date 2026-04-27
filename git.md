@@ -1987,7 +1987,10 @@ $ git remote remove origin
 $ git remote add origin https://gitcode.com/你的用户名/test.git
 
 # 5. 推送到你的 GitCode 仓库
-# -u 是 --set-upstream 的简写，建立本地分支与远程分支的追踪关系，下次直接 git push 即可
+# -u 是 --set-upstream 的简写，表示"设置上游"
+# --set-upstream 的作用是：建立本地分支与远程分支的"追踪关系"（tracking relationship）
+# 建立追踪关系后，Git 会记住：本地 master 分支对应远程 origin/master 分支
+# 好处是：下次直接输入 git push 或 git pull，Git 会自动知道要推送到哪个远程分支，不用每次都写 origin master
 $ git push -u origin master
 
 Enumerating objects: 19005, done.
