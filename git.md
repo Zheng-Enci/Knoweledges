@@ -1945,7 +1945,7 @@ git log --oneline --graph -5
 
 #### 6.1.1 创建项目
 
-1. 访问 [gitcode.com](https://gitcode.com) 并登录
+1. 访问 [gitcode.com](https://gitcode.com) 并登录或注册
 2. 点击右上角 **+** → "新建项目"
 3. 填写项目信息：
    - **项目名称**：如 `my-project`（建议使用英文）
