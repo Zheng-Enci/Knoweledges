@@ -1865,19 +1865,26 @@ $ git log --oneline --graph -5
 **预期输出**：
 ```
 git branch -d conflict-test
-Deleted branch conflict-test (was 2345def).
+Deleted branch conflict-test (was 277f3195).
 
 git branch
 * master
 
 git log --oneline --graph -5
-*   5678abc (HEAD -> master) 解决合并冲突，统一标题格式
+*   23bd091f (HEAD -> master) 解决合并冲突，整合两边内容
 |\
-| * 2345def test: 在冲突测试分支修改标题
-* | 3456abc test: 在主分支修改标题
+| * 277f3195 test: 在冲突测试分支添加内容
+* | 119491f3 test: 在主分支添加内容
 |/
-* 1234def feat: 添加项目介绍
+* 03c62bf9 feat: 添加项目介绍
+* 3d3dc5e6 feat: 优化 README 格式
 ```
+
+**说明**：
+- conflict-test 分支已被删除（`was 277f3195` 显示该分支最后的 commit ID）
+- 但合并后的提交历史仍然保留在 master 分支中
+- `git log` 中仍然可以看到 conflict-test 分支的提交记录（`277f3195`）
+- 这就是 Git 的强大之处：**分支可以删除，但历史永存**
 
 ---
 
