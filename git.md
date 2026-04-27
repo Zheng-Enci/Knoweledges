@@ -1967,7 +1967,7 @@ GitCode 使用参考资料：
 
 #### 6.1.2 本地项目推送到 GitCode（完整示例）
 
-假设你已经克隆了 `ai-workshop-student-management-system-front-end` 项目，想推送到你自己的 GitCode 仓库：
+根据前面章节的练习，你已经克隆了 `ai-workshop-student-management-system-front-end` 项目，并在本地完成了分支管理、冲突解决等操作。现在想把你的修改推送到你自己的 GitCode 仓库：
 
 ```bash
 # 1. 进入项目目录
