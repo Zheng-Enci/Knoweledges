@@ -1715,20 +1715,20 @@ git branch
 # 1. 创建并切换到冲突测试分支
 $ git checkout -b conflict-test
 
-# 2. 修改 README.md 的第一行，改为："# AI Workshop 学生管理系统 - 冲突测试分支"
+# 2. 在 README.md 最后一行添加："冲突测试分支添加的内容"
 
 # 3. 提交
 $ git add README.md
-$ git commit -m "test: 在冲突测试分支修改标题"
+$ git commit -m "test: 在冲突测试分支添加内容"
 
 # 4. 切换回 master
 $ git checkout master
 
-# 5. 在 master 上也修改 README.md 的第一行，改为："# AI Workshop 学生管理系统 - 主分支"
+# 5. 在 README.md 最后一行添加："主分支添加的内容"
 
 # 6. 提交
 $ git add README.md
-$ git commit -m "test: 在主分支修改标题"
+$ git commit -m "test: 在主分支添加内容"
 
 # 7. 尝试合并（会产生冲突）
 $ git merge conflict-test
@@ -1749,19 +1749,21 @@ $ git status
 
 # 2. 打开 README.md，你会看到冲突标记
 # <<<<<<< HEAD
-# # AI Workshop 学生管理系统 - 主分支
+# 主分支添加的内容
 # =======
-# # AI Workshop 学生管理系统 - 冲突测试分支
+# 冲突测试分支添加的内容
 # >>>>>>> conflict-test
 
 # 3. 手动编辑，保留你想要的内容，删除冲突标记
-# 例如保留："# AI Workshop 学生管理系统"
+# 例如保留两行：
+# 主分支添加的内容
+# 冲突测试分支添加的内容
 
 # 4. 标记冲突已解决
 $ git add README.md
 
 # 5. 完成合并
-$ git commit -m "解决合并冲突，统一标题格式"
+$ git commit -m "解决合并冲突，整合两边内容"
 ```
 
 **预期输出**：
