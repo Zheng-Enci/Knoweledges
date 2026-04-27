@@ -1877,27 +1877,27 @@ git log --oneline --graph -5
 > 💡 **研发企业详情**：
 > - **GitHub**：2008年由 Tom Preston-Werner、Chris Wanstrath、PJ Hyett 创立，2018年被微软以75亿美元收购
 > 
-> >>> GitHub研发企业参考资料：
-> >>> - [GitHub百科--百科](https://m.baike.com/wiki/GitHub/2263925)
-> >>> - [微软75亿美元收购GitHub--36氪](https://36kr.com/p/5137232)
+> > 参考资料：
+> > - [GitHub百科--百科](https://m.baike.com/wiki/GitHub/2263925)
+> > - [微软75亿美元收购GitHub--36氪](https://36kr.com/p/5137232)
 > 
 > - **Gitee**：2013年由开源中国（OSChina）推出，创始人刘冬（红薯），是中国境内规模最大的代码托管平台
 > 
-> >>> Gitee研发企业参考资料：
-> >>> - [Gitee百科--百科](https://m.baike.com/wiki/Gitee/7008856140398499112)
-> >>> - [开源中国创始人红薯访谈--InfoQ](https://www.infoq.cn/article/vvG89R2SWX6smRFL12Te)
+> > 参考资料：
+> > - [Gitee百科--百科](https://m.baike.com/wiki/Gitee/7008856140398499112)
+> > - [开源中国创始人红薯访谈--InfoQ](https://www.infoq.cn/article/vvG89R2SWX6smRFL12Te)
 > 
 > - **GitCode**：2023年由 CSDN（创始人蒋涛）与华为云 CodeArts 联合打造，由重庆开源共创科技有限公司运营
 > 
-> >>> GitCode研发企业参考资料：
-> >>> - [CSDN携手华为云发布GitCode--CSDN](https://www.csdn.net/article/2023-09-22/133173094)
-> >>> - [GitCode关于我们--GitCode帮助文档](https://docs.gitcode.com/v1-docs/docs/aboutus/)
+> > 参考资料：
+> > - [CSDN携手华为云发布GitCode--CSDN](https://www.csdn.net/article/2023-09-22/133173094)
+> > - [GitCode关于我们--GitCode帮助文档](https://docs.gitcode.com/v1-docs/docs/aboutus/)
 > 
 > - **GitLab**：2011年由乌克兰开发者 Dmitriy Zaporozhets 和荷兰开发者 Sid Sijbrandij 创建，2013年成立 GitLab B.V. 公司
 > 
-> >>> GitLab研发企业参考资料：
-> >>> - [GitLab百科--百科](https://m.baike.com/wiki/gitlab/7525114)
-> >>> - [GitLab发展历史--CSDN](https://blog.csdn.net/a13407142317/article/details/155319272)
+> > 参考资料：
+> > - [GitLab百科--百科](https://m.baike.com/wiki/gitlab/7525114)
+> > - [GitLab发展历史--CSDN](https://blog.csdn.net/a13407142317/article/details/155319272)
 
 > **核心功能**：
 > - 📦 **代码托管**：安全存储代码历史版本
