@@ -604,6 +604,22 @@ $ cd C:\Users\zheng\Desktop
 $ git clone https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
 ```
 
+⚠️ **重要：固定项目版本**
+
+为了确保本文档中的练习步骤和输出结果与你实际操作一致，请在克隆后执行以下命令，将项目回退到文档编写的版本：
+
+```bash
+# 进入项目目录
+$ cd ai-workshop-student-management-system-front-end
+
+# 回退到文档基于的版本（2026年4月26日）
+$ git reset --hard 0c09fcf1
+```
+
+> 💡 **为什么要这样做？**
+> 
+> 远程仓库可能会不断更新，导致 commit ID 和文件内容与文档不一致。通过 `git reset --hard` 可以确保你使用的项目版本与本文档完全一致，练习结果也会和文档中的预期输出相同。
+
 **验证**：
 
 > 克隆完成后，在桌面打开 `ai-workshop-student-management-system-front-end` 文件夹，查看以下内容：
