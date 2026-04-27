@@ -2274,12 +2274,15 @@ error: failed to push some refs to 'https://gitcode.com/用户名/项目名.git'
 hint: Updates were rejected because the remote contains work that you do
 hint: not have locally.
 
-# 解决方案 1：先拉取再推送
+# 解决方案 1：先拉取再推送（merge 方式，会产生合并提交）
+# 原理：将远程的修改合并到本地，然后再推送
 $ git pull origin master
 # 解决冲突（如果有）
 $ git push origin master
 
-# 解决方案 2：使用 rebase 保持历史整洁
+# 解决方案 2：使用 rebase 保持历史整洁（推荐）
+# 原理：将本地的提交"移到"远程最新提交之后，保持提交历史呈直线
+# 好处：历史记录更清晰，没有多余的合并提交
 $ git pull --rebase origin master
 # 解决冲突（如果有）
 $ git rebase --continue
