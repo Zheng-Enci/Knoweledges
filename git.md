@@ -2562,17 +2562,24 @@ git branch -a
 
 #### 第六步：切换回主分支并拉取新分支（练习 `git checkout --track`）
 
-**目标**：切换回 master 分支，然后拉取远程的新分支到本地。
+**目标**：切换回 master 分支，删除本地功能分支，然后重新拉取远程的新分支到本地。
+
+💡 **为什么要删除再拉取？**
+
+因为第四步已经创建了本地 `feature-update-readme` 分支，如果直接用 `--track` 拉取会报错：`fatal: a branch named 'feature-update-readme' already exists`。所以我们先删除本地分支，再重新拉取，练习 `--track` 命令的用法。
 
 **操作**：
 ```bash
 # 1. 切换回 master 分支
 $ git checkout master
 
-# 2. 拉取远程的 feature-update-readme 分支到本地
+# 2. 删除本地 feature-update-readme 分支（注意：不能删除当前所在分支，所以要先切换到 master）
+$ git branch -d feature-update-readme
+
+# 3. 拉取远程的 feature-update-readme 分支到本地
 $ git checkout --track origin/feature-update-readme
 
-# 3. 查看所有本地分支
+# 4. 查看所有本地分支
 $ git branch
 ```
 
@@ -2581,6 +2588,9 @@ $ git branch
 git checkout master
 Switched to branch 'master'
 Your branch is up to date with 'origin/master'.
+
+git branch -d feature-update-readme
+Deleted branch feature-update-readme (was efed8f56).
 
 git checkout --track origin/feature-update-readme
 Switched to a new branch 'feature-update-readme'
