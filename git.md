@@ -1444,11 +1444,11 @@ $ git merge --abort
 # 1. 进入项目目录
 $ cd ai-workshop-student-management-system-front-end
 
-# 2. 切换回 master 分支
-$ git checkout master
-
-# 3. 拉取最新代码（确保与远程同步）
+# 2. 拉取最新代码（确保与远程同步）
 $ git pull origin master
+
+# 3. 切换回 master 分支（如果不在 master 分支上）
+$ git checkout master
 
 # 4. 删除之前练习可能残留的本地分支（如果有的话）
 $ git branch -d feature-readme 2>/dev/null || true
