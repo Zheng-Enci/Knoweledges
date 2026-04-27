@@ -1762,6 +1762,13 @@ CONFLICT (content): Merge conflict in README.md
 Automatic merge failed; fix conflicts and then commit the result.
 ```
 
+**说明**：
+- `Switched to a new branch 'conflict-test'`：成功创建并切换到冲突测试分支
+- `[conflict-test 277f3195]`：在冲突测试分支上的提交，commit ID 为 277f3195
+- `Your branch is ahead of 'origin/master' by 2 commits`：本地 master 分支比远程多了 2 个提交（之前合并 feature-readme 产生的）
+- `CONFLICT (content)`：Git 检测到内容冲突，无法自动合并
+- `Automatic merge failed`：自动合并失败，需要手动解决冲突
+
 **解决冲突**：
 ```bash
 # 1. 查看冲突状态
