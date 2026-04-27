@@ -1436,15 +1436,35 @@ $ git merge --abort
 
 > 通过一个完整的练习，巩固本章学到的分支管理命令。
 
+💡 **准备工作**：
+
+为了确保练习环境干净，避免前面的操作影响本章练习，建议先执行以下步骤：
+
+```bash
+# 1. 进入项目目录
+$ cd ai-workshop-student-management-system-front-end
+
+# 2. 切换回 master 分支
+$ git checkout master
+
+# 3. 拉取最新代码（确保与远程同步）
+$ git pull origin master
+
+# 4. 删除之前练习可能残留的本地分支（如果有的话）
+$ git branch -d feature-readme 2>/dev/null || true
+$ git branch -d conflict-test 2>/dev/null || true
+```
+
+⚠️ **注意**：`git pull` 会将远程仓库的最新代码拉取到本地，确保你从一个干净的状态开始练习。
+
+---
+
 #### 第一步：查看当前分支（练习 `git branch`）
 
 **目标**：使用 `git branch` 查看当前仓库的所有分支。
 
 **操作**：
 ```bash
-# 确保你在项目目录下
-$ cd ai-workshop-student-management-system-front-end
-
 # 查看本地分支
 $ git branch
 
