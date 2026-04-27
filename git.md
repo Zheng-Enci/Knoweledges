@@ -1736,6 +1736,26 @@ $ git merge conflict-test
 
 **预期输出**（有冲突）：
 ```
+git checkout -b conflict-test
+Switched to a new branch 'conflict-test'
+
+git add README.md
+
+git commit -m "test: 在冲突测试分支添加内容"
+[conflict-test 277f3195] test: 在冲突测试分支添加内容
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+git checkout master
+Switched to branch 'master'
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+git add README.md
+
+git commit -m "test: 在主分支添加内容"
+[master 119491f3] test: 在主分支添加内容
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
 git merge conflict-test
 Auto-merging README.md
 CONFLICT (content): Merge conflict in README.md
