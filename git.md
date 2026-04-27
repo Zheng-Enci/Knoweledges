@@ -1548,12 +1548,15 @@ git status
 On branch feature-readme
 Changes not staged for commit:
   (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
         modified:   README.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
 
 git add README.md
 
 git commit -m "feat: 优化 README 格式"
-[feature-readme 1234abc] feat: 优化 README 格式
+[feature-readme 3d3dc5e6] feat: 优化 README 格式
  1 file changed, 1 insertion(+)
 ```
 
