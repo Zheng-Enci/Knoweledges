@@ -2115,6 +2115,8 @@ $ git push origin feature-branch
 $ git push --force origin master
 
 # 更安全的强制推送（推荐）
+# --force-with-lease 会先检查远程仓库是否有其他人推送的新提交
+# 如果有，则拒绝推送，防止覆盖他人的工作；只有远程没有新变化时才强制推送
 $ git push --force-with-lease origin master
 ```
 
