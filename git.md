@@ -2371,36 +2371,55 @@ $ git push origin master
 
 ---
 
-#### 第一步：查看远程仓库配置（练习 `git remote`）
+#### 第一步：准备练习环境（克隆仓库并切换到指定版本）
 
-**目标**：使用 `git remote` 查看当前仓库的远程配置。
+**目标**：克隆 ai workshop 的仓库，并 reset 到指定版本，确保练习环境一致。
 
 **操作**：
 ```bash
-# 1. 进入项目目录
+# 1. 进入桌面（或其他你想存放项目的目录）
+$ cd Desktop
+
+# 2. 克隆 ai workshop 仓库
+$ git clone https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
+
+# 3. 进入项目目录
 $ cd ai-workshop-student-management-system-front-end
 
-# 2. 查看远程仓库名称
-$ git remote
+# 4. 查看提交历史，找到要 reset 到的版本号（例如 a1b2c3d）
+$ git log --oneline -10
 
-# 3. 查看详细信息
+# 5. reset 到指定版本（替换为实际的版本号）
+$ git reset --hard a1b2c3d
+
+# 6. 查看当前远程仓库配置
 $ git remote -v
 ```
 
 **预期输出**：
 ```
-git remote
-origin
+git clone https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
+Cloning into 'ai-workshop-student-management-system-front-end'...
+...
+
+git log --oneline -10
+a1b2c3d 添加开发成员王乐宸
+b2c3d4e 修复登录bug
+...
+
+git reset --hard a1b2c3d
+HEAD is now at a1b2c3d 添加开发成员王乐宸
 
 git remote -v
-origin  https://gitcode.com/你的用户名/test.git (fetch)
-origin  https://gitcode.com/你的用户名/test.git (push)
+origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (fetch)
+origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (push)
 ```
 
 **说明**：
-- `origin` 是远程仓库的默认别名
-- `fetch` 表示拉取地址，`push` 表示推送地址
-- 如果显示的是原来的地址，说明你还没有修改为自己的仓库
+- `git clone` 下载远程仓库到本地
+- `git log --oneline` 查看简洁的提交历史
+- `git reset --hard` 强制切换到指定版本（⚠️ 会丢弃该版本之后的所有修改）
+- 此时远程仓库地址是原作者的地址，下一步将修改为你自己的地址
 
 ---
 
