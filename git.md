@@ -1982,6 +1982,7 @@ origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-fron
 $ git remote remove origin
 
 # 4. 关联你自己的 GitCode 远程仓库（替换为你的实际地址）
+# origin 是远程仓库的"别名"（类似给网址起个简短的名字），可以自定义，但 origin 是约定俗成的默认名称
 $ git remote add origin https://gitcode.com/你的用户名/test.git
 
 # 5. 推送到你的 GitCode 仓库
