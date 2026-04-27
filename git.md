@@ -1688,8 +1688,12 @@ $ git branch
 
 **预期输出**：
 ```
+git branch
+  feature-readme
+* master
+
 git branch -d feature-readme
-Deleted branch feature-readme (was 1234def).
+Deleted branch feature-readme (was 03c62bf9).
 
 git branch
 * master
