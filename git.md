@@ -2731,11 +2731,212 @@ To https://gitee.com/你的用户名/test.git
 
 ## 8. 高级特性 🚀
 
-### 8.1 标签管理
+### 8.1 标签管理 🏷️
 
-### 8.2 储藏（Stash）
+> **一句话定义**：标签（Tag）是 Git 中用于**标记特定提交**的引用，常用于标记版本发布点（如 v1.0、v2.0）。
 
-### 8.3 子模块
+#### 8.1.1 创建标签
+
+Git 支持两种类型的标签：
+
+| 类型 | 说明 | 使用场景 |
+|:-----|:-----|:---------|
+| **轻量标签** | 只是一个提交的引用，无额外信息 | 临时标记 |
+| **附注标签** | 包含标签名、标签信息、创建者、日期 | 正式发布版本（推荐） |
+
+**创建轻量标签**：
+```bash
+# 创建轻量标签
+$ git tag v1.0
+
+# 创建附注标签（推荐）
+$ git tag -a v1.0 -m "版本 1.0 发布"
+
+# 为历史提交打标签
+$ git tag -a v0.9 0c09fcf1 -m "版本 0.9"
+```
+
+#### 8.1.2 查看标签
+
+```bash
+# 列出所有标签
+$ git tag
+
+# 查看标签详情
+$ git show v1.0
+
+# 按模式查找标签
+$ git tag -l "v1.*"
+```
+
+#### 8.1.3 推送标签到远程
+
+```bash
+# 推送单个标签
+$ git push origin v1.0
+
+# 推送所有本地标签
+$ git push origin --tags
+```
+
+#### 8.1.4 删除标签
+
+```bash
+# 删除本地标签
+$ git tag -d v1.0
+
+# 删除远程标签
+$ git push origin --delete v1.0
+```
+
+标签管理参考资料：
+- [Git 标签管理详解 -- CSDN](https://blog.csdn.net/weixin_49065061/article/details/137455700)
+- [Git 可以做的所有操作(完整分类) -- CSDN](https://blog.csdn.net/qq_37547964/article/details/160432892)
+
+---
+
+### 8.2 储藏（Stash）📦
+
+> **一句话定义**：储藏（Stash）是 Git 的**临时储物柜**，用于保存当前工作进度，让你可以干净地切换分支或处理其他任务。
+
+> **通俗理解**：
+>
+> 想象你正在厨房做黑暗料理，突然女神打电话说要来。你不能让她看到乱七八糟的厨房，但又不想丢掉做到一半的食材。这时候你把所有东西塞进收纳柜（stash），等女神走了再拿出来继续做。
+
+#### 8.2.1 常用储藏命令
+
+| 命令 | 作用 |
+|:-----|:-----|
+| `git stash` | 保存当前修改到储藏栈 |
+| `git stash save "备注"` | 保存并添加备注说明 |
+| `git stash list` | 查看所有储藏 |
+| `git stash pop` | 恢复最近一次储藏并删除 |
+| `git stash apply` | 恢复最近一次储藏（保留记录） |
+| `git stash drop` | 删除最近一次储藏 |
+| `git stash clear` | 清空所有储藏 |
+
+#### 8.2.2 储藏使用示例
+
+```bash
+# 1. 保存当前修改
+$ git stash
+Saved working directory and index state WIP on master: 0c09fcf1 添加开发成员王乐宸
+
+# 2. 查看储藏列表
+$ git stash list
+stash@{0}: WIP on master: 0c09fcf1 添加开发成员王乐宸
+
+# 3. 切换到其他分支处理紧急任务
+$ git checkout hotfix-branch
+# ... 修复 bug ...
+$ git checkout master
+
+# 4. 恢复储藏的修改
+$ git stash pop
+On branch master
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+        modified:   README.md
+```
+
+#### 8.2.3 储藏使用场景
+
+**场景 1：紧急修复 Bug**
+```bash
+# 正在开发功能，突然要修复 Bug
+$ git stash save "用户登录功能开发中"
+
+# 切换到主分支修复 Bug
+$ git checkout master
+$ git checkout -b hotfix/login-bug
+# ... 修复并提交 ...
+
+# 回到原分支继续开发
+$ git checkout feature-login
+$ git stash pop
+```
+
+**场景 2：拉取最新代码**
+```bash
+# 本地有未提交的修改，想拉取最新代码
+$ git stash
+$ git pull origin master
+$ git stash pop
+```
+
+**场景 3：保存未跟踪文件**
+```bash
+# 储藏时包含新创建的文件（untracked）
+$ git stash -u
+# 或
+$ git stash --include-untracked
+```
+
+储藏参考资料：
+- [Git Stash：开发者的"临时储物柜" -- CSDN](https://blog.csdn.net/weixin_42554330/article/details/152119914)
+- [Git 贮藏与清理 -- Git官方文档](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E8%B4%AE%E8%97%8F%E4%B8%8E%E6%B8%85%E7%90%86.html)
+- [掌握这5个Git高级命令 -- 阿里云开发者](https://developer.aliyun.com/article/1588462)
+
+---
+
+### 8.3 子模块（Submodule）🔌
+
+> **一句话定义**：子模块允许你将**一个 Git 仓库作为另一个 Git 仓库的子目录**，适合管理项目依赖。
+
+> **使用场景**：
+> - 项目依赖第三方库（如 UI 组件库、工具库）
+> - 多个项目共享同一个公共模块
+> - 需要将大型项目拆分为多个子项目
+
+#### 8.3.1 添加子模块
+
+```bash
+# 添加子模块到 lib 目录
+$ git submodule add https://gitcode.com/xxx/ui-library.git lib/ui-library
+
+# 查看子模块状态
+$ git status
+# 会生成 .gitmodules 文件和 lib/ui-library 目录
+```
+
+#### 8.3.2 克隆包含子模块的项目
+
+```bash
+# 方式1：克隆时递归初始化子模块
+$ git clone --recursive https://gitcode.com/xxx/project.git
+
+# 方式2：克隆后手动初始化和更新
+$ git clone https://gitcode.com/xxx/project.git
+$ git submodule init
+$ git submodule update
+
+# 方式3：一次性初始化并更新（推荐）
+$ git submodule update --init --recursive
+```
+
+#### 8.3.3 更新子模块
+
+```bash
+# 更新子模块到远程最新版本
+$ git submodule update --remote
+
+# 更新特定子模块
+$ git submodule update --remote lib/ui-library
+```
+
+#### 8.3.4 子模块常用命令
+
+| 命令 | 作用 |
+|:-----|:-----|
+| `git submodule add <url> <path>` | 添加子模块 |
+| `git submodule init` | 初始化子模块配置 |
+| `git submodule update` | 更新子模块代码 |
+| `git submodule foreach <command>` | 对所有子模块执行命令 |
+| `git submodule status` | 查看子模块状态 |
+
+子模块参考资料：
+- [【Git】Git 完全指南 -- 阿里云开发者](https://developer.aliyun.com/article/1643994)
+- [git完整学习指南 -- CSDN](https://blog.csdn.net/qq_48107900/article/details/148885556)
 
 ---
 
