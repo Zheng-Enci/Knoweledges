@@ -1530,7 +1530,7 @@ git branch
 
 **操作**：
 ```bash
-# 1. 删除 README.md 的最后一行（之前练习添加的 "Hello git"）
+# 1. 在 README.md 文件末尾添加一行："Feature: 优化 README 格式"
 
 # 2. 查看状态
 $ git status
@@ -1539,7 +1539,7 @@ $ git status
 $ git add README.md
 
 # 4. 提交修改
-$ git commit -m "feat: 删除 README.md 末尾的测试内容"
+$ git commit -m "feat: 优化 README 格式"
 ```
 
 **预期输出**：
@@ -1552,9 +1552,9 @@ Changes not staged for commit:
 
 git add README.md
 
-git commit -m "feat: 删除 README.md 末尾的测试内容"
-[feature-readme 1234abc] feat: 删除 README.md 末尾的测试内容
- 1 file changed, 1 deletion(-)
+git commit -m "feat: 优化 README 格式"
+[feature-readme 1234abc] feat: 优化 README 格式
+ 1 file changed, 1 insertion(+)
 ```
 
 ---
