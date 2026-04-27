@@ -2576,10 +2576,13 @@ $ git checkout master
 # 2. 删除本地 feature-update-readme 分支（注意：不能删除当前所在分支，所以要先切换到 master）
 $ git branch -d feature-update-readme
 
-# 3. 拉取远程的 feature-update-readme 分支到本地
+# 3. 查看当前本地分支（确认 feature-update-readme 已删除）
+$ git branch
+
+# 4. 拉取远程的 feature-update-readme 分支到本地
 $ git checkout --track origin/feature-update-readme
 
-# 4. 查看所有本地分支
+# 5. 查看所有本地分支
 $ git branch
 ```
 
@@ -2591,6 +2594,9 @@ Your branch is up to date with 'origin/master'.
 
 git branch -d feature-update-readme
 Deleted branch feature-update-readme (was efed8f56).
+
+git branch
+* master
 
 git checkout --track origin/feature-update-readme
 Switched to a new branch 'feature-update-readme'
