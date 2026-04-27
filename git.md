@@ -1842,7 +1842,9 @@ git log --oneline --graph -5
 
 **说明**：
 - `|` 和 `\` 显示了分支的分离和合并过程
+- `03c62bf9` 和 `3d3dc5e6` 是之前 feature-readme 分支的提交（已合并到 master）
 - 冲突已解决，两个分支的修改被整合在一起
+- 💡 **提示**：如果要看更早的历史（如 feature-readme 分支），可以使用 `git log --oneline --graph -10` 查看更多提交
 
 ---
 
