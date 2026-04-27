@@ -2437,38 +2437,38 @@ origin  https://gitcode.com/你的用户名/test.git (push)
 
 ---
 
-#### 第三步：拉取远程最新代码（练习 `git pull`）
+#### 第三步：推送到你自己的远程仓库（练习 `git push`）
 
-**目标**：从远程仓库拉取最新代码，确保本地与远程同步。
+**目标**：将本地代码推送到你自己的 GitCode 仓库。
 
 **操作**：
 ```bash
-# 拉取远程 master 分支的最新代码
-$ git pull origin master
+# 推送到远程 master 分支（-u 建立追踪关系）
+$ git push -u origin master
 ```
 
-**预期输出**（已是最新）：
+**预期输出**：
 ```
-git pull origin master
-From https://gitcode.com/你的用户名/test
- * branch            master     -> FETCH_HEAD
-Already up to date.
-```
-
-**预期输出**（有更新）：
-```
-git pull origin master
-From https://gitcode.com/你的用户名/test
- * branch            master     -> FETCH_HEAD
-Updating a1b2c3d..e4f5g6h
-Fast-forward
- src/App.vue | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+git push -u origin master
+Enumerating objects: 19005, done.
+Counting objects: 100% (19005/19005), done.
+Delta compression using up to 24 threads
+Compressing objects: 100% (5335/5335), done.
+Writing objects: 100% (19005/19005), 16.11 MiB | 6.68 MiB/s, done.
+Total 19005 (delta 13024), reused 18986 (delta 13012), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (13024/13024), done.
+remote: Start Git Hooks Checking
+remote: Too many commits, skip git-hooks check
+remote:                                                         [PASSED]
+To https://gitcode.com/你的用户名/test.git
+ * [new branch]        master -> master
+branch 'master' set up to track 'origin/master'.
 ```
 
 **说明**：
-- `Already up to date` 表示本地已经是最新的
-- `Fast-forward` 表示快速合并，没有冲突
+- `-u` 参数建立本地分支与远程分支的追踪关系
+- 首次推送后，下次可以直接使用 `git push`，无需指定 origin 和分支名
+- 刷新 GitCode 页面，可以看到推送的代码和提交记录
 
 ---
 
