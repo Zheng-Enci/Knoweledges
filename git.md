@@ -1447,15 +1447,12 @@ $ cd ai-workshop-student-management-system-front-end
 # 2. 拉取最新代码（确保与远程同步）
 $ git pull origin master
 
-# 3. 切换回 master 分支（如果不在 master 分支上）
-$ git checkout master
-
-# 4. 删除之前练习可能残留的本地分支（如果有的话）
+# 3. 删除之前练习可能残留的本地分支（如果有的话）
 $ git branch -d feature-readme 2>/dev/null || true
 $ git branch -d conflict-test 2>/dev/null || true
 ```
 
-⚠️ **注意**：`git pull` 会将远程仓库的最新代码拉取到本地，确保你从一个干净的状态开始练习。
+⚠️ **注意**：`git pull` 会将远程仓库的最新代码拉取到本地，确保你从一个干净的状态开始练习。由于该项目只有一个 master 分支，无需切换分支。
 
 ---
 
