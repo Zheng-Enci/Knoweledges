@@ -1986,6 +1986,7 @@ $ git remote remove origin
 $ git remote add origin https://gitcode.com/你的用户名/test.git
 
 # 5. 推送到你的 GitCode 仓库
+# -u 是 --set-upstream 的简写，建立本地分支与远程分支的追踪关系，下次直接 git push 即可
 $ git push -u origin master
 
 Enumerating objects: 19005, done.
