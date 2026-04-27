@@ -2086,7 +2086,7 @@ $ git remote set-url origin https://gitcode.com/你的用户名/test.git
 # 重命名远程仓库
 $ git remote rename origin gitcode
 
-# 删除远程仓库关联
+# 删除远程仓库关联（断开本地仓库与远程仓库的连接，不会删除远程仓库本身）
 $ git remote remove origin
 ```
 
