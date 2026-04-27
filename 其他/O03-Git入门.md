@@ -1,5 +1,7 @@
 # O03-Git入门
 
+> 📌 **配套文档**：如果你想深入学习 Git 的所有命令，可以参考 [O02-Git命令大全](file:///f:/BaiduSyncdisk/ZhengEnCi/Note/Knowledge/Knowledges/%E5%85%B6%E4%BB%96/O02-Git%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8.md)。
+
 ### 1.1 什么是 Git 📚
 
 > **一句话定义**：Git 是一个开源的分布式版本控制系统，用于高效管理项目代码的版本和历史。
