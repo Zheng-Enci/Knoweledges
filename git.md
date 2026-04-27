@@ -1921,63 +1921,100 @@ git log --oneline --graph -5
 - [2025 Gitee 与 GitHub 全面对比--掘金](https://juejin.cn/post/7570984341414887439)
 - [【编程史】Git是啥?它和GitHub关系是?--掘金](https://juejin.cn/post/7515461483893145610)
 
-### 6.1 GitHub 使用指南 🐙
+### 6.1 GitCode 使用指南 🔷（推荐新手使用）
 
-> **GitHub** 是全球最大的代码托管平台，拥有超过 1 亿开发者，是开源项目的首选平台。
+> **GitCode** 是由 CSDN 开发者社区与华为云 CodeArts 联合打造的新一代开源代码托管平台。
+> 
+> 💡 **为什么选择 GitCode？**
+> - 国内访问速度快，无需翻墙
+> - 支持 CSDN、GitHub、Gitee、微信等第三方账号一键登录
+> - 与华为云深度集成，提供完整的 DevOps 工具链
+> - 单文件最大支持 2GB，适合大文件项目
 
-#### 6.1.1 注册与创建仓库
+#### 6.1.1 注册与创建项目
 
 **注册账号**：
-1. 访问 [github.com](https://github.com)
-2. 点击 "Sign up" 注册，填写用户名、邮箱、密码
-3. 验证邮箱完成注册
+1. 访问 [gitcode.com](https://gitcode.com)
+2. 点击右上角 "注册"，支持以下方式：
+   - CSDN 账号登录
+   - GitHub 账号登录
+   - Gitee 账号登录
+   - 微信扫码登录
+   - 手机号注册
+3. 完善个人信息
 
-**创建仓库**：
-1. 登录后点击右上角 **+** → "New repository"
-2. 填写仓库信息：
-   - **Repository name**：仓库名称（如 `my-project`）
-   - **Description**：项目描述（可选）
-   - **Public/Private**：公开或私有
-   - **Add a README file**：勾选初始化 README
-3. 点击 "Create repository"
+**创建项目**：
+1. 登录后点击右上角 **+** → "新建项目"
+2. 填写项目信息：
+   - **项目名称**：如 `my-project`（建议使用英文）
+   - **项目描述**：简介（可选）
+   - **可见性**：公开或私有
+   - **初始化**：勾选 "添加 README"
+3. 点击 "创建项目"
 
-GitHub 仓库创建参考资料：
-- [GitHub新手入门:从创建到合并的全面教程--CSDN](https://blog.csdn.net/ukhgg/article/details/115670539)
-- [一文搞懂 GitHub 使用技巧--CSDN](https://blog.csdn.net/weixin_42132035/article/details/140447926)
+> ⚠️ **注意**：创建完成后，GitCode 会显示项目的克隆地址，格式为 `https://gitcode.com/用户名/项目名.git`
 
-#### 6.1.2 本地项目推送到 GitHub
+GitCode 使用参考资料：
+- [GitCode 帮助文档 - 快速入门](https://docs.gitcode.com/docs/start/quick/)
+- [从头开始在 GitCode 创建项目并上传文件--CSDN](https://blog.csdn.net/skywalk8163/article/details/148738330)
+- [GitCode项目创建指南--CSDN](https://blog.csdn.net/BIYing_Aurora/article/details/149153652)
+
+#### 6.1.2 本地项目推送到 GitCode（完整示例）
+
+假设你已经有一个本地项目，想推送到 GitCode：
 
 ```bash
-# 1. 在本地项目目录初始化 Git
+# 1. 进入本地项目目录
+$ cd my-project
+
+# 2. 初始化 Git 仓库（如果还没初始化）
 $ git init
 
-# 2. 添加文件到暂存区
+# 3. 添加所有文件到暂存区
 $ git add .
 
-# 3. 提交到本地仓库
+# 4. 提交到本地仓库
 $ git commit -m "Initial commit"
 
-# 4. 关联远程仓库（替换为你的仓库地址）
-$ git remote add origin https://github.com/用户名/仓库名.git
+# 5. 关联 GitCode 远程仓库（替换为你的实际地址）
+$ git remote add origin https://gitcode.com/你的用户名/项目名.git
 
-# 5. 推送到 GitHub
-$ git push -u origin master
+# 6. 推送到 GitCode（默认分支可能是 main 或 master）
+$ git push -u origin main
+
+# 如果提示分支不存在，先创建 main 分支：
+$ git branch -M main
+$ git push -u origin main
 ```
 
-#### 6.1.3 Fork 与 Pull Request
+**验证推送成功**：
+- 打开 GitCode 网站，进入你的项目页面
+- 应该能看到刚才推送的文件和提交记录
 
-**Fork（分叉）**：
-- 将别人的仓库复制到自己的账号下
-- 可以自由修改，不影响原仓库
+#### 6.1.3 从 GitCode 克隆项目
 
-**Pull Request（合并请求）**：
-1. Fork 目标仓库
-2. 在自己的仓库修改代码并提交
-3. 点击 "Pull Request" → "New Pull Request"
-4. 填写标题和描述，说明修改内容
-5. 等待原作者审核合并
+如果你想下载别人的项目到本地：
 
-> 💡 **Fork + PR 是开源贡献的标准流程**
+```bash
+# 克隆项目到本地
+$ git clone https://gitcode.com/用户名/项目名.git
+
+# 进入项目目录
+$ cd 项目名
+
+# 查看远程仓库地址
+$ git remote -v
+```
+
+#### 6.1.4 GitCode 特色功能
+
+| 功能 | 说明 |
+|:-----|:-----|
+| **华为云集成** | 与华为云 CodeArts 深度集成，提供 CI/CD 流水线 |
+| **大文件支持** | 单文件最大支持 2GB，适合 AI 模型、数据集等 |
+| **AI 辅助编程** | 内置智能代码补全和代码审查 |
+| **开源运营** | 提供项目推广、社区运营和开发者激励计划 |
+| **多平台登录** | 支持 CSDN、GitHub、Gitee、微信等第三方账号 |
 
 ---
 
@@ -2035,56 +2072,65 @@ $ git push -u origin master
 
 ---
 
-### 6.3 GitCode 使用指南 🔷
+### 6.3 GitHub 使用指南 🐙
 
-> **GitCode** 是由 CSDN 开发者社区与华为云 CodeArts 联合打造的新一代开源代码托管平台。
+> **GitHub** 是全球最大的代码托管平台，拥有超过 1 亿开发者，是开源项目的首选平台。
+> 
+> ⚠️ **注意**：GitHub 在国内访问可能需要翻墙，新手建议先使用 GitCode 或 Gitee 练习。
 
-#### 6.3.1 注册与创建项目
+#### 6.3.1 注册与创建仓库
 
 **注册账号**：
-1. 访问 [gitcode.com](https://gitcode.com)
-2. 点击 "注册"，支持 CSDN、GitHub、Gitee、微信等第三方登录
-3. 完善个人信息
+1. 访问 [github.com](https://github.com)
+2. 点击 "Sign up" 注册，填写用户名、邮箱、密码
+3. 验证邮箱完成注册
 
-**创建项目**：
-1. 登录后点击右上角 **+** → "新建项目"
-2. 填写项目信息：
-   - **项目名称**：如 `my-project`
-   - **项目描述**：简介
-   - **可见性**：公开或私有
-   - **初始化**：勾选 "添加 README"
-3. 点击 "创建项目"
+**创建仓库**：
+1. 登录后点击右上角 **+** → "New repository"
+2. 填写仓库信息：
+   - **Repository name**：仓库名称（如 `my-project`）
+   - **Description**：项目描述（可选）
+   - **Public/Private**：公开或私有
+   - **Add a README file**：勾选初始化 README
+3. 点击 "Create repository"
 
-GitCode 使用参考资料：
-- [GitCode 帮助文档 - 快速入门](https://docs.gitcode.com/docs/start/quick/)
-- [GitCode 产品介绍](https://docs.gitcode.com/docs/start/)
-- [GitCode项目创建指南--CSDN](https://blog.csdn.net/BIYing_Aurora/article/details/149153652)
+GitHub 仓库创建参考资料：
+- [GitHub新手入门:从创建到合并的全面教程--CSDN](https://blog.csdn.net/ukhgg/article/details/115670539)
+- [一文搞懂 GitHub 使用技巧--CSDN](https://blog.csdn.net/weixin_42132035/article/details/140447926)
 
-#### 6.3.2 本地项目推送到 GitCode
+#### 6.3.2 本地项目推送到 GitHub
 
 ```bash
-# 1. 初始化本地仓库
+# 1. 在本地项目目录初始化 Git
 $ git init
 
-# 2. 添加并提交
+# 2. 添加文件到暂存区
 $ git add .
+
+# 3. 提交到本地仓库
 $ git commit -m "Initial commit"
 
-# 3. 关联 GitCode 远程仓库
-$ git remote add origin https://gitcode.com/用户名/项目名称.git
+# 4. 关联远程仓库（替换为你的仓库地址）
+$ git remote add origin https://github.com/用户名/仓库名.git
 
-# 4. 推送
+# 5. 推送到 GitHub
 $ git push -u origin master
 ```
 
-#### 6.3.3 GitCode 特色功能
+#### 6.3.3 Fork 与 Pull Request
 
-| 功能 | 说明 |
-|:-----|:-----|
-| **华为云集成** | 与华为云 CodeArts 深度集成 |
-| **大文件支持** | 单文件最大支持 2GB |
-| **AI 辅助编程** | 内置智能代码补全和审查 |
-| **开源运营** | 提供项目推广和社区运营工具 |
+**Fork（分叉）**：
+- 将别人的仓库复制到自己的账号下
+- 可以自由修改，不影响原仓库
+
+**Pull Request（合并请求）**：
+1. Fork 目标仓库
+2. 在自己的仓库修改代码并提交
+3. 点击 "Pull Request" → "New Pull Request"
+4. 填写标题和描述，说明修改内容
+5. 等待原作者审核合并
+
+> 💡 **Fork + PR 是开源贡献的标准流程**
 
 ---
 
