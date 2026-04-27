@@ -1974,6 +1974,7 @@ GitCode 使用参考资料：
 $ cd ai-workshop-student-management-system-front-end
 
 # 2. 查看当前远程仓库地址（这是原来的地址）
+# git remote 用于管理远程仓库，-v 是 --verbose 的简写，显示详细信息（包含 URL）
 $ git remote -v
 origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (fetch)
 origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (push)
