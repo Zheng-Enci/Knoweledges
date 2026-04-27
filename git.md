@@ -2072,6 +2072,7 @@ origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-fron
 $ git remote add origin https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
 
 # 添加多个远程仓库（例如同时关联 GitCode 和 Gitee）
+# 作用：一份代码可以备份到多个平台，提高可靠性；或者根据不同场景推送到不同平台
 $ git remote add gitcode https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
 $ git remote add gitee https://gitee.com/用户名/ai-workshop-student-management-system-front-end.git
 ```
