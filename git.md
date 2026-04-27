@@ -1896,11 +1896,170 @@ git log --oneline --graph -5
 - [2025 Gitee 与 GitHub 全面对比--掘金](https://juejin.cn/post/7570984341414887439)
 - [【编程史】Git是啥?它和GitHub关系是?--掘金](https://juejin.cn/post/7515461483893145610)
 
-### 6.1 GitHub 使用指南
+### 6.1 GitHub 使用指南 🐙
 
-### 6.2 Gitee 使用指南
+> **GitHub** 是全球最大的代码托管平台，拥有超过 1 亿开发者，是开源项目的首选平台。
 
-### 6.3 GitCode 使用指南
+#### 6.1.1 注册与创建仓库
+
+**注册账号**：
+1. 访问 [github.com](https://github.com)
+2. 点击 "Sign up" 注册，填写用户名、邮箱、密码
+3. 验证邮箱完成注册
+
+**创建仓库**：
+1. 登录后点击右上角 **+** → "New repository"
+2. 填写仓库信息：
+   - **Repository name**：仓库名称（如 `my-project`）
+   - **Description**：项目描述（可选）
+   - **Public/Private**：公开或私有
+   - **Add a README file**：勾选初始化 README
+3. 点击 "Create repository"
+
+GitHub 仓库创建参考资料：
+- [GitHub新手入门:从创建到合并的全面教程--CSDN](https://blog.csdn.net/ukhgg/article/details/115670539)
+- [一文搞懂 GitHub 使用技巧--CSDN](https://blog.csdn.net/weixin_42132035/article/details/140447926)
+
+#### 6.1.2 本地项目推送到 GitHub
+
+```bash
+# 1. 在本地项目目录初始化 Git
+$ git init
+
+# 2. 添加文件到暂存区
+$ git add .
+
+# 3. 提交到本地仓库
+$ git commit -m "Initial commit"
+
+# 4. 关联远程仓库（替换为你的仓库地址）
+$ git remote add origin https://github.com/用户名/仓库名.git
+
+# 5. 推送到 GitHub
+$ git push -u origin master
+```
+
+#### 6.1.3 Fork 与 Pull Request
+
+**Fork（分叉）**：
+- 将别人的仓库复制到自己的账号下
+- 可以自由修改，不影响原仓库
+
+**Pull Request（合并请求）**：
+1. Fork 目标仓库
+2. 在自己的仓库修改代码并提交
+3. 点击 "Pull Request" → "New Pull Request"
+4. 填写标题和描述，说明修改内容
+5. 等待原作者审核合并
+
+> 💡 **Fork + PR 是开源贡献的标准流程**
+
+---
+
+### 6.2 Gitee 使用指南 🇨🇳
+
+> **Gitee（码云）** 是国内领先的代码托管平台，访问速度快，适合国内开发者使用。
+
+#### 6.2.1 注册与创建仓库
+
+**注册账号**：
+1. 访问 [gitee.com](https://gitee.com)
+2. 点击 "注册"，支持手机号或邮箱注册
+3. 完成实名认证（可选，但建议完成）
+
+**创建仓库**：
+1. 登录后点击右上角 **+** → "新建仓库"
+2. 填写仓库信息：
+   - **仓库名称**：如 `my-project`
+   - **仓库介绍**：项目简介
+   - **仓库类型**：私有或开源
+   - **初始化仓库**：勾选 "添加 README 文件"
+3. 点击 "创建"
+
+> 💡 **Gitee 提供 5G 免费仓库空间，单文件最大支持 50MB**
+
+Gitee 使用参考资料：
+- [手把手教你用 Gitee 托管代码--CSDN](https://blog.csdn.net/m0_63329404/article/details/147316595)
+- [Gitee 代码上传超详细教程--掘金](https://juejin.cn/post/7566450527867011081)
+
+#### 6.2.2 本地项目推送到 Gitee
+
+```bash
+# 1. 初始化本地仓库
+$ git init
+
+# 2. 添加并提交文件
+$ git add .
+$ git commit -m "Initial commit"
+
+# 3. 关联 Gitee 远程仓库
+$ git remote add origin https://gitee.com/用户名/仓库名.git
+
+# 4. 推送到 Gitee
+$ git push -u origin master
+```
+
+#### 6.2.3 Gitee 特色功能
+
+| 功能 | 说明 |
+|:-----|:-----|
+| **Gitee Pages** | 免费静态网站托管，支持自定义域名 |
+| **Gitee Go** | 内置 CI/CD 流水线 |
+| **代码扫描** | 自动检测代码质量和安全漏洞 |
+| **高校版** | 专为教育场景优化，支持作业管理 |
+
+---
+
+### 6.3 GitCode 使用指南 🔷
+
+> **GitCode** 是由 CSDN 开发者社区与华为云 CodeArts 联合打造的新一代开源代码托管平台。
+
+#### 6.3.1 注册与创建项目
+
+**注册账号**：
+1. 访问 [gitcode.com](https://gitcode.com)
+2. 点击 "注册"，支持 CSDN、GitHub、Gitee、微信等第三方登录
+3. 完善个人信息
+
+**创建项目**：
+1. 登录后点击右上角 **+** → "新建项目"
+2. 填写项目信息：
+   - **项目名称**：如 `my-project`
+   - **项目描述**：简介
+   - **可见性**：公开或私有
+   - **初始化**：勾选 "添加 README"
+3. 点击 "创建项目"
+
+GitCode 使用参考资料：
+- [GitCode 帮助文档 - 快速入门](https://docs.gitcode.com/docs/start/quick/)
+- [GitCode 产品介绍](https://docs.gitcode.com/docs/start/)
+- [GitCode项目创建指南--CSDN](https://blog.csdn.net/BIYing_Aurora/article/details/149153652)
+
+#### 6.3.2 本地项目推送到 GitCode
+
+```bash
+# 1. 初始化本地仓库
+$ git init
+
+# 2. 添加并提交
+$ git add .
+$ git commit -m "Initial commit"
+
+# 3. 关联 GitCode 远程仓库
+$ git remote add origin https://gitcode.com/用户名/项目名称.git
+
+# 4. 推送
+$ git push -u origin master
+```
+
+#### 6.3.3 GitCode 特色功能
+
+| 功能 | 说明 |
+|:-----|:-----|
+| **华为云集成** | 与华为云 CodeArts 深度集成 |
+| **大文件支持** | 单文件最大支持 2GB |
+| **AI 辅助编程** | 内置智能代码补全和审查 |
+| **开源运营** | 提供项目推广和社区运营工具 |
 
 ---
 
