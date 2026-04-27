@@ -2942,11 +2942,225 @@ $ git submodule update --remote lib/ui-library
 
 ## 9. Git 工作流 🔄
 
-### 9.1 集中式工作流
+> **一句话定义**：Git 工作流是团队协作中**分支管理和代码合并**的规范流程，帮助团队高效、有序地开发软件。
 
-### 9.2 功能分支工作流
+### 9.1 集中式工作流 🎯
 
-### 9.3 Git Flow
+> **一句话定义**：集中式工作流是最简单的 Git 工作流，所有开发者直接向同一个中央仓库的 `master` 分支推送代码。
+
+> **适用场景**：
+> - 小型团队（2-5人）
+> - 高度协调的团队
+> - 简单项目或原型开发
+
+#### 工作流程
+
+```
+┌─────────────────────────────────────────────────┐
+│                 中央仓库 (origin)                │
+│                   master 分支                    │
+└─────────────────────────────────────────────────┘
+         ↑                    ↑
+         │                    │
+    开发者 A 推送          开发者 B 推送
+```
+
+#### 操作步骤
+
+```bash
+# 1. 克隆中央仓库
+$ git clone https://gitcode.com/xxx/project.git
+
+# 2. 修改代码
+# ... 编辑文件 ...
+
+# 3. 提交并推送
+$ git add .
+$ git commit -m "fix: 修复登录bug"
+$ git push origin master
+```
+
+#### 优缺点
+
+| 优点 | 缺点 |
+|:-----|:-----|
+| ✅ 简单易学 | ❌ 容易产生冲突 |
+| ✅ 适合小团队 | ❌ 没有代码审查 |
+| ✅ 快速迭代 | ❌ 不适合复杂项目 |
+
+集中式工作流参考资料：
+- [《Git 简易速速上手小册》第9章 -- CSDN](https://blog.csdn.net/qq_41340258/article/details/136068826)
+
+---
+
+### 9.2 功能分支工作流 🌿
+
+> **一句话定义**：功能分支工作流要求每个新功能都在**独立的分支**上开发，完成后通过 Pull Request（PR）合并到主分支。
+
+> **适用场景**：
+> - 中小型团队（5-20人）
+> - 需要代码审查的项目
+> - 多人协作开发
+
+#### 工作流程
+
+```
+┌─────────────────────────────────────────────────┐
+│                 中央仓库 (origin)                │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│  │  master  │    │ feature- │    │ feature- │  │
+│  │   主干   │    │  login   │    │  order   │  │
+│  └────┬─────┘    └────┬─────┘    └────┬─────┘  │
+│       ↑               │               │        │
+│       └───────────────┴───────────────┘        │
+│                    合并通过 PR                   │
+└─────────────────────────────────────────────────┘
+```
+
+#### 操作步骤
+
+```bash
+# 1. 从 master 创建功能分支
+$ git checkout -b feature-login master
+
+# 2. 开发功能
+# ... 编辑文件 ...
+$ git add .
+$ git commit -m "feat: 实现用户登录功能"
+
+# 3. 推送到远程
+$ git push -u origin feature-login
+
+# 4. 在 GitCode/GitHub 发起 Pull Request（合并请求）
+# 5. 代码审查通过后合并到 master
+
+# 6. 删除功能分支
+$ git branch -d feature-login
+$ git push origin --delete feature-login
+```
+
+#### 优缺点
+
+| 优点 | 缺点 |
+|:-----|:-----|
+| ✅ 支持代码审查 | ❌ 需要学习 PR 流程 |
+| ✅ 功能隔离，减少冲突 | ❌ 分支管理稍复杂 |
+| ✅ 便于回滚 | ❌ 需要维护多个分支 |
+
+功能分支工作流参考资料：
+- [Git工作流:团队协作的最佳实践 -- CSDN](https://blog.csdn.net/m0_73884648/article/details/149747836)
+
+---
+
+### 9.3 Git Flow 🌊
+
+> **一句话定义**：Git Flow 是一种**严格的分支管理模型**，定义了固定的分支结构和发布流程，适合有固定发布周期的项目。
+
+> **适用场景**：
+> - 中大型团队
+> - 有固定发布周期的软件（如每月发布版本）
+> - 需要严格版本控制的项目
+
+#### 分支结构
+
+Git Flow 定义了 **2 个永久分支** 和 **3 类临时分支**：
+
+| 分支类型 | 分支名 | 作用 | 生命周期 |
+|:---------|:-------|:-----|:---------|
+| **永久分支** | `master` | 生产环境代码，每个提交对应一个版本 | 永久 |
+| **永久分支** | `develop` | 集成开发分支，包含未发布的新功能 | 永久 |
+| **临时分支** | `feature/*` | 开发新功能 | 功能完成后删除 |
+| **临时分支** | `release/*` | 准备发布版本 | 发布后删除 |
+| **临时分支** | `hotfix/*` | 紧急修复线上 bug | 修复后删除 |
+
+#### 工作流程图
+
+```
+                    master (生产环境)
+                      │
+    hotfix/login ─────┼─────→ 紧急修复
+                      │
+                    develop (开发集成)
+                      │
+    feature/login ────┤       功能开发
+    feature/order ────┤
+                      │
+    release/v1.0 ─────┼─────→ 发布准备
+```
+
+#### 完整工作流程
+
+**1. 初始化项目**
+```bash
+# 创建 develop 分支
+$ git checkout -b develop master
+$ git push -u origin develop
+```
+
+**2. 开发新功能**
+```bash
+# 从 develop 创建功能分支
+$ git checkout -b feature-login develop
+
+# 开发并提交
+$ git add .
+$ git commit -m "feat: 实现用户登录"
+
+# 合并回 develop
+$ git checkout develop
+$ git merge --no-ff feature-login
+$ git branch -d feature-login
+```
+
+**3. 准备发布**
+```bash
+# 从 develop 创建发布分支
+$ git checkout -b release-1.0 develop
+
+# 修复 bug、更新版本号
+$ git commit -m "chore: 更新版本号为 1.0"
+
+# 合并到 master 并打标签
+$ git checkout master
+$ git merge --no-ff release-1.0
+$ git tag -a v1.0 -m "版本 1.0 发布"
+
+# 合并回 develop
+$ git checkout develop
+$ git merge --no-ff release-1.0
+$ git branch -d release-1.0
+```
+
+**4. 紧急修复**
+```bash
+# 从 master 创建热修复分支
+$ git checkout -b hotfix-login-bug master
+
+# 修复 bug
+$ git commit -m "fix: 修复登录崩溃问题"
+
+# 合并到 master 和 develop
+$ git checkout master
+$ git merge --no-ff hotfix-login-bug
+$ git tag -a v1.0.1 -m "版本 1.0.1 紧急修复"
+
+$ git checkout develop
+$ git merge --no-ff hotfix-login-bug
+$ git branch -d hotfix-login-bug
+```
+
+#### 优缺点
+
+| 优点 | 缺点 |
+|:-----|:-----|
+| ✅ 流程规范，职责清晰 | ❌ 分支多，管理复杂 |
+| ✅ 适合版本发布 | ❌ 不适合持续部署 |
+| ✅ 紧急修复有保障 | ❌ 学习成本高 |
+
+Git Flow 参考资料：
+- [Git Flow 详解与最佳实践 -- CSDN](https://blog.csdn.net/qq_52320207/article/details/157900585)
+- [GitFlow分支管理模型详解 -- CSDN文库](https://wenku.csdn.net/doc/652jg9ffqb)
+- [Gitflow 工作流 -- Atlassian](https://wac-cdn-a.atlassian.com/zh/git/tutorials/comparing-workflows/gitflow-workflow)
 
 ---
 
