@@ -2055,26 +2055,26 @@ origin
 
 # 查看详细信息（包含 URL）
 $ git remote -v
-origin  https://gitcode.com/用户名/项目名.git (fetch)
-origin  https://gitcode.com/用户名/项目名.git (push)
+origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (fetch)
+origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git (push)
 ```
 
 #### 7.1.2 添加远程仓库
 
 ```bash
 # 添加远程仓库，命名为 origin
-$ git remote add origin https://gitcode.com/用户名/项目名.git
+$ git remote add origin https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
 
 # 添加多个远程仓库（例如同时关联 GitCode 和 Gitee）
-$ git remote add gitcode https://gitcode.com/用户名/项目名.git
-$ git remote add gitee https://gitee.com/用户名/项目名.git
+$ git remote add gitcode https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-front-end.git
+$ git remote add gitee https://gitee.com/用户名/ai-workshop-student-management-system-front-end.git
 ```
 
 #### 7.1.3 修改和删除远程仓库
 
 ```bash
-# 修改远程仓库 URL
-$ git remote set-url origin https://gitcode.com/新用户名/新项目名.git
+# 修改远程仓库 URL（推送到你自己的仓库）
+$ git remote set-url origin https://gitcode.com/你的用户名/test.git
 
 # 重命名远程仓库
 $ git remote rename origin gitcode
