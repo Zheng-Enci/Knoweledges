@@ -1886,6 +1886,16 @@ git log --oneline --graph -5
 - `git log` 中仍然可以看到 conflict-test 分支的提交记录（`277f3195`）
 - 这就是 Git 的强大之处：**分支可以删除，但历史永存**
 
+💡 **为什么 conflict-test 显示分支结构，而 feature-readme 不显示？**
+
+| 合并类型 | 特点 | 是否显示分支结构 |
+|:---------|:-----|:-----------------|
+| **Fast-forward（快进合并）** | 直接移动指针，不产生合并提交 | ❌ 不显示分支线 |
+| **Three-way merge（三方合并）** | 创建合并提交，有两个父提交 | ✅ 显示 `\|` 和 `\|` 分支线 |
+
+- **feature-readme 合并**：使用了 Fast-forward，master 直接指向 feature-readme 的最新提交，没有分支线
+- **conflict-test 合并**：使用了 Three-way merge，创建了合并提交 `23bd091f`，它有两个父提交（`119491f3` 和 `277f3195`），所以显示分支分离和合并的过程
+
 ---
 
 分支管理实践参考资料：
