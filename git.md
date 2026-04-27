@@ -2042,13 +2042,306 @@ $ git remote -v
 
 ## 7. 远程仓库操作 📡
 
-### 7.1 远程仓库配置
+> **一句话定义**：远程仓库操作是 Git 与**云端代码托管平台**之间的交互，实现代码的备份、分享和多人协作。
 
-### 7.2 推送与拉取
+### 7.1 远程仓库配置 🔧
 
-### 7.3 分支同步
+#### 7.1.1 查看远程仓库
 
-### 7.4 多人协作
+```bash
+# 查看已配置的远程仓库
+$ git remote
+origin
+
+# 查看详细信息（包含 URL）
+$ git remote -v
+origin  https://gitcode.com/用户名/项目名.git (fetch)
+origin  https://gitcode.com/用户名/项目名.git (push)
+```
+
+#### 7.1.2 添加远程仓库
+
+```bash
+# 添加远程仓库，命名为 origin
+$ git remote add origin https://gitcode.com/用户名/项目名.git
+
+# 添加多个远程仓库（例如同时关联 GitCode 和 Gitee）
+$ git remote add gitcode https://gitcode.com/用户名/项目名.git
+$ git remote add gitee https://gitee.com/用户名/项目名.git
+```
+
+#### 7.1.3 修改和删除远程仓库
+
+```bash
+# 修改远程仓库 URL
+$ git remote set-url origin https://gitcode.com/新用户名/新项目名.git
+
+# 重命名远程仓库
+$ git remote rename origin gitcode
+
+# 删除远程仓库关联
+$ git remote remove origin
+```
+
+> 📚 **参考资料**：
+> - [Git入门:手把手教你远程仓库操作--CSDN](https://blog.csdn.net/2504_93822763/article/details/153590483)
+> - [Git - 使用远程仓库--Git官方文档](https://git-scm.cn/book/en/v2/Git-Basics-Working-with-Remotes)
+
+---
+
+### 7.2 推送与拉取 🔄
+
+#### 7.2.1 推送到远程仓库
+
+```bash
+# 首次推送（-u 参数建立追踪关系）
+$ git push -u origin master
+
+# 后续推送（已建立追踪后可直接使用）
+$ git push
+
+# 推送到指定分支
+$ git push origin feature-branch
+
+# 强制推送（⚠️ 慎用，会覆盖远程历史）
+$ git push --force origin master
+
+# 更安全的强制推送（推荐）
+$ git push --force-with-lease origin master
+```
+
+**推送输出示例**：
+```
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 312 bytes | 312.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://gitcode.com/用户名/项目名.git
+   a1b2c3d..e4f5g6h  master -> master
+```
+
+#### 7.2.2 从远程仓库拉取
+
+```bash
+# 拉取并合并（fetch + merge）
+$ git pull origin master
+
+# 拉取但不合并（仅下载到本地）
+$ git fetch origin
+
+# 查看远程分支（fetch 后可用）
+$ git branch -r
+  origin/master
+  origin/feature-branch
+
+# 拉取特定分支
+$ git pull origin feature-branch
+```
+
+**fetch vs pull 的区别**：
+
+| 命令 | 作用 | 安全性 |
+|:-----|:-----|:-------|
+| `git fetch` | 仅下载远程代码，不合并 | ✅ 安全，可预览后再合并 |
+| `git pull` | 下载并自动合并 | ⚠️ 可能产生冲突 |
+
+> 💡 **建议**：先 `fetch` 查看变更，确认无误后再 `merge` 或 `pull`。
+
+#### 7.2.3 克隆远程仓库
+
+```bash
+# 克隆整个仓库
+$ git clone https://gitcode.com/用户名/项目名.git
+
+# 克隆指定分支
+$ git clone -b feature-branch https://gitcode.com/用户名/项目名.git
+
+# 克隆到指定目录
+$ git clone https://gitcode.com/用户名/项目名.git my-project
+```
+
+> 📚 **参考资料**：
+> - [Git完全指南:从入门到精通--阿里云开发者社区](https://developer.aliyun.com/article/1643994)
+> - [git笔记(二)远程仓库--掘金](https://juejin.cn/post/7439619698839863322)
+
+---
+
+### 7.3 分支同步 🌿
+
+#### 7.3.1 推送本地分支到远程
+
+```bash
+# 推送本地分支到远程
+$ git push -u origin feature-branch
+
+# 推送所有本地分支
+$ git push --all origin
+
+# 删除远程分支
+$ git push origin --delete feature-branch
+# 或简写
+$ git push origin :feature-branch
+```
+
+#### 7.3.2 同步远程分支到本地
+
+```bash
+# 拉取远程新分支到本地
+$ git checkout -b feature-branch origin/feature-branch
+
+# 或简写（自动创建并切换）
+$ git checkout --track origin/feature-branch
+
+# 更新本地分支列表（清理已删除的远程分支）
+$ git fetch --prune
+# 或
+$ git fetch -p
+```
+
+#### 7.3.3 分支同步的最佳实践
+
+```bash
+# 1. 切换到主分支并更新
+$ git checkout master
+$ git pull origin master
+
+# 2. 切换回功能分支
+$ git checkout feature-branch
+
+# 3. 合并主分支的最新代码（保持同步）
+$ git merge master
+
+# 或使用 rebase（保持历史整洁）
+$ git rebase master
+```
+
+> 📚 **参考资料**：
+> - [Git多人协作:从分支协作到冲突解决--CSDN](https://opchen.blog.csdn.net/article/details/155912824)
+
+---
+
+### 7.4 多人协作 👥
+
+#### 7.4.1 协作基本流程
+
+```bash
+# 1. 开始工作前，先拉取最新代码
+$ git pull origin master
+
+# 2. 创建并切换到功能分支
+$ git checkout -b feature-login
+
+# 3. 编写代码并提交
+$ git add .
+$ git commit -m "添加登录功能"
+
+# 4. 推送到远程（创建远程分支）
+$ git push -u origin feature-login
+
+# 5. 在代码托管平台发起合并请求（Merge Request / Pull Request）
+# 6. 代码审查通过后合并到主分支
+# 7. 删除本地和远程的功能分支
+$ git branch -d feature-login
+$ git push origin --delete feature-login
+```
+
+#### 7.4.2 处理推送冲突
+
+当多人同时修改同一文件时，推送可能会被拒绝：
+
+```bash
+# 推送被拒绝（远程有更新）
+$ git push origin master
+To https://gitcode.com/用户名/项目名.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'https://gitcode.com/用户名/项目名.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally.
+
+# 解决方案 1：先拉取再推送
+$ git pull origin master
+# 解决冲突（如果有）
+$ git push origin master
+
+# 解决方案 2：使用 rebase 保持历史整洁
+$ git pull --rebase origin master
+# 解决冲突（如果有）
+$ git rebase --continue
+$ git push origin master
+```
+
+#### 7.4.3 协作中的冲突解决
+
+**场景**：你和同事同时修改了同一文件的同一行。
+
+```bash
+# 拉取时提示冲突
+$ git pull origin master
+Auto-merging src/App.vue
+CONFLICT (content): Merge conflict in src/App.vue
+Automatic merge failed; fix conflicts and then commit the result.
+
+# 查看冲突文件
+$ git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+  (use "git merge --abort" to abort the merge)
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+        both modified:   src/App.vue
+```
+
+**手动解决冲突**：
+
+打开冲突文件，会看到类似这样的标记：
+
+```vue
+<<<<<<< HEAD
+// 你的修改
+console.log('Hello from my branch');
+=======
+// 同事的修改
+console.log('Hello from colleague');
+>>>>>>> origin/master
+```
+
+**解决步骤**：
+1. 编辑文件，删除冲突标记（`<<<<<<<`、`=======`、`>>>>>>>`）
+2. 保留需要的代码（或合并双方修改）
+3. 保存文件
+4. 添加并提交
+
+```bash
+# 标记冲突已解决
+$ git add src/App.vue
+
+# 完成合并提交
+$ git commit -m "解决合并冲突"
+
+# 推送到远程
+$ git push origin master
+```
+
+#### 7.4.4 多人协作最佳实践
+
+| 实践 | 说明 |
+|:-----|:-----|
+| **频繁拉取** | 每天开始工作前 `git pull` 获取最新代码 |
+| **小步提交** | 频繁提交小改动，减少冲突概率 |
+| **功能分支** | 每个功能创建独立分支，避免直接在主分支开发 |
+| **及时推送** | 完成功能后及时推送并发起合并请求 |
+| **代码审查** | 通过 Merge Request / Pull Request 进行代码审查 |
+| **沟通协作** | 大型改动前与团队沟通，避免重复工作 |
+
+> 📚 **参考资料**：
+> - [Git 多人协作(完整版工作流)--CSDN](https://blog.csdn.net/asad6/article/details/155915762)
+> - [如何使用Git进行团队协作开发--51CTO](https://blog.51cto.com/janeyork/14381564)
+> - [团队协作场景下Git常见冲突分析与分支同步解决方案--CSDN](https://blog.csdn.net/2301_77485708/article/details/157933394)
 
 ---
 
