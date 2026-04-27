@@ -2021,121 +2021,22 @@ $ cd 项目名
 $ git remote -v
 ```
 
----
-
-### 6.2 Gitee 使用指南 🇨🇳
-
-> **Gitee（码云）** 是国内领先的代码托管平台，访问速度快，适合国内开发者使用。
-
-#### 6.2.1 注册与创建仓库
-
-**注册账号**：
-1. 访问 [gitee.com](https://gitee.com)
-2. 点击 "注册"，支持手机号或邮箱注册
-3. 完成实名认证（可选，但建议完成）
-
-**创建仓库**：
-1. 登录后点击右上角 **+** → "新建仓库"
-2. 填写仓库信息：
-   - **仓库名称**：如 `my-project`
-   - **仓库介绍**：项目简介
-   - **仓库类型**：私有或开源
-   - **初始化仓库**：勾选 "添加 README 文件"
-3. 点击 "创建"
-
-> 💡 **Gitee 提供 5G 免费仓库空间，单文件最大支持 50MB**
-
-Gitee 使用参考资料：
-- [手把手教你用 Gitee 托管代码--CSDN](https://blog.csdn.net/m0_63329404/article/details/147316595)
-- [Gitee 代码上传超详细教程--掘金](https://juejin.cn/post/7566450527867011081)
-
-#### 6.2.2 本地项目推送到 Gitee
-
-```bash
-# 1. 初始化本地仓库
-$ git init
-
-# 2. 添加并提交文件
-$ git add .
-$ git commit -m "Initial commit"
-
-# 3. 关联 Gitee 远程仓库
-$ git remote add origin https://gitee.com/用户名/仓库名.git
-
-# 4. 推送到 Gitee
-$ git push -u origin master
-```
-
-#### 6.2.3 Gitee 特色功能
-
-| 功能 | 说明 |
-|:-----|:-----|
-| **Gitee Pages** | 免费静态网站托管，支持自定义域名 |
-| **Gitee Go** | 内置 CI/CD 流水线 |
-| **代码扫描** | 自动检测代码质量和安全漏洞 |
-| **高校版** | 专为教育场景优化，支持作业管理 |
-
----
-
-### 6.3 GitHub 使用指南 🐙
-
-> **GitHub** 是全球最大的代码托管平台，拥有超过 1 亿开发者，是开源项目的首选平台。
+> 💡 **其他代码托管平台**：
 > 
-> ⚠️ **注意**：GitHub 在国内访问可能需要翻墙，新手建议先使用 GitCode 或 Gitee 练习。
-
-#### 6.3.1 注册与创建仓库
-
-**注册账号**：
-1. 访问 [github.com](https://github.com)
-2. 点击 "Sign up" 注册，填写用户名、邮箱、密码
-3. 验证邮箱完成注册
-
-**创建仓库**：
-1. 登录后点击右上角 **+** → "New repository"
-2. 填写仓库信息：
-   - **Repository name**：仓库名称（如 `my-project`）
-   - **Description**：项目描述（可选）
-   - **Public/Private**：公开或私有
-   - **Add a README file**：勾选初始化 README
-3. 点击 "Create repository"
-
-GitHub 仓库创建参考资料：
-- [GitHub新手入门:从创建到合并的全面教程--CSDN](https://blog.csdn.net/ukhgg/article/details/115670539)
-- [一文搞懂 GitHub 使用技巧--CSDN](https://blog.csdn.net/weixin_42132035/article/details/140447926)
-
-#### 6.3.2 本地项目推送到 GitHub
-
-```bash
-# 1. 在本地项目目录初始化 Git
-$ git init
-
-# 2. 添加文件到暂存区
-$ git add .
-
-# 3. 提交到本地仓库
-$ git commit -m "Initial commit"
-
-# 4. 关联远程仓库（替换为你的仓库地址）
-$ git remote add origin https://github.com/用户名/仓库名.git
-
-# 5. 推送到 GitHub
-$ git push -u origin master
-```
-
-#### 6.3.3 Fork 与 Pull Request
-
-**Fork（分叉）**：
-- 将别人的仓库复制到自己的账号下
-- 可以自由修改，不影响原仓库
-
-**Pull Request（合并请求）**：
-1. Fork 目标仓库
-2. 在自己的仓库修改代码并提交
-3. 点击 "Pull Request" → "New Pull Request"
-4. 填写标题和描述，说明修改内容
-5. 等待原作者审核合并
-
-> 💡 **Fork + PR 是开源贡献的标准流程**
+> 除了 GitCode，还有 **Gitee（码云）**、**GitHub**、**GitLab** 等代码托管平台。
+> 
+> 这些平台使用起来都**大同小异**，都是基于 Git 的远程代码托管服务，支持的 Git 命令也完全相同：
+> - `git clone` - 克隆仓库
+> - `git remote add` - 关联远程仓库
+> - `git push` - 推送代码
+> - `git pull` - 拉取代码
+> 
+> 区别主要在于：
+> - **访问速度**：国内平台（GitCode、Gitee）访问快，GitHub 可能需要翻墙
+> - **界面语言**：国内平台是中文，GitHub 是英文
+> - **特色功能**：各平台有自己的 CI/CD、项目管理等附加功能
+> 
+> **建议**：新手优先使用 GitCode 或 Gitee，熟练后再尝试 GitHub。
 
 ---
 
