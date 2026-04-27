@@ -1982,14 +1982,24 @@ origin  https://gitcode.com/ZhengEnCi/ai-workshop-student-management-system-fron
 $ git remote remove origin
 
 # 4. 关联你自己的 GitCode 远程仓库（替换为你的实际地址）
-$ git remote add origin https://gitcode.com/你的用户名/ai-workshop-student-management-system-front-end.git
+$ git remote add origin https://gitcode.com/你的用户名/test.git
 
 # 5. 推送到你的 GitCode 仓库
 $ git push -u origin master
 
-# 如果提示分支不存在，先创建 master 分支：
-$ git branch -M master
-$ git push -u origin master
+Enumerating objects: 19005, done.
+Counting objects: 100% (19005/19005), done.
+Delta compression using up to 24 threads
+Compressing objects: 100% (5335/5335), done.
+Writing objects: 100% (19005/19005), 16.11 MiB | 6.68 MiB/s, done.
+Total 19005 (delta 13024), reused 18986 (delta 13012), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (13024/13024), done.
+remote: Start Git Hooks Checking
+remote: Too many commits, skip git-hooks check
+remote:                                                         [PASSED]
+To https://gitcode.com/你的用户名/test.git
+ * [new branch]        master -> master
+branch 'master' set up to track 'origin/master'.
 ```
 
 **验证推送成功**：
