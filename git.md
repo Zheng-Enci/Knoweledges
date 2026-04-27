@@ -2655,23 +2655,40 @@ git branch -r
 # 删除本地分支
 $ git branch -d feature-update-readme
 
+# 如果提示分支未合并，使用 -D 强制删除
+$ git branch -D feature-update-readme
+
 # 查看本地分支（确认已删除）
 $ git branch
 ```
 
-**预期输出**：
+**预期输出**（正常删除）：
 ```
 git branch -d feature-update-readme
-Deleted branch feature-update-readme (was a1b2c3d).
+Deleted branch feature-update-readme (was efed8f56).
+
+git branch
+* master
+```
+
+**预期输出**（未合并提示）：
+```
+git branch -d feature-update-readme
+error: the branch 'feature-update-readme' is not fully merged
+hint: If you are sure you want to delete it, run 'git branch -D feature-update-readme'
+
+git branch -D feature-update-readme
+Deleted branch feature-update-readme (was efed8f56).
 
 git branch
 * master
 ```
 
 **说明**：
-- `-d` 删除已合并的分支
-- 如果分支未合并，需要使用 `-D` 强制删除
+- `-d` 删除已合并的分支（安全删除）
+- `-D` 强制删除未合并的分支（会丢失该分支上的修改）
 - 不能删除当前所在的分支
+- 在第七步中，远程分支已删除但本地分支没有合并到 master，所以需要用 `-D` 强制删除
 
 ---
 
