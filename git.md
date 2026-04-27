@@ -1479,7 +1479,7 @@ git branch -a
   remotes/origin/master
 
 git branch -v
-* master                0c09fcf 添加开发成员王乐宸
+* master 0c09fcf1 添加开发成员王乐宸
 ```
 
 **说明**：
