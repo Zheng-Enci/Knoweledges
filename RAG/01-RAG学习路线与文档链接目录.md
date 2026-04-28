@@ -101,6 +101,11 @@ flowchart TD
 - 掘金：[11c. Token智能压缩技术](https://juejin.cn/spost/7615446397371301938)
 - CSDN：[11c. Token智能压缩技术](https://blog.csdn.net/2301_79239314/article/details/158892286)
 
+## 📎 专栏链接
+
+- 掘金专栏：[RAG专栏](https://juejin.cn/column/7603673564908863523)
+- CSDN专栏：[RAG技术专栏](https://blog.csdn.net/2301_79239314/category_13128617.html)
+
 ---
 
 最后更新时间：2026-03-18
