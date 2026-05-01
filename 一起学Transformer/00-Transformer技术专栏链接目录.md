@@ -58,6 +58,8 @@ flowchart TD
 - **CSDN**：[01d-前馈神经网络](https://blog.csdn.net/2301_79239314/article/details/160500890)
 
 ### 02-序列到序列模型
+- **掘金**：[02-序列到序列模型](https://juejin.cn/post/7634438325378891818)
+- **CSDN**：[02-序列到序列模型](https://blog.csdn.net/2301_79239314/article/details/160683518)
 
 ### 03-注意力机制基础
 
