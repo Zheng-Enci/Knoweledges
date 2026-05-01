@@ -90,6 +90,16 @@ pip install markconv
 
 ### 4.3 M3-markconv库找不到wkhtmltopdf问题 📝
 
+### 4.4 M4-更新日志v0.1.3-Mermaid图表支持 📝
+
+- [掘金](https://juejin.cn/post/7634471632263036934) 🌟
+- [CSDN](https://blog.csdn.net/2301_79239314/article/details/160691896) 🇨🇳
+
+### 4.5 M5-markconv自定义CSS样式指南 📝
+
+- [CSDN](https://blog.csdn.net/2301_79239314/article/details/160691948) 🇨🇳
+- [掘金](https://juejin.cn/post/7634453250009399342) 🌟
+
 ---
 
 最后更新时间：2026-04-10
