@@ -2,7 +2,8 @@
 
 ## AI行业观察
 
-- [O04-马斯克起诉OpenAI世纪诉讼全解析]()
+- [O04-马斯克起诉OpenAI世纪诉讼全解析 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/160683203)
+- [O04-马斯克起诉OpenAI世纪诉讼全解析 -- 掘金](https://juejin.cn/post/7634490223083372553)
 
 ## Git 相关
 
