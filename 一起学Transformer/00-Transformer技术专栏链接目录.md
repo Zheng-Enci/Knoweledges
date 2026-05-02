@@ -61,6 +61,10 @@ flowchart TD
 - **掘金**：[02-序列到序列模型](https://juejin.cn/post/7634438325378891818)
 - **CSDN**：[02-序列到序列模型](https://blog.csdn.net/2301_79239314/article/details/160683518)
 
+### 02a-什么是矩阵
+- **掘金**：[02a-什么是矩阵](https://juejin.cn/post/7634874542255849510)
+- **CSDN**：[02a-什么是矩阵](https://blog.csdn.net/2301_79239314/article/details/160720626)
+
 ### 03-注意力机制基础
 
 ### 04-自注意力机制详解
