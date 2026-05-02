@@ -14,9 +14,8 @@ alwaysApply: true
 
 ## 操作流程
 
-1. 执行 `git status` 查看当前仓库状态
-2. 执行 `git add <文件>` 将改动添加到暂存区
-3. 执行 `git commit -m "<提交信息>"` 提交改动
+1. 执行 `git add <文件>` 将改动添加到暂存区
+2. 执行 `git commit -m "<提交信息>"` 提交改动
 
 ## 重要规则
 
@@ -30,7 +29,6 @@ alwaysApply: true
 
 ### 示例
 ```bash
-git status
 git add <改动文件>
 git commit -m "更新文档内容"
 ```
