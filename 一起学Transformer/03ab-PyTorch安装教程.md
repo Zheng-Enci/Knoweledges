@@ -148,9 +148,20 @@ pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url htt
 
 cuDNN是NVIDIA提供的深度学习加速库，安装它可以让PyTorch运行得更快。
 
-**下载地址**：https://developer.nvidia.com/cudnn
+用pip直接安装最简单：
 
-点击Download，选择对应CUDA版本的cuDNN，下载后双击安装即可。这步不是必须的，但有的话会更好。
+```bash
+pip install nvidia-cudnn
+```
+
+安装完成后验证一下：
+
+```python
+import torch
+print(torch.backends.cudnn.is_available())
+```
+
+如果输出True，说明cuDNN可以用了。这步不是必须的，但有的话会更好。
 
 ## 5. 验证安装 ✅
 
