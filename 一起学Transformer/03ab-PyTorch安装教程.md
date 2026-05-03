@@ -98,7 +98,7 @@ pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url htt
 pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
-如果镜像速度也不行，可以参考[03aa-PyTorch迅雷加速下载小妙招](https://juejin.cn/post/7559781687904747556)，用迅雷下载.whl文件本地安装。
+如果镜像速度也不行，可以参考[03aa-PyTorch迅雷加速下载小妙招](https://juejin.cn/post/7559781687904747556)（[CSDN版](https://blog.csdn.net/2301_79239314/article/details/160743376)），用迅雷下载.whl文件本地安装。
 
 ## 4. GPU版本安装 🔧
 
