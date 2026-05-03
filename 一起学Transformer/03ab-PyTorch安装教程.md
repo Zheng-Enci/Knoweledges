@@ -123,7 +123,15 @@ GPU版本可以加速深度学习训练，比CPU快几十倍不止。**只有NVI
 nvcc -V
 ```
 
-如果显示CUDA版本号，说明安装成功。
+看到类似输出就说明安装成功：
+
+```
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2026 NVIDIA Corporation
+Built on Thu_Mar_19_22:28:55_Pacific_Daylight_Time_2026
+Cuda compilation tools, release 13.2, V13.2.78
+Build cuda_13.2.r13.2/compiler.37668154_0
+```
 
 ### 4.2 安装PyTorch GPU版本 🚀
 
