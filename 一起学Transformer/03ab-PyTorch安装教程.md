@@ -1,4 +1,4 @@
-# 03a-PyTorch安装教程 📚
+# 03ab-PyTorch安装教程 📚
 
 ## 章节阅读路线图 🗺️
 
@@ -112,6 +112,8 @@ conda install pytorch torchvision torchaudio cpuonly -c pytorch
 ```bash
 pip install torch torchvision torchaudio -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+
+如果镜像速度也不行，可以参考[03aa-PyTorch迅雷加速下载小妙招](https://juejin.cn/post/7559781687904747556)，用迅雷下载.whl文件本地安装。
 
 ## 4. GPU版本安装 🔧
 
