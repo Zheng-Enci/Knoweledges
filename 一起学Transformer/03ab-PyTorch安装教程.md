@@ -108,8 +108,6 @@ GPU版本可以加速深度学习训练，比CPU快几十倍不止。**只有NVI
 
 首先用nvidia-smi查看你的显卡驱动支持什么版本的CUDA。
 
-根据[PyTorch官方CUDA支持表](https://github.com/pytorch/pytorch/blob/main/RELEASE.md)，PyTorch 2.10支持CUDA 12.6、12.8、13.0三个版本。
-
 **下载地址**：https://developer.nvidia.com/cuda-downloads
 
 下载对应版本后，打开下载页面，按以下选择（以**Windows 11 x86_64**为例）：
