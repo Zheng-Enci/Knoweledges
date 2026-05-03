@@ -102,21 +102,21 @@ pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 -i https://pypi
 
 ## 4. GPU版本安装 🔧
 
-GPU版本可以加速深度学习训练，比CPU快几十倍不止。如果你有NVIDIA显卡，强烈建议安装GPU版本。
+GPU版本可以加速深度学习训练，比CPU快几十倍不止。**只有NVIDIA显卡才能使用GPU版本**，如果你没有NVIDIA显卡，请跳过这节，直接看第五章验证安装。
 
 ### 4.1 安装CUDA Toolkit 🔧
 
-GPU版本需要CUDA Toolkit的支持。首先用nvidia-smi查看你的显卡驱动支持什么版本的CUDA。
+首先用nvidia-smi查看你的显卡驱动支持什么版本的CUDA。
 
 根据[PyTorch官方版本页面](https://pytorch.org/get-started/previous-versions/)，当前最新PyTorch支持的CUDA版本主要有12.6、12.8和13.0。推荐安装CUDA 12.8，稳定性好。
 
 **下载地址**：https://developer.nvidia.com/cuda-downloads
 
-下载对应版本后，打开下载页面，按以下选择：
+下载对应版本后，打开下载页面，按以下选择（以**Windows 11 x86_64**为例）：
 
 - **Operating System**：Windows
-- **Architecture**：x86_64
-- **Version**：你的系统版本（Windows 10或Windows 11）
+- **Architecture**：x86_64（64位系统）
+- **Version**：Windows 11（根据你的系统选择）
 - **Installer Type**：推荐选**exe (local)**（本地安装包，包含所有组件）
 
 然后点击Download下载。下载完后双击安装包，按照提示一路下一步即可。安装完成后，打开命令提示符验证：
