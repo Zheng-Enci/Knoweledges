@@ -67,7 +67,11 @@ Windows上常用的Python包管理工具主要有两种：
 
 新手先用pip把PyTorch装上，跑通代码后再学conda也不迟。
 
-### 2.3 检查Python版本 🐍
+## 3. CPU版本安装 💻
+
+CPU版本安装最简单，适合没有NVIDIA显卡的同学，或者只是跑一些小模型练手。
+
+### 3.1 检查Python版本 🐍
 
 PyTorch要求Python版本在3.9以上。打开命令提示符检查：
 
@@ -75,29 +79,11 @@ PyTorch要求Python版本在3.9以上。打开命令提示符检查：
 python --version
 ```
 
-如果版本低于3.9，需要先升级Python。建议安装Python 3.10或3.11，这两个版本兼容性最好。
-
-## 3. CPU版本安装 💻
-
-CPU版本安装最简单，适合没有NVIDIA显卡的同学，或者只是跑一些小模型练手。
-
-### 3.1 创建虚拟环境（conda）🌿
-
-为每个项目创建独立的虚拟环境是个好习惯，可以避免不同项目之间的依赖冲突。
-
-```bash
-# 创建名为pytorch的虚拟环境，Python版本3.10
-conda create -n pytorch python=3.10
-
-# 激活环境
-conda activate pytorch
-```
+如果版本低于3.9，需要先升级Python。建议安装Python 3.10或3.11。
 
 ### 3.2 安装PyTorch 🔧
 
 **使用pip安装**（推荐）：
-
-根据你的需求选择对应命令：
 
 ```bash
 # CPU版本
@@ -105,12 +91,6 @@ pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url htt
 ```
 
 完整版本列表请查看[PyTorch官方历史版本页面](https://pytorch.org/get-started/previous-versions/)。
-
-**使用conda安装**：
-
-```bash
-conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 cpuonly -c pytorch
-```
 
 💡 **提示**：如果网络比较慢，可以使用国内镜像加速：
 
@@ -141,13 +121,6 @@ nvcc -V
 如果显示CUDA版本号，说明安装成功。
 
 ### 4.2 安装PyTorch GPU版本 🚀
-
-创建新的虚拟环境（推荐，避免和CPU版本混用）：
-
-```bash
-conda create -n pytorch_gpu python=3.10
-conda activate pytorch_gpu
-```
 
 根据你的CUDA版本选择安装命令：
 
