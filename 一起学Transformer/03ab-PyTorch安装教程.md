@@ -144,19 +144,6 @@ pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url htt
 
 💡 **提示**：具体的pip安装命令，请前往[PyTorch官方历史版本页面](https://pytorch.org/get-started/previous-versions/)查找，页面上会根据你的CUDA版本提供对应的命令。
 
-### 4.3 cuDNN（已有）✅
-
-cuDNN是NVIDIA提供的深度学习加速库。
-
-其实**你已经装好了**！安装PyTorch GPU版本时，cuDNN已经自带了。验证一下：
-
-```python
-import torch
-print(torch.backends.cudnn.is_available())
-```
-
-输出True就说明cuDNN已经可用了，完全不用单独安装。
-
 ## 5. 验证安装 ✅
 
 不管你安装的是CPU还是GPU版本，都需要验证一下是否正常工作。
