@@ -61,11 +61,11 @@ nvidia-smi
 
 Windows上常用的Python包管理工具主要有两种：
 
-**conda**（推荐）：Anaconda自带的包管理器，可以帮你管理Python环境和依赖包，强烈建议新手使用。
+**pip**（推荐新手）：Python官方的包管理器，简单直接，安装命令一学就会。
 
-**pip**：Python官方的包管理器，简单直接，但没有环境隔离功能。
+**conda**：Anaconda自带的包管理器，功能强大，但需要额外学习环境管理命令，新手可以先跳过。
 
-我建议新手用conda，管理环境真的方便很多。
+新手先用pip把PyTorch装上，跑通代码后再学conda也不迟。
 
 ### 2.3 检查Python版本 🐍
 
