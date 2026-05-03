@@ -90,9 +90,9 @@ python --version
 pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cpu
 ```
 
-完整版本列表请查看[PyTorch官方历史版本页面](https://pytorch.org/get-started/previous-versions/)。
+💡 **提示**：具体的pip安装命令，请前往[PyTorch官方历史版本页面](https://pytorch.org/get-started/previous-versions/)查找，页面上会根据你的需求提供对应的命令。
 
-💡 **提示**：如果网络比较慢，可以使用国内镜像加速：
+如果网络比较慢，可以使用国内镜像加速：
 
 ```bash
 pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
@@ -127,15 +127,9 @@ nvcc -V
 ```bash
 # CUDA 12.6
 pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu126
-
-# CUDA 12.8
-pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu128
-
-# CUDA 13.0
-pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu130
 ```
 
-完整版本列表请查看[PyTorch官方历史版本页面](https://pytorch.org/get-started/previous-versions/)。
+💡 **提示**：具体的pip安装命令，请前往[PyTorch官方历史版本页面](https://pytorch.org/get-started/previous-versions/)查找，页面上会根据你的CUDA版本提供对应的命令。
 
 ### 4.3 安装cuDNN（可选）📚
 
