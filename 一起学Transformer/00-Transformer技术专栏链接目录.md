@@ -66,6 +66,8 @@ flowchart TD
 - **CSDN**：[02a-什么是矩阵](https://blog.csdn.net/2301_79239314/article/details/160720626)
 
 ### 03-注意力机制基础
+- **掘金**：[03-注意力机制基础](https://juejin.cn/post/7634873282535161882)
+- **CSDN**：[03-注意力机制基础](https://blog.csdn.net/2301_79239314/article/details/160742121)
 
 ### 04-自注意力机制详解
 
