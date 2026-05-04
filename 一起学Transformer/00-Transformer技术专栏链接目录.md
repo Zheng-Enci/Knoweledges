@@ -71,13 +71,13 @@ flowchart TD
 - **掘金**：[03-注意力机制基础](https://juejin.cn/post/7634873282535161882)
 - **CSDN**：[03-注意力机制基础](https://blog.csdn.net/2301_79239314/article/details/160742121)
 
-### 03ab-PyTorch安装教程
-- **掘金**：[03ab-PyTorch安装教程](https://juejin.cn/post/7635465776091267122)
-- **CSDN**：[03ab-PyTorch安装教程](https://blog.csdn.net/2301_79239314/article/details/160747499)
-
 ### 03aa-PyTorch迅雷加速下载小妙招
 - **掘金**：[03aa-PyTorch迅雷加速下载小妙招](https://juejin.cn/post/7559781687904747556)
 - **CSDN**：[03aa-PyTorch迅雷加速下载小妙招](https://blog.csdn.net/2301_79239314/article/details/160743376)
+
+### 03ab-PyTorch安装教程
+- **掘金**：[03ab-PyTorch安装教程](https://juejin.cn/post/7635465776091267122)
+- **CSDN**：[03ab-PyTorch安装教程](https://blog.csdn.net/2301_79239314/article/details/160747499)
 
 ### 04-自注意力机制详解
 
