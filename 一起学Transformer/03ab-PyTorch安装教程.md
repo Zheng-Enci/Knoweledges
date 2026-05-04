@@ -184,35 +184,6 @@ print(f"CUDA版本: {torch.version.cuda}")
 
 如果`torch.cuda.is_available()`返回True，说明GPU已经可以用了。
 
-### 5.3 简单加速测试 ⚡
-
-最后跑个小测试，感受一下GPU的速度：
-
-```python
-import torch
-import time
-
-# 创建两个大矩阵
-size = 10000
-a = torch.rand(size, size)
-b = torch.rand(size, size)
-
-# CPU计算
-start = time.time()
-c_cpu = torch.matmul(a, b)
-print(f"CPU耗时: {time.time() - start:.4f}秒")
-
-# GPU计算（如果有）
-if torch.cuda.is_available():
-    a = a.cuda()
-    b = b.cuda()
-    start = time.time()
-    c_gpu = torch.matmul(a, b)
-    print(f"GPU耗时: {time.time() - start:.4f}秒")
-```
-
-GPU矩阵乘法通常比CPU快几十倍，这就是深度学习离不开GPU的原因。
-
 ---
 
 **最后更新时间：2026-05-03**
