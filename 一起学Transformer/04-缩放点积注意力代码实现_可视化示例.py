@@ -61,7 +61,7 @@ def visualize_attention(attention_weights, tokens=None):
     weights = attention_weights.detach().cpu().numpy()
     
     plt.figure(figsize=(8, 6))
-    plt.imshow(weights, cmap='viridis', aspect='auto')
+    plt.imshow(weights, cmap='gray', aspect='auto')
     plt.colorbar(label='Attention Weight')
     
     if tokens is not None:
