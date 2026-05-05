@@ -12,8 +12,19 @@ def visualize_activation_functions() -> None:
     print("=== 激活函数可视化对比 ===")
     
     # 设置 Matplotlib 支持中文显示
-    plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
+    # 优先使用系统可用的中文字体
+    import platform
+    system = platform.system()
+    if system == 'Windows':
+        plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'DejaVu Sans']
+    elif system == 'Darwin':  # macOS
+        plt.rcParams['font.sans-serif'] = ['PingFang SC', 'Arial Unicode MS', 'DejaVu Sans']
+    else:  # Linux
+        plt.rcParams['font.sans-serif'] = ['WenQuanYi Micro Hei', 'Noto Sans CJK SC', 'DejaVu Sans']
     plt.rcParams['axes.unicode_minus'] = False
+    
+    # 设置数学字体为STIX，解决上标/下标字符显示问题
+    plt.rcParams['mathtext.fontset'] = 'stix'
 
     # 生成 x 轴数据：-5 到 5，200个点
     x: torch.Tensor = torch.linspace(-5, 5, 200)
@@ -30,9 +41,9 @@ def visualize_activation_functions() -> None:
     axes[0].plot(x.numpy(), y_sigmoid.numpy(), color='#2196F3', linewidth=2)
     axes[0].axhline(y=0, color='gray', linestyle='--', linewidth=0.5)
     axes[0].axhline(y=1, color='gray', linestyle='--', linewidth=0.5)
-    axes[0].set_title('Sigmoid\nσ(x) = 1/(1+e⁻ˣ)', fontsize=12)
+    axes[0].set_title('Sigmoid\n$\\sigma(x) = 1/(1+e^{-x})$', fontsize=12)
     axes[0].set_xlabel('x')
-    axes[0].set_ylabel('σ(x)')
+    axes[0].set_ylabel('$\\sigma(x)$')
     axes[0].set_ylim(-0.1, 1.1)
     axes[0].grid(True, alpha=0.3)
     axes[0].text(2, 0.15, '输出范围: (0, 1)', fontsize=9, color='#666')
@@ -42,9 +53,9 @@ def visualize_activation_functions() -> None:
     axes[1].axhline(y=0, color='gray', linestyle='--', linewidth=0.5)
     axes[1].axhline(y=1, color='gray', linestyle='--', linewidth=0.5)
     axes[1].axhline(y=-1, color='gray', linestyle='--', linewidth=0.5)
-    axes[1].set_title('Tanh\ntanh(x) = (eˣ-e⁻ˣ)/(eˣ+e⁻ˣ)', fontsize=12)
+    axes[1].set_title('Tanh\n$\\tanh(x) = (e^{x}-e^{-x})/(e^{x}+e^{-x})$', fontsize=12)
     axes[1].set_xlabel('x')
-    axes[1].set_ylabel('tanh(x)')
+    axes[1].set_ylabel('$\\tanh(x)$')
     axes[1].set_ylim(-1.1, 1.1)
     axes[1].grid(True, alpha=0.3)
     axes[1].text(2, -0.7, '输出范围: (-1, 1)', fontsize=9, color='#666')
@@ -52,12 +63,12 @@ def visualize_activation_functions() -> None:
     # ReLU
     axes[2].plot(x.numpy(), y_relu.numpy(), color='#FF5722', linewidth=2)
     axes[2].axhline(y=0, color='gray', linestyle='--', linewidth=0.5)
-    axes[2].set_title('ReLU\nReLU(x) = max(0, x)', fontsize=12)
+    axes[2].set_title('ReLU\n$ReLU(x) = \\max(0, x)$', fontsize=12)
     axes[2].set_xlabel('x')
-    axes[2].set_ylabel('ReLU(x)')
+    axes[2].set_ylabel('$ReLU(x)$')
     axes[2].set_ylim(-0.5, 5.5)
     axes[2].grid(True, alpha=0.3)
-    axes[2].text(2, 0.5, '输出范围: [0, +∞)', fontsize=9, color='#666')
+    axes[2].text(2, 0.5, '输出范围: [0, +$\\infty$)', fontsize=9, color='#666')
 
     plt.suptitle('三种常用激活函数对比', fontsize=14, fontweight='bold')
     plt.tight_layout()
