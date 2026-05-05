@@ -20,9 +20,9 @@ plt.rcParams['mathtext.fontset'] = 'cm'
 # ==================== 图1：XOR数据点分布 ====================
 fig1, ax1 = plt.subplots(figsize=(5, 5))
 
-# 设置坐标轴范围：-1 到 2
-ax1.set_xlim(-1.2, 2.2)
-ax1.set_ylim(-1.2, 2.2)
+# 设置坐标轴范围：-1 到 2（右下角留出空白用于水印）
+ax1.set_xlim(-1.2, 2.5)
+ax1.set_ylim(-1.5, 2.2)
 ax1.set_aspect('equal')
 
 # 绘制坐标轴（在-1处交叉，作为新的原点）
@@ -84,9 +84,9 @@ plt.close()
 # ==================== 图2：XOR数据点简化版 ====================
 fig2, ax2 = plt.subplots(figsize=(4, 4))
 
-# 设置坐标轴范围：-1 到 2
-ax2.set_xlim(-1.2, 2.2)
-ax2.set_ylim(-1.2, 2.2)
+# 设置坐标轴范围：-1 到 2（右下角留出空白用于水印）
+ax2.set_xlim(-1.2, 2.5)
+ax2.set_ylim(-1.5, 2.2)
 ax2.set_aspect('equal')
 
 # 绘制坐标轴（在-1处交叉，作为新的原点）
@@ -141,9 +141,9 @@ plt.close()
 # ==================== 图3：XOR解决方案 - 两条直线分离 ====================
 fig3, ax3 = plt.subplots(figsize=(5, 5))
 
-# 设置坐标轴范围：-1 到 2
-ax3.set_xlim(-1.2, 2.2)
-ax3.set_ylim(-1.2, 2.2)
+# 设置坐标轴范围：-1 到 2（右下角留出空白用于水印）
+ax3.set_xlim(-1.2, 2.5)
+ax3.set_ylim(-1.5, 2.2)
 ax3.set_aspect('equal')
 
 # 绘制坐标轴（在-1处交叉，作为新的原点）
