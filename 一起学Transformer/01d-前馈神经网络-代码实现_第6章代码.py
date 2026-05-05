@@ -9,8 +9,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
-import numpy as np
-from typing import Tuple, List
 
 class Perceptron(nn.Module):
     """单层感知机：输入 → 输出（无隐藏层）"""
@@ -202,5 +200,5 @@ if __name__ == "__main__":
     print("  • 感知机能解决 AND/OR（线性可分）")
     print("  • 感知机无法解决 XOR（线性不可分）")
     print("  • 前馈神经网络（隐藏层+激活函数）能解决 XOR")
-    print("  • 激活函数提供非线性，让网络真正"深"起来")
+    print("  • 激活函数提供非线性，让网络真正\"深\"起来")
     print("=" * 70)
