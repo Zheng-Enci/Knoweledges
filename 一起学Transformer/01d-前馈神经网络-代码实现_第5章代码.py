@@ -6,8 +6,6 @@
 
 import torch
 import matplotlib.pyplot as plt
-import numpy as np
-from typing import Tuple
 
 def visualize_activation_functions() -> None:
     """可视化三种常用激活函数"""
@@ -63,8 +61,8 @@ def visualize_activation_functions() -> None:
 
     plt.suptitle('三种常用激活函数对比', fontsize=14, fontweight='bold')
     plt.tight_layout()
-    plt.savefig('activation_functions.png', dpi=150, bbox_inches='tight')
-    print("✅ 激活函数对比图已保存为 activation_functions.png")
+    plt.savefig('01d-前馈神经网络-代码实现_第5章激活函数可视化.png', dpi=150, bbox_inches='tight')
+    print("✅ 激活函数对比图已保存为 01d-前馈神经网络-代码实现_第5章激活函数可视化.png")
     plt.show()
 
 def compare_activation_characteristics():
