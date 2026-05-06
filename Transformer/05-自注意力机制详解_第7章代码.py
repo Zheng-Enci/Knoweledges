@@ -109,7 +109,7 @@ for i, (w, title) in enumerate(zip(weights_list, titles)):
     axes[i, 0].set_ylabel('Query')
 
     for j in range(w_np.shape[0]):
-        axes[i, 1].bar(range(w_np.shape[1]), w_np[j], alpha=0.7, label=f'Q{j}')
+        axes[i, 1].bar(range(w_np.shape[1]), w_np[j].tolist(), alpha=0.7, label=f'Q{j}')
     axes[i, 1].set_xlabel('Key')
     axes[i, 1].set_ylabel('Attention Weight')
     axes[i, 1].set_title(f'{title} - Bar Chart')
