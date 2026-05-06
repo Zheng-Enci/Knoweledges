@@ -65,8 +65,8 @@ def visualize_self_attention(attention_weights, tokens=None):
     axes[1].legend()
 
     plt.tight_layout()
-    plt.savefig('05-自注意力机制详解_第6章可视化.png', dpi=150, bbox_inches='tight')
-    print("Image saved as 05-自注意力机制详解_第6章可视化.png")
+    plt.savefig('05_chapter6_visualization.png', dpi=150, bbox_inches='tight')
+    print("Image saved as 05_chapter6_visualization.png")
     plt.show()
 
 

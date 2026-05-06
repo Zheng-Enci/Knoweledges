@@ -108,6 +108,6 @@ for ax, w, title in zip(axes, weights_list, titles):
     ax.set_ylabel('Query')
 
 plt.tight_layout()
-plt.savefig('05-自注意力机制详解_第7章可视化.png', dpi=150, bbox_inches='tight')
-print("Image saved as 05-自注意力机制详解_第7章可视化.png")
+plt.savefig('05_chapter7_visualization.png', dpi=150, bbox_inches='tight')
+print("Image saved as 05_chapter7_visualization.png")
 plt.show()

@@ -146,8 +146,8 @@ def visualize_training_process(loss_history):
     plt.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('01d-前馈神经网络-代码实现_第6章训练过程可视化.png', dpi=150, bbox_inches='tight')
-    print("✅ 训练过程图已保存为 01d-前馈神经网络-代码实现_第6章训练过程可视化.png")
+    plt.savefig('01d_chapter6_training_process.png', dpi=150, bbox_inches='tight')
+    print("Image saved as 01d_chapter6_training_process.png")
     plt.show()
 
 def visualize_activation_functions():
@@ -171,8 +171,8 @@ def visualize_activation_functions():
         plt.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('01d-前馈神经网络-代码实现_第6章激活函数可视化.png', dpi=150, bbox_inches='tight')
-    print("✅ 激活函数图已保存为 01d-前馈神经网络-代码实现_第6章激活函数可视化.png")
+    plt.savefig('01d_chapter6_activation_functions.png', dpi=150, bbox_inches='tight')
+    print("Image saved as 01d_chapter6_activation_functions.png")
 
 if __name__ == "__main__":
     print("01d-前馈神经网络代码实现 - 第6章：完整可运行示例")

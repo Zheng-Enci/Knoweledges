@@ -78,8 +78,8 @@ for spine in ax1.spines.values():
 
 # 调整布局，右下角留出额外空间用于水印
 plt.subplots_adjust(right=0.85, bottom=0.15)
-plt.savefig('01d-前馈神经网络-代码实现_XOR数据点分布.png', dpi=150)
-print("✅ 图1已保存：01d-前馈神经网络-代码实现_XOR数据点分布.png")
+plt.savefig('01d_xor_data_points.png', dpi=150)
+print("Image saved as 01d_xor_data_points.png")
 plt.close()
 
 # ==================== 图2：XOR数据点简化版 ====================
@@ -136,8 +136,8 @@ for spine in ax2.spines.values():
 
 # 调整布局，右下角留出额外空间用于水印
 plt.subplots_adjust(right=0.85, bottom=0.15)
-plt.savefig('01d-前馈神经网络-代码实现_XOR数据点简化.png', dpi=150)
-print("✅ 图2已保存：01d-前馈神经网络-代码实现_XOR数据点简化.png")
+plt.savefig('01d_xor_simplified.png', dpi=150)
+print("Image saved as 01d_xor_simplified.png")
 plt.close()
 
 # ==================== 图3：XOR解决方案 - 两条直线分离 ====================
@@ -206,8 +206,8 @@ for spine in ax3.spines.values():
 
 # 调整布局，右下角留出额外空间用于水印
 plt.subplots_adjust(right=0.85, bottom=0.15)
-plt.savefig('01d-前馈神经网络-代码实现_XOR解决方案.png', dpi=150)
-print("✅ 图3已保存：01d-前馈神经网络-代码实现_XOR解决方案.png")
+plt.savefig('01d_xor_solution.png', dpi=150)
+print("Image saved as 01d_xor_solution.png")
 plt.close()
 
 print("\n🎉 所有图片生成完成！")
