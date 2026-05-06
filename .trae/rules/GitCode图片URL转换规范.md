@@ -57,4 +57,3 @@ https://raw.gitcode.com/ZhengEnCi/knoweledges/raw/master/%E4%B8%80%E8%B5%B7%E5%A
 - 图片必须先推送到 GitCode 远程仓库，URL 才能正常访问
 - 路径分隔符统一使用正斜杠 `/`（即使 Windows 系统使用反斜杠 `\`）
 - URL 编码必须完整，不能遗漏任何中文字符或特殊字符
-- **获取编码后的链接必须使用 Python 代码**，手动转换容易出错
