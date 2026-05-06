@@ -24,11 +24,6 @@ https://raw.gitcode.com/{用户名}/{仓库名}/raw/master/{相对路径}
    - 本地路径：`f:\BaiduSyncdisk\ZhengEnCi\Note\Knowledge\Knowledges\Transformer\01d_chapter5_activation_functions.png`
    - 相对路径：`Transformer/01d_chapter5_activation_functions.png`
 
-3. **URL 编码**：将中文字符和特殊字符转换为百分号编码
-   - 中文字符 → UTF-8 百分号编码（如 `一起学` → `%E4%B8%80%E8%B5%B7%E5%AD%A6`）
-   - 斜杠 `/` → `%2F`
-   - 其他特殊字符同理
-
 ### 示例
 
 **本地路径：**
