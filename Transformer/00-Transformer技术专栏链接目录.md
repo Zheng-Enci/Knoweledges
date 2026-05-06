@@ -83,15 +83,15 @@ flowchart TD
 - **掘金**：[03ab-PyTorch安装教程](https://juejin.cn/post/7635465776091267122)
 - **CSDN**：[03ab-PyTorch安装教程](https://blog.csdn.net/2301_79239314/article/details/160747499)
 
+### 04-缩放点积注意力代码实现
+- **掘金**：[04-缩放点积注意力代码实现](https://juejin.cn/post/7635839300292362267)
+- **CSDN**：[04-缩放点积注意力代码实现](https://blog.csdn.net/2301_79239314/article/details/160774442)
+
 ### 05-自注意力机制详解
 - **掘金**：[05-自注意力机制详解](https://juejin.cn/post/7636643735278845995)
 - **CSDN**：[05-自注意力机制详解](https://blog.csdn.net/2301_79239314/article/details/160831512)
 
-### 05-多头注意力机制
-
-### 04-缩放点积注意力代码实现
-- **掘金**：[04-缩放点积注意力代码实现](https://juejin.cn/post/7635839300292362267)
-- **CSDN**：[04-缩放点积注意力代码实现](https://blog.csdn.net/2301_79239314/article/details/160774442)
+### 06-多头注意力机制
 
 ### 07-位置编码
 
