@@ -84,6 +84,8 @@ flowchart TD
 - **CSDN**：[03ab-PyTorch安装教程](https://blog.csdn.net/2301_79239314/article/details/160747499)
 
 ### 04-自注意力机制详解
+- **掘金**：[04-自注意力机制详解](https://juejin.cn/post/7636643735278845995)
+- **CSDN**：[04-自注意力机制详解](https://blog.csdn.net/2301_79239314/article/details/160831512)
 
 ### 05-多头注意力机制
 
