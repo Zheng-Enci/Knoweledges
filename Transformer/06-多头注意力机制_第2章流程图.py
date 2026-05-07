@@ -124,28 +124,6 @@ def draw_multihead_attention_flowchart():
     ax.text(7, -5.4, formula_text2, fontsize=14, ha='center', va='center', 
             color='#2c3e50')
     
-    # ==================== 技术要点说明 ====================
-    tech_text = [
-        "• Parallel Computation: 8 attention heads compute independently with separate projection matrices",
-        "• Dimension Splitting: 512-dim input splits into 8×64-dim subspaces (512 = 8 × 64)", 
-        "• Functional Specialization: Heads naturally learn different relationship patterns from random initialization",
-        "• Computational Efficiency: Same FLOPs as single-head but with significantly enhanced expressiveness",
-        "• Dimension Preservation: Input/output dimensions remain the same for layer stacking"
-    ]
-    
-    tech_box = FancyBboxPatch((1.5, -7.0), 11, 2.5, 
-                             boxstyle="round,pad=0.1", 
-                             facecolor='#e8f6f3', edgecolor='#1abc9c', 
-                             linewidth=2)
-    ax.add_patch(tech_box)
-    
-    ax.text(7, -6.4, 'Technical Key Points', fontsize=16, fontweight='bold', 
-            ha='center', va='center', color='#16a085')
-    
-    for i, text in enumerate(tech_text):
-        ax.text(2.0, -6.8 - i*0.4, text, fontsize=12, ha='left', va='center', 
-                color='#2c3e50')
-    
     plt.tight_layout()
     plt.savefig('06-multihead_attention_flowchart.png', dpi=300, bbox_inches='tight', 
                 facecolor='white', edgecolor='none')
