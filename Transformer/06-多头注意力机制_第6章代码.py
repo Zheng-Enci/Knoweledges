@@ -5,13 +5,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
 
-def get_color(value):
-    color1 = np.array([255, 255, 255])
-    color2 = np.array([0, 0, 0])
+def get_color(value, color1, color2):
     return tuple((color1 + (color2 - color1) * value) / 255)
 
-cmap_colors = [get_color(i/20) for i in range(21)]
-cmap = ListedColormap(cmap_colors)
+def create_cmap(color1, color2):
+    cmap_colors = [get_color(i/20, color1, color2) for i in range(21)]
+    return ListedColormap(cmap_colors)
+
+cmap_self = create_cmap(np.array([255, 255, 255]), np.array([0, 100, 255]))
+cmap_cross = create_cmap(np.array([255, 255, 255]), np.array([255, 140, 0]))
+cmap_causal = create_cmap(np.array([255, 255, 255]), np.array([0, 180, 80]))
 
 plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
@@ -115,7 +118,7 @@ if __name__ == "__main__":
 
     w0 = weights[0, 0].detach().numpy()
     w0 = w0 / w0.max() if w0.max() > 0 else w0
-    im0 = axes[0, 0].imshow(w0, cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    im0 = axes[0, 0].imshow(w0, cmap=cmap_self, aspect='auto', vmin=0, vmax=1)
     axes[0, 0].set_title('Self-Attention (Head 1)')
     axes[0, 0].set_xlabel('Key')
     axes[0, 0].set_ylabel('Query')
@@ -123,7 +126,7 @@ if __name__ == "__main__":
 
     w1 = weights[0, 1].detach().numpy()
     w1 = w1 / w1.max() if w1.max() > 0 else w1
-    im1 = axes[0, 1].imshow(w1, cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    im1 = axes[0, 1].imshow(w1, cmap=cmap_self, aspect='auto', vmin=0, vmax=1)
     axes[0, 1].set_title('Self-Attention (Head 2)')
     axes[0, 1].set_xlabel('Key')
     axes[0, 1].set_ylabel('Query')
@@ -131,7 +134,7 @@ if __name__ == "__main__":
 
     w2 = weights_cross[0, 0].detach().numpy()
     w2 = w2 / w2.max() if w2.max() > 0 else w2
-    im2 = axes[1, 0].imshow(w2, cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    im2 = axes[1, 0].imshow(w2, cmap=cmap_cross, aspect='auto', vmin=0, vmax=1)
     axes[1, 0].set_title('Cross-Attention (Head 1)')
     axes[1, 0].set_xlabel('Encoder Positions')
     axes[1, 0].set_ylabel('Decoder Positions')
@@ -139,7 +142,7 @@ if __name__ == "__main__":
 
     w3 = weights_causal[0, 0].detach().numpy()
     w3 = w3 / w3.max() if w3.max() > 0 else w3
-    im3 = axes[1, 1].imshow(w3, cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    im3 = axes[1, 1].imshow(w3, cmap=cmap_causal, aspect='auto', vmin=0, vmax=1)
     axes[1, 1].set_title('Causal Self-Attention (Head 1)')
     axes[1, 1].set_xlabel('Key')
     axes[1, 1].set_ylabel('Query')
