@@ -110,7 +110,7 @@ def draw_multihead_attention_flowchart():
                 arrowprops=dict(arrowstyle='->', color='#7f8c8d', lw=2))
     
     # ==================== 公式区域 ====================
-    formula_box = FancyBboxPatch((1.5, -5.0), 11, 1.5, 
+    formula_box = FancyBboxPatch((7 - 2, -5.0), 4, 1.5, 
                                 boxstyle="round,pad=0.1", 
                                 facecolor='#fff3cd', edgecolor='#ffc107', 
                                 linewidth=2)
