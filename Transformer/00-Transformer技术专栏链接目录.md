@@ -92,8 +92,8 @@ flowchart TD
 - **CSDN**：[05-自注意力机制详解](https://blog.csdn.net/2301_79239314/article/details/160831512)
 
 ### 06-多头注意力机制
-- **掘金**：待发布
-- **CSDN**：待发布
+- **掘金**：[06-多头注意力机制](https://juejin.cn/post/7636955773537976363)
+- **CSDN**：[06-多头注意力机制](https://blog.csdn.net/2301_79239314/article/details/160854088)
 
 ### 07-位置编码
 
