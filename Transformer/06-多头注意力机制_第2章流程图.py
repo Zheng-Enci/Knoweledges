@@ -22,132 +22,132 @@ plt.rcParams['mathtext.fontset'] = 'cm'
 def draw_multihead_attention_flowchart():
     """绘制多头注意力机制计算流程图"""
     
-    fig, ax = plt.subplots(figsize=(14, 10))
-    ax.set_xlim(0, 12)
-    ax.set_ylim(0, 10)
+    fig, ax = plt.subplots(figsize=(16, 14))
+    ax.set_xlim(0, 14)
+    ax.set_ylim(0, 13)
     ax.set_aspect('equal')
     ax.axis('off')
     
     # 标题
-    ax.text(6, 9.5, '多头注意力机制计算流程图', fontsize=18, fontweight='bold', 
+    ax.text(7, 12.5, 'Multi-Head Attention Flowchart', fontsize=20, fontweight='bold', 
             ha='center', va='center', color='#2c3e50')
     
     # ==================== 步骤1: 输入序列 ====================
-    draw_step_box(ax, 6, 8.5, 3, 0.8, '#e8f5e8', '#1b5e20', 
-                  '输入序列 X', '[batch, seq_len, 512]', 1)
+    draw_step_box(ax, 7, 11.0, 4, 0.9, '#e8f5e8', '#1b5e20', 
+                  'Input Sequence X', '[batch, seq_len, 512]', 1)
     
     # ==================== 步骤2: 线性投影 ====================
-    draw_step_box(ax, 6, 7.2, 3, 0.8, '#e1f5fe', '#01579b', 
-                  '线性投影', 'Q = X × W^Q, K = X × W^K, V = X × W^V', 2)
+    draw_step_box(ax, 7, 9.2, 4, 0.9, '#e1f5fe', '#01579b', 
+                  'Linear Projection', 'Q = X × W^Q, K = X × W^K, V = X × W^V', 2)
     
     # 箭头
-    ax.annotate('', xy=(6, 7.2), xytext=(6, 8.5), 
+    ax.annotate('', xy=(7, 9.2), xytext=(7, 11.0), 
                 arrowprops=dict(arrowstyle='->', color='#7f8c8d', lw=2))
     
     # ==================== 步骤3: 多头拆分 ====================
-    draw_step_box(ax, 6, 5.9, 3, 0.8, '#e1f5fe', '#01579b', 
-                  '多头拆分', '512 → 8×64 | [batch, 8, seq_len, 64]', 3)
+    draw_step_box(ax, 7, 7.4, 4, 0.9, '#e1f5fe', '#01579b', 
+                  'Multi-Head Split', '512 → 8×64 | [batch, 8, seq_len, 64]', 3)
     
     # 箭头
-    ax.annotate('', xy=(6, 5.9), xytext=(6, 7.2), 
+    ax.annotate('', xy=(7, 7.4), xytext=(7, 9.2), 
                 arrowprops=dict(arrowstyle='->', color='#7f8c8d', lw=2))
     
     # ==================== 并行计算标题 ====================
-    ax.text(6, 5.2, '↓ 并行注意力计算开始 ↓', fontsize=12, fontweight='bold', 
+    ax.text(7, 6.6, '↓ Parallel Attention Computation Starts ↓', fontsize=14, fontweight='bold', 
             ha='center', va='center', color='#7f8c8d')
     
     # ==================== 步骤4: 并行注意力计算 ====================
     # 8个注意力头
     head_positions = [
-        (1.5, 4.0, '头1', 'Attention(Q₁,K₁,V₁)', '语法关系'),
-        (3.5, 4.0, '头2', 'Attention(Q₂,K₂,V₂)', '语义关系'),
-        (5.5, 4.0, '头3', 'Attention(Q₃,K₃,V₃)', '长距离依赖'),
-        (7.5, 4.0, '头4', 'Attention(Q₄,K₄,V₄)', '局部模式'),
-        (9.5, 4.0, '头5', 'Attention(Q₅,K₅,V₅)', '情感色彩'),
-        (1.5, 2.5, '头6', 'Attention(Q₆,K₆,V₆)', '指代关系'),
-        (3.5, 2.5, '头7', 'Attention(Q₇,K₇,V₇)', '位置信息'),
-        (5.5, 2.5, '头8', 'Attention(Q₈,K₈,V₈)', '其他模式'),
+        (2.5, 5.0, 'Head 1', 'Attention(Q₁,K₁,V₁)', 'Syntax'),
+        (5.0, 5.0, 'Head 2', 'Attention(Q₂,K₂,V₂)', 'Semantics'),
+        (7.5, 5.0, 'Head 3', 'Attention(Q₃,K₃,V₃)', 'Long-range'),
+        (10.0, 5.0, 'Head 4', 'Attention(Q₄,K₄,V₄)', 'Local'),
+        (2.5, 3.0, 'Head 5', 'Attention(Q₅,K₅,V₅)', 'Emotion'),
+        (5.0, 3.0, 'Head 6', 'Attention(Q₆,K₆,V₆)', 'Reference'),
+        (7.5, 3.0, 'Head 7', 'Attention(Q₇,K₇,V₇)', 'Position'),
+        (10.0, 3.0, 'Head 8', 'Attention(Q₈,K₈,V₈)', 'Other'),
     ]
     
     for i, (x, y, title, formula, desc) in enumerate(head_positions):
         draw_head_box(ax, x, y, title, formula, desc, i+1)
     
     # 并行计算区域框
-    parallel_box = FancyBboxPatch((0.8, 1.8), 10.4, 2.8, 
+    parallel_box = FancyBboxPatch((1.5, 2.2), 11.0, 3.6, 
                                  boxstyle="round,pad=0.1", 
                                  facecolor='#f3e5f5', edgecolor='#4a148c', 
                                  linewidth=2, alpha=0.3)
     ax.add_patch(parallel_box)
-    ax.text(6, 1.5, '并行注意力计算 (8个头)', fontsize=12, fontweight='bold', 
+    ax.text(7, 1.8, 'Parallel Attention Computation (8 Heads)', fontsize=14, fontweight='bold', 
             ha='center', va='center', color='#4a148c')
     
     # ==================== 并行计算结束 ====================
-    ax.text(6, 1.0, '↓ 并行计算结束 ↓', fontsize=12, fontweight='bold', 
+    ax.text(7, 1.2, '↓ Parallel Computation Ends ↓', fontsize=14, fontweight='bold', 
             ha='center', va='center', color='#7f8c8d')
     
     # ==================== 步骤5: 拼接输出 ====================
-    draw_step_box(ax, 6, 0.2, 3, 0.8, '#e1f5fe', '#01579b', 
-                  '拼接输出', 'Concat(head₁...head₈) | [batch, seq_len, 512]', 5)
+    draw_step_box(ax, 7, -0.2, 4, 0.9, '#e1f5fe', '#01579b', 
+                  'Concatenation', 'Concat(head₁...head₈) | [batch, seq_len, 512]', 5)
     
     # 箭头
-    ax.annotate('', xy=(6, 0.2), xytext=(6, 1.0), 
+    ax.annotate('', xy=(7, -0.2), xytext=(7, 1.2), 
                 arrowprops=dict(arrowstyle='->', color='#7f8c8d', lw=2))
     
     # ==================== 步骤6: 输出投影 ====================
-    draw_step_box(ax, 6, -1.1, 3, 0.8, '#e1f5fe', '#01579b', 
-                  '输出投影', 'Output = Concat × W^O', 6)
+    draw_step_box(ax, 7, -1.8, 4, 0.9, '#e1f5fe', '#01579b', 
+                  'Output Projection', 'Output = Concat × W^O', 6)
     
     # 箭头
-    ax.annotate('', xy=(6, -1.1), xytext=(6, 0.2), 
+    ax.annotate('', xy=(7, -1.8), xytext=(7, -0.2), 
                 arrowprops=dict(arrowstyle='->', color='#7f8c8d', lw=2))
     
     # ==================== 步骤7: 最终输出 ====================
-    draw_step_box(ax, 6, -2.4, 3, 0.8, '#fff3e0', '#e65100', 
-                  '最终输出', '[batch, seq_len, 512]', 7)
+    draw_step_box(ax, 7, -3.4, 4, 0.9, '#fff3e0', '#e65100', 
+                  'Final Output', '[batch, seq_len, 512]', 7)
     
     # 箭头
-    ax.annotate('', xy=(6, -2.4), xytext=(6, -1.1), 
+    ax.annotate('', xy=(7, -3.4), xytext=(7, -1.8), 
                 arrowprops=dict(arrowstyle='->', color='#7f8c8d', lw=2))
     
     # ==================== 公式区域 ====================
-    formula_box = FancyBboxPatch((0.5, -3.8), 11, 1.2, 
+    formula_box = FancyBboxPatch((1.5, -5.0), 11, 1.5, 
                                 boxstyle="round,pad=0.1", 
                                 facecolor='#fff3cd', edgecolor='#ffc107', 
                                 linewidth=2)
     ax.add_patch(formula_box)
     
     formula_text = r'$\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1,...,\text{head}_8)W^O$'
-    ax.text(6, -3.3, formula_text, fontsize=14, ha='center', va='center', 
+    ax.text(7, -4.6, formula_text, fontsize=16, ha='center', va='center', 
             color='#2c3e50', fontweight='bold')
     
     formula_text2 = r'$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$'
-    ax.text(6, -4.0, formula_text2, fontsize=12, ha='center', va='center', 
+    ax.text(7, -5.4, formula_text2, fontsize=14, ha='center', va='center', 
             color='#2c3e50')
     
     # ==================== 技术要点说明 ====================
     tech_text = [
-        "• 并行计算机制：8个注意力头同时独立计算，每个头有独立的投影矩阵",
-        "• 维度拆分：512维输入拆分为8个64维子空间（512 = 8 × 64）", 
-        "• 功能分化：不同头从随机初始化开始，自然学习关注不同的关系模式",
-        "• 计算效率：总计算量与单头注意力相当，但表达能力显著增强",
-        "• 维度保持：输入输出维度相同，便于Transformer层间堆叠"
+        "• Parallel Computation: 8 attention heads compute independently with separate projection matrices",
+        "• Dimension Splitting: 512-dim input splits into 8×64-dim subspaces (512 = 8 × 64)", 
+        "• Functional Specialization: Heads naturally learn different relationship patterns from random initialization",
+        "• Computational Efficiency: Same FLOPs as single-head but with significantly enhanced expressiveness",
+        "• Dimension Preservation: Input/output dimensions remain the same for layer stacking"
     ]
     
-    tech_box = FancyBboxPatch((0.5, -5.2), 11, 2.0, 
+    tech_box = FancyBboxPatch((1.5, -7.0), 11, 2.5, 
                              boxstyle="round,pad=0.1", 
                              facecolor='#e8f6f3', edgecolor='#1abc9c', 
                              linewidth=2)
     ax.add_patch(tech_box)
     
-    ax.text(6, -4.8, '技术要点说明', fontsize=14, fontweight='bold', 
+    ax.text(7, -6.4, 'Technical Key Points', fontsize=16, fontweight='bold', 
             ha='center', va='center', color='#16a085')
     
     for i, text in enumerate(tech_text):
-        ax.text(1.0, -5.0 - i*0.3, text, fontsize=10, ha='left', va='center', 
+        ax.text(2.0, -6.8 - i*0.4, text, fontsize=12, ha='left', va='center', 
                 color='#2c3e50')
     
     plt.tight_layout()
-    plt.savefig('06-多头注意力机制_第2章流程图.png', dpi=300, bbox_inches='tight', 
+    plt.savefig('06-multihead_attention_flowchart.png', dpi=300, bbox_inches='tight', 
                 facecolor='white', edgecolor='none')
     plt.show()
 
@@ -178,22 +178,22 @@ def draw_step_box(ax, x, y, width, height, facecolor, edgecolor, title, desc, st
 def draw_head_box(ax, x, y, title, formula, desc, head_num):
     """绘制注意力头框"""
     # 头框
-    box = FancyBboxPatch((x - 1.2, y - 0.6), 2.4, 1.2, 
+    box = FancyBboxPatch((x - 1.5, y - 0.8), 3.0, 1.6, 
                         boxstyle="round,pad=0.1", 
                         facecolor='#74b9ff', edgecolor='#0984e3', 
                         linewidth=1.5)
     ax.add_patch(box)
     
     # 头编号
-    ax.text(x - 1.0, y + 0.4, title, fontsize=10, fontweight='bold', 
+    ax.text(x - 1.3, y + 0.5, title, fontsize=12, fontweight='bold', 
             ha='left', va='center', color='white')
     
     # 公式
-    ax.text(x, y + 0.1, formula, fontsize=8, ha='center', va='center', 
+    ax.text(x, y + 0.1, formula, fontsize=10, ha='center', va='center', 
             color='white', fontfamily='monospace')
     
     # 描述
-    ax.text(x, y - 0.3, desc, fontsize=9, ha='center', va='center', 
+    ax.text(x, y - 0.4, desc, fontsize=11, ha='center', va='center', 
             color='white')
 
 if __name__ == "__main__":
