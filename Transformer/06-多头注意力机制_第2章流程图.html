@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多头注意力机制Mermaid流程图</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <title>多头注意力机制流程图</title>
     <style>
         body {
             font-family: 'Microsoft YaHei', Arial, sans-serif;
@@ -29,13 +28,80 @@
             border-bottom: 3px solid #3498db;
             padding-bottom: 10px;
         }
-        .mermaid {
-            text-align: center;
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
             margin: 30px 0;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #dee2e6;
+        }
+        .step {
+            background: #e1f5fe;
+            border: 2px solid #01579b;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            width: 300px;
+            position: relative;
+        }
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #3498db;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .step-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .dimension {
+            font-family: 'Courier New', monospace;
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 4px 0;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .arrow {
+            text-align: center;
+            font-size: 20px;
+            color: #7f8c8d;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+        .parallel-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+            width: 100%;
+            max-width: 800px;
+        }
+        .head {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .head-title {
+            font-weight: bold;
+            margin-bottom: 3px;
         }
         .formula {
             background: #fff3cd;
@@ -58,15 +124,15 @@
             color: #16a085;
             margin-bottom: 10px;
         }
-        .dimension {
-            font-family: 'Courier New', monospace;
-            background: #2c3e50;
-            color: #ecf0f1;
-            padding: 5px 10px;
-            border-radius: 4px;
-            margin: 5px 0;
-            font-size: 14px;
-            display: inline-block;
+        .mermaid-text {
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin: 20px 0;
+            white-space: pre-wrap;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -74,52 +140,148 @@
     <div class="container">
         <h1>多头注意力机制计算流程图</h1>
         
-        <div class="mermaid">
-flowchart TD
-    A[输入序列 X<br/><span class="dimension">[batch, seq_len, 512]</span>] --> B[线性投影]
-    
-    subgraph B[线性投影]
-        B1[Q = X × W<sup>Q</sup><br/><span class="dimension">[batch, seq_len, 512]</span>]
-        B2[K = X × W<sup>K</sup><br/><span class="dimension">[batch, seq_len, 512]</span>]
-        B3[V = X × W<sup>V</sup><br/><span class="dimension">[batch, seq_len, 512]</span>]
-    end
-    
-    B --> C[多头拆分<br/>512 → 8×64<br/><span class="dimension">[batch, 8, seq_len, 64]</span>]
-    
-    C --> D
-    
-    subgraph D[并行注意力计算]
-        D1[头1<br/>Attention(Q₁,K₁,V₁)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>语法关系]
-        D2[头2<br/>Attention(Q₂,K₂,V₂)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>语义关系]
-        D3[头3<br/>Attention(Q₃,K₃,V₃)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>长距离依赖]
-        D4[头4<br/>Attention(Q₄,K₄,V₄)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>局部模式]
-        D5[头5<br/>Attention(Q₅,K₅,V₅)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>情感色彩]
-        D6[头6<br/>Attention(Q₆,K₆,V₆)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>指代关系]
-        D7[头7<br/>Attention(Q₇,K₇,V₇)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>位置信息]
-        D8[头8<br/>Attention(Q₈,K₈,V₈)<br/><span class="dimension">[batch, seq_len, 64]</span><br/>其他模式]
-    end
-    
-    D --> E[拼接输出<br/>Concat(head₁...head₈)<br/><span class="dimension">[batch, seq_len, 512]</span>]
-    
-    E --> F[输出投影<br/>Output = Concat × W<sup>O</sup><br/><span class="dimension">[batch, seq_len, 512]</span>]
-    
-    F --> G[最终输出<br/><span class="dimension">[batch, seq_len, 512]</span>]
-    
-    %% 样式定义
-    classDef process fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef parallel fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef input fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef output fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    
-    class A,G input,output
-    class B,C,E,F process
-    class D parallel
+        <div class="flowchart">
+            <!-- 步骤1: 输入 -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-title">输入序列</div>
+                <div class="dimension">[batch, seq_len, 512]</div>
+                <p>原始输入向量</p>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- 步骤2: 线性投影 -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">线性投影</div>
+                <div class="dimension">Q = X × W^Q</div>
+                <div class="dimension">K = X × W^K</div>
+                <div class="dimension">V = X × W^V</div>
+                <p>生成查询、键、值</p>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- 步骤3: 多头拆分 -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">多头拆分</div>
+                <div class="dimension">512 → 8×64</div>
+                <div class="dimension">[batch, 8, seq_len, 64]</div>
+                <p>拆分为8个注意力头</p>
+            </div>
+            
+            <div class="arrow">↓ 并行计算开始 ↓</div>
+            
+            <!-- 并行计算部分 -->
+            <div class="parallel-section">
+                <div class="head">
+                    <div class="head-title">头1</div>
+                    <div class="dimension">Attention(Q₁,K₁,V₁)</div>
+                    <div>语法关系</div>
+                </div>
+                <div class="head">
+                    <div class="head-title">头2</div>
+                    <div class="dimension">Attention(Q₂,K₂,V₂)</div>
+                    <div>语义关系</div>
+                </div>
+                <div class="head">
+                    <div class="head-title">头3</div>
+                    <div class="dimension">Attention(Q₃,K₃,V₃)</div>
+                    <div>长距离依赖</div>
+                </div>
+                <div class="head">
+                    <div class="head-title">头4</div>
+                    <div class="dimension">Attention(Q₄,K₄,V₄)</div>
+                    <div>局部模式</div>
+                </div>
+                <div class="head">
+                    <div class="head-title">头5</div>
+                    <div class="dimension">Attention(Q₅,K₅,V₅)</div>
+                    <div>情感色彩</div>
+                </div>
+                <div class="head">
+                    <div class="head-title">头6</div>
+                    <div class="dimension">Attention(Q₆,K₆,V₆)</div>
+                    <div>指代关系</div>
+                </div>
+                <div class="head">
+                    <div class="head-title">头7</div>
+                    <div class="dimension">Attention(Q₇,K₇,V₇)</div>
+                    <div>位置信息</div>
+                </div>
+                <div class="head">
+                    <div class="head-title">头8</div>
+                    <div class="dimension">Attention(Q₈,K₈,V₈)</div>
+                    <div>其他模式</div>
+                </div>
+            </div>
+            
+            <div class="arrow">↓ 并行计算结束 ↓</div>
+            
+            <!-- 步骤4: 拼接 -->
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-title">拼接输出</div>
+                <div class="dimension">Concat(head₁...head₈)</div>
+                <div class="dimension">[batch, seq_len, 512]</div>
+                <p>合并所有头的结果</p>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- 步骤5: 输出投影 -->
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-title">输出投影</div>
+                <div class="dimension">Output = Concat × W^O</div>
+                <div class="dimension">[batch, seq_len, 512]</div>
+                <p>最终线性变换</p>
+            </div>
+            
+            <div class="arrow">↓</div>
+            
+            <!-- 步骤6: 输出 -->
+            <div class="step">
+                <div class="step-number">6</div>
+                <div class="step-title">最终输出</div>
+                <div class="dimension">[batch, seq_len, 512]</div>
+                <p>维度与输入相同</p>
+            </div>
         </div>
         
         <div class="formula">
             <strong>多头注意力核心公式：</strong><br>
             MultiHead(Q,K,V) = Concat(head₁,...,head₈)W^O<br>
             headᵢ = Attention(QWᵢ^Q, KWᵢ^K, VWᵢ^V)
+        </div>
+        
+        <div class="mermaid-text">
+流程图文本表示（Mermaid语法）：
+
+flowchart TD
+    A[输入序列 X] --> B[线性投影]
+    subgraph B[线性投影]
+        B1[Q = X × W^Q]
+        B2[K = X × W^K]
+        B3[V = X × W^V]
+    end
+    B --> C[多头拆分]
+    C --> D
+    subgraph D[并行注意力计算]
+        D1[头1 - 语法关系]
+        D2[头2 - 语义关系]
+        D3[头3 - 长距离依赖]
+        D4[头4 - 局部模式]
+        D5[头5 - 情感色彩]
+        D6[头6 - 指代关系]
+        D7[头7 - 位置信息]
+        D8[头8 - 其他模式]
+    end
+    D --> E[拼接输出]
+    E --> F[输出投影]
+    F --> G[最终输出]
         </div>
         
         <div class="tech-details">
@@ -136,16 +298,5 @@ flowchart TD
             <p>• 语法分析 • 语义理解 • 长距离关联 • 局部模式 • 情感分析 • 指代消解 • 位置编码 • 其他特征</p>
         </div>
     </div>
-    
-    <script>
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'default',
-            flowchart: {
-                useMaxWidth: true,
-                htmlLabels: true
-            }
-        });
-    </script>
 </body>
 </html>
