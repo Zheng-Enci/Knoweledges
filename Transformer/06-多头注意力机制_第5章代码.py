@@ -57,7 +57,7 @@ def visualize_multi_head_attention(attention_weights, tokens=None, n_heads=8):
     axes = axes.flatten()
 
     for i in range(n_heads):
-        im = axes[i].imshow(weights[i], cmap='RdYlBu_r', aspect='auto', vmin=0, vmax=1)
+        im = axes[i].imshow(weights[i], cmap='YlOrRd', aspect='auto', vmin=0, vmax=1)
         if tokens:
             axes[i].set_xticks(range(len(tokens)))
             axes[i].set_yticks(range(len(tokens)))
