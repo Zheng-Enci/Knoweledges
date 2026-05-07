@@ -1,7 +1,12 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import math
 import torch.nn as nn
+from matplotlib.colors import LinearSegmentedColormap
+
+colors = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#084594']
+cmap = LinearSegmentedColormap.from_list('custom', colors, N=256)
 
 plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
@@ -57,7 +62,7 @@ def visualize_multi_head_attention(attention_weights, tokens=None, n_heads=8):
     axes = axes.flatten()
 
     for i in range(n_heads):
-        im = axes[i].imshow(weights[i], cmap='YlOrRd', aspect='auto', vmin=0, vmax=1)
+        im = axes[i].imshow(weights[i], cmap=cmap, aspect='auto', vmin=0, vmax=1)
         if tokens:
             axes[i].set_xticks(range(len(tokens)))
             axes[i].set_yticks(range(len(tokens)))
