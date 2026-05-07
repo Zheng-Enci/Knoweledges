@@ -2,6 +2,16 @@ import torch
 import torch.nn as nn
 import math
 import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import ListedColormap
+
+def get_color(value):
+    color1 = np.array([255, 255, 255])
+    color2 = np.array([0, 0, 0])
+    return tuple((color1 + (color2 - color1) * value) / 255)
+
+cmap_colors = [get_color(i/20) for i in range(21)]
+cmap = ListedColormap(cmap_colors)
 
 plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
@@ -103,25 +113,25 @@ if __name__ == "__main__":
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
-    im0 = axes[0, 0].imshow(weights[0, 0].detach().numpy(), cmap='Blues', aspect='auto', vmin=0, vmax=1)
+    im0 = axes[0, 0].imshow(weights[0, 0].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[0, 0].set_title('Self-Attention (Head 1)')
     axes[0, 0].set_xlabel('Key')
     axes[0, 0].set_ylabel('Query')
     plt.colorbar(im0, ax=axes[0, 0])
 
-    im1 = axes[0, 1].imshow(weights[0, 1].detach().numpy(), cmap='Blues', aspect='auto', vmin=0, vmax=1)
+    im1 = axes[0, 1].imshow(weights[0, 1].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[0, 1].set_title('Self-Attention (Head 2)')
     axes[0, 1].set_xlabel('Key')
     axes[0, 1].set_ylabel('Query')
     plt.colorbar(im1, ax=axes[0, 1])
 
-    im2 = axes[1, 0].imshow(weights_cross[0, 0].detach().numpy(), cmap='Oranges', aspect='auto', vmin=0, vmax=1)
+    im2 = axes[1, 0].imshow(weights_cross[0, 0].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[1, 0].set_title('Cross-Attention (Head 1)')
     axes[1, 0].set_xlabel('Encoder Positions')
     axes[1, 0].set_ylabel('Decoder Positions')
     plt.colorbar(im2, ax=axes[1, 0])
 
-    im3 = axes[1, 1].imshow(weights_causal[0, 0].detach().numpy(), cmap='Greens', aspect='auto', vmin=0, vmax=1)
+    im3 = axes[1, 1].imshow(weights_causal[0, 0].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[1, 1].set_title('Causal Self-Attention (Head 1)')
     axes[1, 1].set_xlabel('Key')
     axes[1, 1].set_ylabel('Query')
