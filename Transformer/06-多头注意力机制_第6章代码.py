@@ -113,25 +113,33 @@ if __name__ == "__main__":
 
     fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
-    im0 = axes[0, 0].imshow(weights[0, 0].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    w0 = weights[0, 0].detach().numpy()
+    w0 = w0 / w0.max() if w0.max() > 0 else w0
+    im0 = axes[0, 0].imshow(w0, cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[0, 0].set_title('Self-Attention (Head 1)')
     axes[0, 0].set_xlabel('Key')
     axes[0, 0].set_ylabel('Query')
     plt.colorbar(im0, ax=axes[0, 0])
 
-    im1 = axes[0, 1].imshow(weights[0, 1].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    w1 = weights[0, 1].detach().numpy()
+    w1 = w1 / w1.max() if w1.max() > 0 else w1
+    im1 = axes[0, 1].imshow(w1, cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[0, 1].set_title('Self-Attention (Head 2)')
     axes[0, 1].set_xlabel('Key')
     axes[0, 1].set_ylabel('Query')
     plt.colorbar(im1, ax=axes[0, 1])
 
-    im2 = axes[1, 0].imshow(weights_cross[0, 0].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    w2 = weights_cross[0, 0].detach().numpy()
+    w2 = w2 / w2.max() if w2.max() > 0 else w2
+    im2 = axes[1, 0].imshow(w2, cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[1, 0].set_title('Cross-Attention (Head 1)')
     axes[1, 0].set_xlabel('Encoder Positions')
     axes[1, 0].set_ylabel('Decoder Positions')
     plt.colorbar(im2, ax=axes[1, 0])
 
-    im3 = axes[1, 1].imshow(weights_causal[0, 0].detach().numpy(), cmap=cmap, aspect='auto', vmin=0, vmax=1)
+    w3 = weights_causal[0, 0].detach().numpy()
+    w3 = w3 / w3.max() if w3.max() > 0 else w3
+    im3 = axes[1, 1].imshow(w3, cmap=cmap, aspect='auto', vmin=0, vmax=1)
     axes[1, 1].set_title('Causal Self-Attention (Head 1)')
     axes[1, 1].set_xlabel('Key')
     axes[1, 1].set_ylabel('Query')
