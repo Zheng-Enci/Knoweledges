@@ -1,12 +1,17 @@
 import matplotlib.pyplot as plt
+import math
 import numpy as np
 import torch
-import math
 import torch.nn as nn
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import ListedColormap
 
-colors = ['#f7fbff', '#deebf7', '#c6dbef', '#9ecae1', '#6baed6', '#4292c6', '#2171b5', '#084594']
-cmap = LinearSegmentedColormap.from_list('custom', colors, N=256)
+def get_color(value):
+    color1 = np.array([255, 255, 255])
+    color2 = np.array([0, 0, 139])
+    return tuple((color1 + (color2 - color1) * value) / 255)
+
+cmap_colors = [get_color(i/20) for i in range(21)]
+cmap = ListedColormap(cmap_colors)
 
 plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
