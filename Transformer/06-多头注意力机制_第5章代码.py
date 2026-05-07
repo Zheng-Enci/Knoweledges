@@ -70,7 +70,6 @@ def visualize_multi_head_attention(attention_weights, tokens=None, n_heads=8):
     for i in range(n_heads, len(axes)):
         axes[i].axis('off')
 
-    plt.colorbar(im, ax=axes.tolist(), shrink=0.6)
     plt.suptitle('Multi-Head Attention Weights — Each Head Learns Different Patterns',
                  fontsize=14, fontweight='bold')
     plt.tight_layout()
