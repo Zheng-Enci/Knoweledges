@@ -104,6 +104,8 @@ flowchart TD
 - **CSDN**：[07a-为什么用exp-log 而不是 pow](https://blog.csdn.net/2301_79239314/article/details/161194729)
 
 ### 08-编码器结构
+- **掘金**：[08-编码器结构](https://juejin.cn/post/7641031588095049764)
+- **CSDN**：[08-编码器结构](https://blog.csdn.net/2301_79239314/article/details/161198385)
 
 ### 09-解码器结构
 
