@@ -47,15 +47,15 @@ div_term = torch.exp(
 
 对应的数学公式：
 
-```
-div_term[i] = e^(-ln(10000) × 2i / d_model)
-```
+$$
+\text{div\_term}[i] = e^{-\ln(10000) \times \frac{2i}{d_{\text{model}}}}
+$$
 
 这个公式等价于：
 
-```
-div_term[i] = 1 / 10000^(2i / d_model)
-```
+$$
+\text{div\_term}[i] = \frac{1}{10000^{\frac{2i}{d_{\text{model}}}}}
+$$
 
 **为什么等价？** 让我们一步步推导：
 
@@ -73,56 +73,70 @@ div_term = torch.exp(
 
 **e 的（i 乘以 负的 ln(10000) 除以 d_model）次方**
 
-```
-div_term[i] = e^(i × (-ln(10000) / d_model))
-```
+$$
+\text{div\_term}[i] = e^{i \times \left(-\frac{\ln(10000)}{d_{\text{model}}}\right)}
+$$
 
 **第二步：整理表达式**
 
 等于 **e 的（负的 i 乘以 ln(10000) 除以 d_model）次方**，再等于 **e 的（负的 ln(10000) 乘以 i 除以 d_model）次方**
 
-```
-div_term[i] = e^(i × (-ln(10000) / d_model))
-           = e^(-i × ln(10000) / d_model)              # 整理负号
-           = e^(-ln(10000) × i / d_model)              # 交换顺序
-```
+$$
+\begin{aligned}
+\text{div\_term}[i] &= e^{i \times \left(-\frac{\ln(10000)}{d_{\text{model}}}\right)} \\
+&= e^{-i \times \frac{\ln(10000)}{d_{\text{model}}}} \quad \text{# 整理负号} \\
+&= e^{-\ln(10000) \times \frac{i}{d_{\text{model}}}} \quad \text{# 交换顺序}
+\end{aligned}
+$$
 
 **第三步：引入指数对数恒等式**
 
-核心恒等式：**`a^b = e^(b × ln(a))`**
+核心恒等式：
+
+$$
+a^b = e^{b \times \ln(a)}
+$$
 
 这个恒等式的证明：
 
-1. 设 `y = a^b`（我们想要求这个值）
-2. 两边取自然对数：`ln(y) = ln(a^b)`
-3. 利用对数性质 `ln(x^n) = n × ln(x)`：`ln(y) = b × ln(a)`
+1. 设 $y = a^b$（我们想要求这个值）
+2. 两边取自然对数：$\ln(y) = \ln(a^b)$
+3. 利用对数性质 $\ln(x^n) = n \times \ln(x)$：$\ln(y) = b \times \ln(a)$
 
    **对数性质详解**：
    
    这个性质叫做**对数的幂法则**，它说明：**一个数的 n 次方的对数，等于 n 乘以这个数的对数**。
    
-   数学表达式：`ln(x^n) = n × ln(x)`
+   数学表达式：
+
+   $$
+   \ln(x^n) = n \times \ln(x)
+   $$
    
    **直观理解**：
    
    假设 x = 2，n = 3：
-   - 左边：`ln(2^3) = ln(8) ≈ 2.079`
-   - 右边：`3 × ln(2) = 3 × 0.693 ≈ 2.079`
+   - 左边：$\ln(2^3) = \ln(8) \approx 2.079$
+   - 右边：$3 \times \ln(2) = 3 \times 0.693 \approx 2.079$
    - 两边相等 ✓
    
    **为什么这个性质成立？**
    
-   从对数的定义出发：如果 `ln(a) = b`，那么 `e^b = a`。
+   从对数的定义出发：如果 $\ln(a) = b$，那么 $e^b = a$。
    
-   对于 `ln(x^n)`：
-   - 设 `ln(x) = k`，则 `e^k = x`
-   - 那么 `x^n = (e^k)^n = e^(k×n)`（指数运算法则）
-   - 所以 `ln(x^n) = ln(e^(k×n)) = k×n`（因为 ln 和 exp 互为反函数）
-   - 而 `k = ln(x)`，所以 `ln(x^n) = n × ln(x)` ✓
+   对于 $\ln(x^n)$：
+   - 设 $\ln(x) = k$，则 $e^k = x$
+   - 那么 $x^n = (e^k)^n = e^{k \times n}$（指数运算法则）
+   - 所以 $\ln(x^n) = \ln(e^{k \times n}) = k \times n$（因为 ln 和 exp 互为反函数）
+   - 而 $k = \ln(x)$，所以 $\ln(x^n) = n \times \ln(x)$ ✓
    
    **这个性质的本质**：对数函数把乘法运算转换成了加法运算，把幂运算转换成了乘法运算，这就是对数在计算中如此重要的原因。
 
-4. 两边取 e 的幂：`e^(ln(y)) = e^(b × ln(a))`
+4. 两边取 e 的幂：
+
+   $$
+   e^{\ln(y)} = e^{b \times \ln(a)}
+   $$
 
    **exp 是什么？**
    
@@ -136,15 +150,15 @@ div_term[i] = e^(i × (-ln(10000) / d_model))
    
    `exp(x)` 和 `ln(x)` 是**互为反函数**，就像加法和减法、乘法和除法一样：
    
-   - `exp(ln(x)) = x`（先取对数，再取指数，回到原值）
-   - `ln(exp(x)) = x`（先取指数，再取对数，回到原值）
+   - $e^{\ln(x)} = x$（先取对数，再取指数，回到原值）
+   - $\ln(e^x) = x$（先取指数，再取对数，回到原值）
    
    **直观理解**：
    
    | 函数 | 作用 | 例子 |
    |------|------|------|
-   | `ln(x)` | 求 e 的多少次方等于 x | `ln(7.389) ≈ 2`（因为 e² ≈ 7.389） |
-   | `exp(x)` | 求 e 的 x 次方 | `exp(2) = e² ≈ 7.389` |
+   | $\ln(x)$ | 求 e 的多少次方等于 x | $\ln(7.389) \approx 2$（因为 $e^2 \approx 7.389$） |
+   | $e^x$ | 求 e 的 x 次方 | $e^2 \approx 7.389$ |
    
    **在 Python/PyTorch 中的使用**：
    
@@ -168,33 +182,41 @@ div_term[i] = e^(i × (-ln(10000) / d_model))
    3. **数值稳定性**：exp-log 转换避免幂运算溢出
    4. **梯度计算**：`exp(x)` 的导数还是 `exp(x)`，计算简单
 
-5. 因为 `e^(ln(x)) = x`（互为反函数）：`y = e^(b × ln(a))`
-6. 所以：`a^b = e^(b × ln(a))` ✓
+5. 因为 $e^{\ln(x)} = x$（互为反函数）：
+
+   $$
+   y = e^{b \times \ln(a)}
+   $$
+
+6. 所以：
+
+   $$
+   a^b = e^{b \times \ln(a)} \quad ✓
+   $$
 
 **第四步：应用恒等式**
 
 我们有：**e 的（负的 ln(10000) 乘以 i 除以 d_model）次方**
 
-```
-div_term[i] = e^(-ln(10000) × i / d_model)
-```
+$$
+\text{div\_term}[i] = e^{-\ln(10000) \times \frac{i}{d_{\text{model}}}}
+$$
 
 令 b 等于 **负的 i 除以 d_model**，a 等于 10000，根据恒等式：
 
 **e 的（ln(10000) 乘以 负的 i 除以 d_model）次方** 等于 **10000 的（负的 i 除以 d_model）次方**
 
-```
-e^(-ln(10000) × i / d_model) = e^(ln(10000) × (-i / d_model))
-                               = 10000^(-i / d_model)
-```
+$$
+e^{-\ln(10000) \times \frac{i}{d_{\text{model}}}} = e^{\ln(10000) \times \left(-\frac{i}{d_{\text{model}}}\right)} = 10000^{-\frac{i}{d_{\text{model}}}}
+$$
 
 **第五步：处理负指数**
 
-利用负指数法则：**x 的负 n 次方 等于 1 除以 x 的 n 次方**
+利用负指数法则：
 
-```
-x^(-n) = 1 / x^n
-```
+$$
+x^{-n} = \frac{1}{x^n}
+$$
 
 证明：
 
@@ -204,9 +226,9 @@ x^(-n) = 1 / x^n
 
 **10000 的（负的 i 除以 d_model）次方** 等于 **1 除以 10000 的（i 除以 d_model）次方**
 
-```
-10000^(-i / d_model) = 1 / 10000^(i / d_model)
-```
+$$
+10000^{-\frac{i}{d_{\text{model}}}} = \frac{1}{10000^{\frac{i}{d_{\text{model}}}}}
+$$
 
 **第六步：最终形式**
 
@@ -214,36 +236,49 @@ x^(-n) = 1 / x^n
 
 **div_term[i] 等于 1 除以 10000 的（2i 除以 d_model）次方**
 
-```
-div_term[i] = 1 / 10000^(2i / d_model)
-```
+$$
+\text{div\_term}[i] = \frac{1}{10000^{\frac{2i}{d_{\text{model}}}}}
+$$
 
 **完整推导链**：
 
 - 代码：**e 的（i 乘以 负的 ln(10000) 除以 d_model）次方**
-  ```
-  e^(i × (-ln(10000) / d_model))
-  ```
+
+  $$
+  e^{i \times \left(-\frac{\ln(10000)}{d_{\text{model}}}\right)}
+  $$
+
 - ↓ 整理
+
 - = **e 的（负的 ln(10000) 乘以 i 除以 d_model）次方**
-  ```
-  e^(-ln(10000) × i / d_model)
-  ```
-- ↓ 应用恒等式 a^b = e^(b×ln(a))
+
+  $$
+  e^{-\ln(10000) \times \frac{i}{d_{\text{model}}}}
+  $$
+
+- ↓ 应用恒等式 $a^b = e^{b \times \ln(a)}$
+
 - = **10000 的（负的 i 除以 d_model）次方**
-  ```
-  10000^(-i / d_model)
-  ```
-- ↓ 负指数法则 x^(-n) = 1/x^n
+
+  $$
+  10000^{-\frac{i}{d_{\text{model}}}}
+  $$
+
+- ↓ 负指数法则 $x^{-n} = \frac{1}{x^n}$
+
 - = **1 除以 10000 的（i 除以 d_model）次方**
-  ```
-  1 / 10000^(i / d_model)
-  ```
+
+  $$
+  \frac{1}{10000^{\frac{i}{d_{\text{model}}}}}
+  $$
+
 - ↓ 考虑偶数索引 2i
+
 - = **1 除以 10000 的（2i 除以 d_model）次方** ← 论文公式
-  ```
-  1 / 10000^(2i / d_model)
-  ```
+
+  $$
+  \frac{1}{10000^{\frac{2i}{d_{\text{model}}}}}
+  $$
 
 ---
 
