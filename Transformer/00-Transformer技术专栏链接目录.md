@@ -109,7 +109,7 @@ flowchart TD
 
 ### 09-解码器结构
 
-### 09a-斯坦福CS336作业
+### 09-斯坦福CS336作业
 - **掘金**：[09a-斯坦福CS336作业](https://juejin.cn/post/7641109461659500582)
 - **CSDN**：[09a-斯坦福CS336作业](https://blog.csdn.net/2301_79239314/article/details/161204079)
 
