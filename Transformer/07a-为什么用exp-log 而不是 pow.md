@@ -45,6 +45,12 @@ div_term = torch.exp(
 )
 ```
 
+对应的数学公式：
+
+```
+div_term[i] = exp(-ln(10000) × 2i / d_model)
+```
+
 这个公式等价于：
 
 ```
