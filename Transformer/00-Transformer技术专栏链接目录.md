@@ -99,6 +99,10 @@ flowchart TD
 - **掘金**：[07-位置编码](https://juejin.cn/post/7640643958130458651)
 - **CSDN**：[07-位置编码](https://blog.csdn.net/2301_79239314/article/details/161180364)
 
+### 07a-为什么用exp-log 而不是 pow
+- **掘金**：[07a-为什么用exp-log 而不是 pow](https://juejin.cn/post/7640789487163572278)
+- **CSDN**：[07a-为什么用exp-log 而不是 pow](https://blog.csdn.net/2301_79239314/article/details/161194729)
+
 ### 08-编码器结构
 
 ### 09-解码器结构
