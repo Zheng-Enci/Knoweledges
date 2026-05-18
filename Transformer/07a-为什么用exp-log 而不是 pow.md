@@ -255,6 +255,12 @@ div_term[i] = 1 / 10000^(2i / d_model)
 div_term = 1 / (10000 ** (torch.arange(0, d_model, 2).float() / d_model))
 ```
 
+对应的数学公式：
+
+```
+div_term[i] = 1 / 10000^(2i / d_model)
+```
+
 答案是：**数值稳定性**。
 
 ---
