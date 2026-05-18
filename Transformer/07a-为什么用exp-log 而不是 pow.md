@@ -74,7 +74,7 @@ div_term = torch.exp(
 **e 的（i 乘以 负的 ln(10000) 除以 d_model）次方**
 
 ```
-div_term[i] = exp(i × (-ln(10000) / d_model))
+div_term[i] = e^(i × (-ln(10000) / d_model))
 ```
 
 **第二步：整理表达式**
@@ -82,14 +82,14 @@ div_term[i] = exp(i × (-ln(10000) / d_model))
 等于 **e 的（负的 i 乘以 ln(10000) 除以 d_model）次方**，再等于 **e 的（负的 ln(10000) 乘以 i 除以 d_model）次方**
 
 ```
-div_term[i] = exp(i × (-ln(10000) / d_model))
-           = exp(-i × ln(10000) / d_model)              # 整理负号
-           = exp(-ln(10000) × i / d_model)              # 交换顺序
+div_term[i] = e^(i × (-ln(10000) / d_model))
+           = e^(-i × ln(10000) / d_model)              # 整理负号
+           = e^(-ln(10000) × i / d_model)              # 交换顺序
 ```
 
 **第三步：引入指数对数恒等式**
 
-核心恒等式：**`a^b = exp(b × ln(a))`**
+核心恒等式：**`a^b = e^(b × ln(a))`**
 
 这个恒等式的证明：
 
@@ -122,7 +122,7 @@ div_term[i] = exp(i × (-ln(10000) / d_model))
    
    **这个性质的本质**：对数函数把乘法运算转换成了加法运算，把幂运算转换成了乘法运算，这就是对数在计算中如此重要的原因。
 
-4. 两边取 exp：`exp(ln(y)) = exp(b × ln(a))`
+4. 两边取 e 的幂：`e^(ln(y)) = e^(b × ln(a))`
 
    **exp 是什么？**
    
@@ -168,8 +168,8 @@ div_term[i] = exp(i × (-ln(10000) / d_model))
    3. **数值稳定性**：exp-log 转换避免幂运算溢出
    4. **梯度计算**：`exp(x)` 的导数还是 `exp(x)`，计算简单
 
-5. 因为 `exp(ln(x)) = x`（互为反函数）：`y = exp(b × ln(a))`
-6. 所以：`a^b = exp(b × ln(a))` ✓
+5. 因为 `e^(ln(x)) = x`（互为反函数）：`y = e^(b × ln(a))`
+6. 所以：`a^b = e^(b × ln(a))` ✓
 
 **第四步：应用恒等式**
 
@@ -184,7 +184,7 @@ div_term[i] = e^(-ln(10000) × i / d_model)
 **e 的（ln(10000) 乘以 负的 i 除以 d_model）次方** 等于 **10000 的（负的 i 除以 d_model）次方**
 
 ```
-exp(-ln(10000) × i / d_model) = exp(ln(10000) × (-i / d_model))
+e^(-ln(10000) × i / d_model) = e^(ln(10000) × (-i / d_model))
                                = 10000^(-i / d_model)
 ```
 
@@ -222,14 +222,14 @@ div_term[i] = 1 / 10000^(2i / d_model)
 
 - 代码：**e 的（i 乘以 负的 ln(10000) 除以 d_model）次方**
   ```
-  exp(i × (-ln(10000) / d_model))
+  e^(i × (-ln(10000) / d_model))
   ```
 - ↓ 整理
 - = **e 的（负的 ln(10000) 乘以 i 除以 d_model）次方**
   ```
-  exp(-ln(10000) × i / d_model)
+  e^(-ln(10000) × i / d_model)
   ```
-- ↓ 应用恒等式 a^b = exp(b×ln(a))
+- ↓ 应用恒等式 a^b = e^(b×ln(a))
 - = **10000 的（负的 i 除以 d_model）次方**
   ```
   10000^(-i / d_model)
