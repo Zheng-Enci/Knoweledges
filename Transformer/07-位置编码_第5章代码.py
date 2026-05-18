@@ -25,7 +25,7 @@ def get_sinusoidal_pe(seq_len, d_model):
     return pe
 
 
-def visualize_pe_heatmap(pe, save_path='pe_heatmap.png'):
+def visualize_pe_heatmap(pe, save_path='07_chapter5_pe_heatmap.png'):
     """
     可视化位置编码热力图
     
@@ -70,8 +70,8 @@ def visualize_pe_waveforms(pe, dims_to_plot=[0, 1, 10, 11, 30, 31, 60, 61]):
     axes[-1].set_xlabel('Token Position')
     fig.suptitle('Positional Encoding Waveforms (Selected Dimensions)', fontsize=14)
     plt.tight_layout()
-    plt.savefig('pe_waveforms.png', dpi=150, bbox_inches='tight')
-    print("图片已保存为 pe_waveforms.png")
+    plt.savefig('07_chapter5_pe_waveforms.png', dpi=150, bbox_inches='tight')
+    print("图片已保存为 07_chapter5_pe_waveforms.png")
 
 
 # ========== 运行可视化 ==========

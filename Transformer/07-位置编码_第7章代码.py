@@ -67,7 +67,7 @@ def test_positional_encoding():
     return pe.pe.squeeze(0)
 
 
-def visualize_pe_heatmap(pe, save_path='pe_heatmap.png'):
+def visualize_pe_heatmap(pe, save_path='07_chapter7_pe_heatmap.png'):
     """可视化位置编码热力图"""
     pe_np = pe.detach().cpu().numpy()
     
@@ -100,8 +100,8 @@ def visualize_pe_waveforms(pe, dims_to_plot=[0, 1, 30, 31, 100, 101, 300, 301]):
     axes[-1].set_xlabel('Token Position')
     fig.suptitle('Positional Encoding Waveforms (Selected Dimensions)', fontsize=14)
     plt.tight_layout()
-    plt.savefig('pe_waveforms.png', dpi=150, bbox_inches='tight')
-    print("图片已保存为 pe_waveforms.png")
+    plt.savefig('07_chapter7_pe_waveforms.png', dpi=150, bbox_inches='tight')
+    print("图片已保存为 07_chapter7_pe_waveforms.png")
 
 
 if __name__ == "__main__":
