@@ -84,8 +84,8 @@ $$
 $$
 \begin{aligned}
 \text{div\_term}[i] &= e^{i \times \left(-\frac{\ln(10000)}{d_{\text{model}}}\right)} \\
-&= e^{-i \times \frac{\ln(10000)}{d_{\text{model}}}} \quad \text{# 整理负号} \\
-&= e^{-\ln(10000) \times \frac{i}{d_{\text{model}}}} \quad \text{# 交换顺序}
+&= e^{-i \times \frac{\ln(10000)}{d_{\text{model}}}} \\
+&= e^{-\ln(10000) \times \frac{i}{d_{\text{model}}}}
 \end{aligned}
 $$
 
