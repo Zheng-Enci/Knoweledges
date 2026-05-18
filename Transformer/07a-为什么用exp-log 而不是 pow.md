@@ -267,6 +267,21 @@ div_term = 1 / (10000 ** (torch.arange(0, d_model, 2).float() / d_model))
 div_term[i] = 1 / 10000^(2i / d_model)
 ```
 
+对比原式：
+
+```python
+# 原式（exp-log 转换）
+div_term = torch.exp(
+    torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
+)
+```
+
+对应的数学公式：
+
+```
+div_term[i] = exp(-ln(10000) × 2i / d_model)
+```
+
 答案是：**数值稳定性**。
 
 ---
