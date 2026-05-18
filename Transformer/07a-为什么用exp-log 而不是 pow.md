@@ -293,23 +293,23 @@ $$
 - [一个数的负数次方从本质上讲是怎么计算的？ -- 知乎](https://www.zhihu.com/question/267162925)
 - [Proofs of Logarithm Properties -- ChiliMath](https://www.chilimath.com/lessons/advanced-algebra/proofs-of-logarithm-properties/)
 
-**问题来了**：为什么不直接写成这样？
+**问题来了**：既然原公式推导化简后等于 $\frac{1}{10000^{\frac{2i}{d_{\text{model}}}}}$，那为什么不直接使用这个更直观的公式呢？
+
+**直观的写法**：
 
 ```python
-# 直观的写法
 div_term = 1 / (10000 ** (torch.arange(0, d_model, 2).float() / d_model))
 ```
 
 对应的数学公式：
 
-```
-div_term[i] = 1 / 10000^(2i / d_model)
-```
+$$
+\text{div\_term}[i] = \frac{1}{10000^{\frac{2i}{d_{\text{model}}}}}
+$$
 
-对比原式：
+**原式（exp-log 转换）**：
 
 ```python
-# 原式（exp-log 转换）
 div_term = torch.exp(
     torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
 )
@@ -317,9 +317,9 @@ div_term = torch.exp(
 
 对应的数学公式：
 
-```
-div_term[i] = e^(-ln(10000) × 2i / d_model)
-```
+$$
+\text{div\_term}[i] = e^{-\ln(10000) \times \frac{2i}{d_{\text{model}}}}
+$$
 
 答案是：**数值稳定性**。
 
