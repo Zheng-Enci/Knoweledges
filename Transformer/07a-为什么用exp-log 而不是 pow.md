@@ -48,7 +48,7 @@ div_term = torch.exp(
 对应的数学公式：
 
 ```
-div_term[i] = exp(-ln(10000) × 2i / d_model)
+div_term[i] = e^(-ln(10000) × 2i / d_model)
 ```
 
 这个公式等价于：
@@ -176,7 +176,7 @@ div_term[i] = exp(i × (-ln(10000) / d_model))
 我们有：**e 的（负的 ln(10000) 乘以 i 除以 d_model）次方**
 
 ```
-div_term[i] = exp(-ln(10000) × i / d_model)
+div_term[i] = e^(-ln(10000) × i / d_model)
 ```
 
 令 b 等于 **负的 i 除以 d_model**，a 等于 10000，根据恒等式：
@@ -279,7 +279,7 @@ div_term = torch.exp(
 对应的数学公式：
 
 ```
-div_term[i] = exp(-ln(10000) × 2i / d_model)
+div_term[i] = e^(-ln(10000) × 2i / d_model)
 ```
 
 答案是：**数值稳定性**。
