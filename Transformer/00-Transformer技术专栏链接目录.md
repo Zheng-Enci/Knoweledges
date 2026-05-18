@@ -96,6 +96,8 @@ flowchart TD
 - **CSDN**：[06-多头注意力机制](https://blog.csdn.net/2301_79239314/article/details/160854088)
 
 ### 07-位置编码
+- **掘金**：[07-位置编码](https://juejin.cn/post/7640643958130458651)
+- **CSDN**：[07-位置编码](https://blog.csdn.net/2301_79239314/article/details/161180364)
 
 ### 08-编码器结构
 
