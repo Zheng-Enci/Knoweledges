@@ -388,108 +388,186 @@ print(x)  # 输出: 0.0
 
 当 `d_model` 更大时会发生什么？
 
-### 3.2 极端情况测试
+### 3.2 精度对比测试
 
 ```python
 import torch
 import math
 
-def test_pow_stability():
-    """测试 pow 运算的数值稳定性"""
+
+def test_reciprocal_precision():
+    """测试倒数计算的精度问题"""
     
-    # 测试不同 d_model 的情况
-    for d_model in [512, 1024, 2048, 4096]:
-        print(f"\n{'='*60}")
-        print(f"d_model = {d_model}")
-        print(f"{'='*60}")
+    print("测试倒数计算的精度差异")
+    print("="*70)
+    
+    # 测试小指数情况（这才是真正的问题所在）
+    for exponent in [0.01, 0.001, 0.0001, 0.00001]:
+        print(f"\n指数 = {exponent}")
+        print("-"*70)
         
-        # 方法1：直接计算 10000^(2i/d_model)
+        # 方法1：先计算大数，再取倒数
+        big_num = 10000 ** exponent
+        result_pow = 1 / big_num
+        
+        # 方法2：直接计算负指数
+        result_exp = math.exp(-exponent * math.log(10000))
+        
+        print(f"pow 方法：10000^{exponent} = {big_num:.10f}, 倒数 = {result_pow:.10e}")
+        print(f"exp-log 方法：exp(-{exponent} × ln(10000)) = {result_exp:.10e}")
+        print(f"差值：{abs(result_pow - result_exp):.2e}")
+
+
+def test_extreme_d_model():
+    """测试极端大的 d_model"""
+    
+    print("\n\n测试极端大的 d_model")
+    print("="*70)
+    
+    # 当 d_model 非常大时
+    for d_model in [10000, 50000, 100000]:
+        print(f"\nd_model = {d_model}")
+        print("-"*70)
+        
         i = torch.arange(0, d_model, 2).float()
         exponent = 2 * i / d_model
         
+        # 方法1：pow
         try:
-            # 直接幂运算
-            result_pow = 10000 ** exponent
-            
-            # 检查是否有溢出
-            if torch.isinf(result_pow).any():
-                print(f"❌ pow 方法：发生溢出 (inf)")
-            else:
-                print(f"✓ pow 方法：最大值 = {result_pow.max():.2e}")
+            result_pow = 1 / (10000 ** exponent)
+            print(f"✓ pow 方法：范围 [{result_pow.min():.2e}, {result_pow.max():.2e}]")
         except Exception as e:
             print(f"❌ pow 方法：异常 - {e}")
         
-        # 方法2：exp-log 转换
+        # 方法2：exp-log
         try:
-            result_exp = torch.exp(exponent * math.log(10000))
-            print(f"✓ exp-log 方法：最大值 = {result_exp.max():.2e}")
+            result_exp = torch.exp(-exponent * math.log(10000))
+            print(f"✓ exp-log 方法：范围 [{result_exp.min():.2e}, {result_exp.max():.2e}]")
         except Exception as e:
             print(f"❌ exp-log 方法：异常 - {e}")
 
-test_pow_stability()
+
+def test_float16_stability():
+    """测试 float16 下的数值稳定性"""
+    
+    print("\n\n测试 float16（半精度）下的数值稳定性")
+    print("="*70)
+    
+    for d_model in [512, 1024, 2048]:
+        print(f"\nd_model = {d_model}")
+        print("-"*70)
+        
+        i = torch.arange(0, d_model, 2).float()
+        exponent = 2 * i / d_model
+        
+        # 转换为 float16
+        exponent_16 = exponent.half()
+        
+        # 方法1：pow (float16)
+        try:
+            result_pow_16 = 1 / (10000 ** exponent_16)
+            has_inf = torch.isinf(result_pow_16).any()
+            has_nan = torch.isnan(result_pow_16).any()
+            if has_inf or has_nan:
+                print(f"❌ pow 方法 (float16)：出现 inf={has_inf}, nan={has_nan}")
+            else:
+                print(f"✓ pow 方法 (float16)：范围 [{result_pow_16.min():.2e}, {result_pow_16.max():.2e}]")
+        except Exception as e:
+            print(f"❌ pow 方法 (float16)：异常 - {e}")
+        
+        # 方法2：exp-log (float16)
+        try:
+            result_exp_16 = torch.exp(-exponent_16 * math.log(10000))
+            has_inf = torch.isinf(result_exp_16).any()
+            has_nan = torch.isnan(result_exp_16).any()
+            if has_inf or has_nan:
+                print(f"❌ exp-log 方法 (float16)：出现 inf={has_inf}, nan={has_nan}")
+            else:
+                print(f"✓ exp-log 方法 (float16)：范围 [{result_exp_16.min():.2e}, {result_exp_16.max():.2e}]")
+        except Exception as e:
+            print(f"❌ exp-log 方法 (float16)：异常 - {e}")
+
+
+if __name__ == "__main__":
+    test_reciprocal_precision()
+    test_extreme_d_model()
+    test_float16_stability()
 ```
 
 **运行结果**：
 
 ```
-============================================================
+测试倒数计算的精度差异
+======================================================================
+
+指数 = 0.01
+----------------------------------------------------------------------
+pow 方法：10000^0.01 = 1.0964781961, 倒数 = 9.1201083936e-01
+exp-log 方法：exp(-0.01 × ln(10000)) = 9.1201083936e-01
+差值：1.11e-16
+
+指数 = 0.001
+----------------------------------------------------------------------
+pow 方法：10000^0.001 = 1.0092528861, 倒数 = 9.9083194489e-01
+exp-log 方法：exp(-0.001 × ln(10000)) = 9.9083194489e-01
+差值：1.11e-16
+
+指数 = 0.0001
+----------------------------------------------------------------------
+pow 方法：10000^0.0001 = 1.0009214583, 倒数 = 9.9907938998e-01
+exp-log 方法：exp(-0.0001 × ln(10000)) = 9.9907938998e-01
+差值：1.11e-16
+
+指数 = 1e-05
+----------------------------------------------------------------------
+pow 方法：10000^1e-05 = 1.0000921076, 倒数 = 9.9990790084e-01
+exp-log 方法：exp(-1e-05 × ln(10000)) = 9.9990790084e-01
+差值：0.00e+00
+
+
+测试极端大的 d_model
+======================================================================
+
+d_model = 10000
+----------------------------------------------------------------------
+✓ pow 方法：范围 [1.00e-08, 1.00e+00]
+✓ exp-log 方法：范围 [1.00e-08, 1.00e+00]
+
+d_model = 50000
+----------------------------------------------------------------------
+✓ pow 方法：范围 [1.00e-08, 1.00e+00]
+✓ exp-log 方法：范围 [1.00e-08, 1.00e+00]
+
+d_model = 100000
+----------------------------------------------------------------------
+✓ pow 方法：范围 [1.00e-08, 1.00e+00]
+✓ exp-log 方法：范围 [1.00e-08, 1.00e+00]
+
+
+测试 float16（半精度）下的数值稳定性
+======================================================================
+
 d_model = 512
-============================================================
-✓ pow 方法：最大值 = 1.00e+04
-✓ exp-log 方法：最大值 = 1.00e+04
+----------------------------------------------------------------------
+✓ pow 方法 (float16)：范围 [0.00e+00, 1.00e+00]
+✓ exp-log 方法 (float16)：范围 [0.00e+00, 1.00e+00]
 
-============================================================
 d_model = 1024
-============================================================
-✓ pow 方法：最大值 = 1.00e+04
-✓ exp-log 方法：最大值 = 1.00e+04
+----------------------------------------------------------------------
+✓ pow 方法 (float16)：范围 [0.00e+00, 1.00e+00]
+✓ exp-log 方法 (float16)：范围 [0.00e+00, 1.00e+00]
 
-============================================================
 d_model = 2048
-============================================================
-✓ pow 方法：最大值 = 1.00e+04
-✓ exp-log 方法：最大值 = 1.00e+04
-
-============================================================
-d_model = 4096
-============================================================
-✓ pow 方法：最大值 = 1.00e+04
-✓ exp-log 方法：最大值 = 1.00e+04
+----------------------------------------------------------------------
+✓ pow 方法 (float16)：范围 [0.00e+00, 1.00e+00]
+✓ exp-log 方法 (float16)：范围 [0.00e+00, 1.00e+00]
 ```
 
-等等，看起来都没问题？让我们换个角度思考...
+**关键发现**：
 
-### 3.3 真正的问题：倒数计算
-
-实际上，我们需要的是 `1 / 10000^(2i/d_model)`，当指数很小时：
-
-```python
-def test_reciprocal_stability():
-    """测试倒数计算的数值稳定性"""
-    
-    # 测试小指数情况
-    for exponent in [0.001, 0.0001, 0.00001, 0.000001]:
-        print(f"\n{'='*60}")
-        print(f"指数 = {exponent}")
-        print(f"{'='*60}")
-        
-        # 方法1：先计算大数，再取倒数
-        try:
-            big_num = 10000 ** exponent
-            result = 1 / big_num
-            print(f"✓ pow 方法：10000^{exponent} = {big_num:.6f}, 倒数 = {result:.6f}")
-        except Exception as e:
-            print(f"❌ pow 方法：异常 - {e}")
-        
-        # 方法2：直接计算负指数
-        try:
-            result_exp = torch.exp(-exponent * math.log(10000))
-            print(f"✓ exp-log 方法：exp(-{exponent} * ln(10000)) = {result_exp:.6f}")
-        except Exception as e:
-            print(f"❌ exp-log 方法：异常 - {e}")
-
-test_reciprocal_stability()
-```
+1. **float64 精度**：两种方法的差值在 10⁻¹⁶ 级别（机器精度），几乎没有差异
+2. **极端 d_model**：即使 d_model=100000 也没出现溢出
+3. **float16 下溢问题**：注意最小值变成了 `0.00e+00`，这说明在**半精度训练时会出现下溢**，导致信息丢失！
 
 ---
 
