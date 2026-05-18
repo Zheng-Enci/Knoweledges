@@ -1,6 +1,6 @@
 ---
-alwaysApply: false
-description: 规范文档中引用本地图片时使用GitCode Raw URL格式，包含URL转换规律和步骤说明
+trigger: model_decision
+description: 
 ---
 # GitCode 图片 URL 转换规范
 
