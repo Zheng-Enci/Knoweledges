@@ -1,7 +1,3 @@
----
-trigger: model_decision
-description: 
----
 # 07a-为什么用 exp-log 而不是 pow 💡
 
 本文档深入解析位置编码中为什么使用 `exp(-log(10000) * 2i / d_model)` 而不是直接计算 `1 / 10000^(2i / d_model)`，涵盖数值稳定性原理、浮点数溢出问题、实际代码对比测试，以及在深度学习中的最佳实践。通过理论与实践相结合的方式，帮助读者理解这个看似复杂的设计背后的精妙之处 🔢
@@ -54,6 +50,104 @@ div_term = torch.exp(
 ```
 div_term[i] = 1 / 10000^(2i / d_model)
 ```
+
+**为什么等价？** 让我们一步步推导：
+
+### 数学推导过程
+
+**第一步：理解代码中的公式**
+
+```python
+div_term = torch.exp(
+    torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model)
+)
+```
+
+对于第 `i` 个位置（`i = 0, 2, 4, ..., d_model-2`），代码计算的是：
+
+```
+div_term[i] = exp(i * (-ln(10000) / d_model))
+```
+
+**第二步：整理表达式**
+
+````
+div_term[i] = exp(i * (-ln(10000) / d_model))
+           = exp(-i * ln(10000) / d_model)              # 整理负号
+           = exp(-ln(10000) * i / d_model)              # 交换顺序
+```
+
+**第三步：引入指数对数恒等式**
+
+核心恒等式：**`a^b = exp(b × ln(a))`**
+
+这个恒等式的证明：
+
+1. 设 `y = a^b`（我们想要求这个值）
+2. 两边取自然对数：`ln(y) = ln(a^b)`
+3. 利用对数性质 `ln(x^n) = n × ln(x)`：`ln(y) = b × ln(a)`
+4. 两边取 exp：`exp(ln(y)) = exp(b × ln(a))`
+5. 因为 `exp(ln(x)) = x`（互为反函数）：`y = exp(b × ln(a))`
+6. 所以：`a^b = exp(b × ln(a))` ✓
+
+**第四步：应用恒等式**
+
+我们有：
+```
+div_term[i] = exp(-ln(10000) * i / d_model)
+```
+
+令 `b = -i / d_model`，`a = 10000`，根据恒等式：
+
+```
+exp(-ln(10000) * i / d_model) = exp(ln(10000) * (-i / d_model))
+                               = 10000^(-i / d_model)
+```
+
+**第五步：处理负指数**
+
+利用负指数法则：**`x^(-n) = 1 / x^n`**
+
+证明：
+```
+x^(-n) = x^(0-n) = x^0 / x^n = 1 / x^n
+```
+
+所以：
+```
+10000^(-i / d_model) = 1 / 10000^(i / d_model)
+```
+
+**第六步：最终形式**
+
+注意代码中 `i` 是从 `0, 2, 4, ...` 开始的偶数序列，对应公式中的 `2i`（这里的 `i` 是维度索引的一半）：
+
+```
+div_term[i] = 1 / 10000^(2i / d_model)
+```
+
+**完整推导链**：
+
+```
+code:    exp(i * (-ln(10000) / d_model))
+         ↓ 整理
+=        exp(-ln(10000) * i / d_model)
+         ↓ 应用恒等式 a^b = exp(b*ln(a))
+=        10000^(-i / d_model)
+         ↓ 负指数法则 x^(-n) = 1/x^n
+=        1 / 10000^(i / d_model)
+         ↓ 考虑偶数索引 2i
+=        1 / 10000^(2i / d_model)     ← 论文公式
+```
+
+---
+
+**参考资料：**
+
+- [指数与对数 -- 数学乐](https://www.shuxuele.com/algebra/exponents-logarithms.html)
+- [自然对数 -- 维基百科](https://zh.wikipedia.org/zh-cn/%E8%87%AA%E7%84%B6%E5%B0%8D%E6%95%B8)
+- [一个数的负数次方从本质上讲是怎么计算的？ -- 知乎](https://www.zhihu.com/question/267162925)
+- [Proofs of Logarithm Properties -- ChiliMath](https://www.chilimath.com/lessons/advanced-algebra/proofs-of-logarithm-properties/)
 
 **问题来了**：为什么不直接写成这样？
 
