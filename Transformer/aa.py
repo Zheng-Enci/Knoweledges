@@ -1,14 +1,14 @@
+"""
+统计文本中每个单词的出现频率
+
+参数:
+    text: 原始文本字符串
+
+返回:
+    dict: {单词: 频率}，例如 {"low": 5, "lower": 2}
+"""
 def count_word_frequency(text: str) -> dict:
-    """
-    统计文本中每个单词的出现频率
-    
-    参数:
-        text: 原始文本字符串
-    
-    返回:
-        dict: {单词: 频率}，例如 {"low": 5, "lower": 2}
-    """
-    words = text.split()  # 将文本按空格分割成单词列表
+    words = text.split()  # 按空格分割文本
     word_freq = {}  # 初始化空字典存储单词频率
     
     for word in words:  # 遍历每个单词
@@ -20,20 +20,20 @@ def count_word_frequency(text: str) -> dict:
     return word_freq  # 返回频率字典
 
 
+"""
+将 {单词: 频率} 字典转换为 [{字符元组: 频率}, ...] 格式
+
+参数:
+    word_freq: {单词: 频率} 字典
+
+返回:
+    list: [{字符元组: 频率}, ...] 列表
+"""
 def convert_to_candidate_list(word_freq: dict) -> list:
-    """
-    将 {单词: 频率} 字典转换为 [{字符元组: 频率}, ...] 格式
-    
-    参数:
-        word_freq: {单词: 频率} 字典
-    
-    返回:
-        list: [{字符元组: 频率}, ...] 列表
-    """
-    candidates = []  # 初始化空列表存储候选词
+    candidates = []  # 初始化空列表
     for word, freq in word_freq.items():  # 遍历每个单词及其频率
         word_tuple = tuple(word)  # 将单词字符串转换为字符元组
-        candidates.append({word_tuple: freq})  # 添加 {字符元组: 频率} 到列表
+        candidates.append({word_tuple: freq})  # 添加到列表
     return candidates  # 返回候选词列表
 
     
