@@ -64,13 +64,15 @@ def count_pair_frequencies(candidates: list) -> dict:
     pair_frequencies: {(字符, 字符): 频率} 字典
     candidates: [{字符元组: 频率}, ...] 候选词列表
 
-返回合并后的候选词列表
+返回:
+    tuple: (合并后的候选词列表, 本次新增的token)
 """
-def merge_pair_in_candidates(pair_frequencies: dict, candidates: list) -> list:
+def merge_pair_in_candidates(pair_frequencies: dict, candidates: list) -> tuple:
     max_freq = max(pair_frequencies.values())  # 找到最高频率，示例：9
     top_pairs = [pair for pair, freq in pair_frequencies.items() if freq == max_freq]  # 获取所有最高频字符对
     top_pairs.sort()  # 按字典序排序
     top_pair = top_pairs[0]  # 取字典序最小的字符对，示例：('e', 's')
+    merged_token = ''.join(top_pair)  # 本次新增的token，示例：'es'
     
     new_candidates = []  # 初始化合并后的候选词列表
     for candidate in candidates:  # 遍历候选词，示例：{('n', 'e', 'w', 'e', 's', 't'): 6}
@@ -82,19 +84,22 @@ def merge_pair_in_candidates(pair_frequencies: dict, candidates: list) -> list:
         while i < len(new_tuple) - 1:  # 只要还有相邻字符对
             current_pair = (new_tuple[i], new_tuple[i + 1])  # 当前字符对
             if current_pair == top_pair:  # 如果匹配最高频字符对
-                merged_char = ''.join(top_pair)  # 合并为字符串，示例：'e' + 's' → 'es'
-                new_tuple[i] = merged_char  # 用合并后的字符替换
+                new_tuple[i] = merged_token  # 用新增token替换，示例：'e' + 's' → 'es'
                 del new_tuple[i + 1]  # 删除第二个字符
             i += 1  # 移动到下一个位置
         
         new_candidates.append({tuple(new_tuple): freq})  # 添加合并后的词，示例：('n', 'es', 'w', 'es', 't')
     
-    return new_candidates
+    return new_candidates, merged_token  # 返回合并后的列表和本次新增token
 
 if __name__ == '__main__':  # 主程序入口
     text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"  # 测试语料
     word_freq = count_word_frequency(text)  # 统计频率，示例：{"low": 5, "lower": 2}
     candidates = convert_to_candidate_list(word_freq)  # 转换为 [{元组: 频率}]
-    pair_frequencies = count_pair_frequencies(candidates)  # 统计字符对，示例：{('l', 'o'): 7}
-    result = merge_pair_in_candidates(pair_frequencies, candidates)
-    
+    merges = []  # 初始化merges列表，记录所有新增token
+    for _ in range(6):
+        pair_frequencies = count_pair_frequencies(candidates)  # 统计字符对频率
+        candidates, merged_token = merge_pair_in_candidates(pair_frequencies, candidates)  # 执行合并
+        merges.append(merged_token)  # 记录本次新增token，示例：['es', 'we', 'low', ...]
+    print(f"候选词列表：{candidates}")  # 输出最终候选词
+    print(f"新增token序列：{merges}")  # 输出merges列表
