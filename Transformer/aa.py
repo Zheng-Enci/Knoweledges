@@ -58,33 +58,39 @@ def count_pair_frequencies(candidates: list) -> dict:
 
 
 """
-找到最高频字符对在候选词中的合并位置
+找到最高频字符对并执行合并
 
 参数:
     pair_frequencies: {(字符, 字符): 频率} 字典
     candidates: [{字符元组: 频率}, ...] 候选词列表
 
 返回:
-    list: [(候选词索引, 合并起始位置, 合并结束位置), ...]，例如 [(2, 4, 6), (3, 4, 6)]
+    tuple: (合并后的候选词列表, 本次合并的字符对)
 """
-def find_merge_positions(pair_frequencies: dict, candidates: list) -> list:
+def merge_pair_in_candidates(pair_frequencies: dict, candidates: list) -> tuple:
     max_freq = max(pair_frequencies.values())  # 找到最高频率，示例：9
     top_pairs = [pair for pair, freq in pair_frequencies.items() if freq == max_freq]  # 获取所有最高频字符对
     top_pairs.sort()  # 按字典序排序
     top_pair = top_pairs[0]  # 取字典序最小的字符对，示例：('e', 's')
-    merge_positions = []  # 初始化合并位置列表
     
-    for cand_idx, candidate in enumerate(candidates):  # 遍历候选词，示例：cand_idx=2, candidate={('n', 'e', 'w', 'e', 's', 't'): 6}
-        char_tuple = list(candidate.keys())[0]  # 获取字符元组，示例：('n', 'e', 'w', 'e', 's', 't')
+    new_candidates = []  # 初始化合并后的候选词列表
+    for candidate in candidates:  # 遍历候选词，示例：{('n', 'e', 'w', 'e', 's', 't'): 6}
+        char_tuple = list(candidate.keys())[0]  # 获取字符元组
         freq = list(candidate.values())[0]  # 获取频率值
+        new_tuple = list(char_tuple)  # 转换为列表以便修改
         
-        for i in range(len(char_tuple) - 1):  # 遍历相邻字符位置，示例：i=0 时检查 ('n', 'e')
-            current_pair = (char_tuple[i], char_tuple[i + 1])  # 当前字符对，示例：('n', 'e')
-            if current_pair == top_pair:  # 判断是否为最高频字符对
-                start, end = i, i + 2  # 合并位置：(起始索引, 结束索引+1)
-                merge_positions.append((cand_idx, start, end))  # 记录：示例 [(2, 4, 6)] 表示第3个词的第5-7个字符
+        i = 0  # 从头开始检查
+        while i < len(new_tuple) - 1:  # 只要还有相邻字符对
+            current_pair = (new_tuple[i], new_tuple[i + 1])  # 当前字符对
+            if current_pair == top_pair:  # 如果匹配最高频字符对
+                merged_char = ''.join(top_pair)  # 合并为字符串，示例：'e' + 's' → 'es'
+                new_tuple[i] = merged_char  # 用合并后的字符替换
+                del new_tuple[i + 1]  # 删除第二个字符
+            i += 1  # 移动到下一个位置
+        
+        new_candidates.append({tuple(new_tuple): freq})  # 添加合并后的词，示例：('n', 'es', 'w', 'es', 't')
     
-    return merge_positions  # 返回合并位置列表
+    return new_candidates, top_pair  # 返回合并后的列表和本次合并的字符对
 
 if __name__ == '__main__':  # 主程序入口
     text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"  # 测试语料
