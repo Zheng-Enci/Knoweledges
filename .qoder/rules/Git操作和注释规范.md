@@ -49,39 +49,11 @@ trigger: always_on
 
 行内注释写在代码的右侧，用 `#` 开头，说明该行代码的作用。
 
-### 正确示例
-
-```python
-def calculate_sum(a, b):
-    """计算两个数的和"""
-    result = a + b  # 将 a 和 b 相加得到结果
-    return result  # 返回计算结果
-```
-
-### 错误示例
-
-```python
-def calculate_sum(a, b):
-    """计算两个数的和"""
-    # 计算两个数的和
-    result = a + b
-    return result
-```
-
 ### 行内注释位置
 
 - 注释与代码之间用**两个空格**分隔
 - 注释从第 50 列开始对齐（如果有更长的变量名，适当调整）
 - 单行注释尽量简洁，一行不超过 100 字符
-
-```python
-def preprocess_text(text):
-    """对文本进行预处理"""
-    text = text.strip()  # 去除首尾空白字符
-    text = text.lower()  # 转换为小写
-    words = text.split()  # 按空格分割成单词列表
-    return words  # 返回处理后的单词列表
-```
 
 ## 函数注释规范
 
@@ -96,31 +68,6 @@ def preprocess_text(text):
 3. **返回值说明**：返回值的类型和内容（使用 `返回:` 或 `Returns:`
 4. **使用示例**（可选）：简单的调用示例
 
-### 正确示例
-
-```python
-def count_word_frequency(text: str) -> dict:
-    """
-    统计文本中每个单词的出现频率
-    
-    参数:
-        text: 原始文本字符串
-    
-    返回:
-        dict: {单词: 频率}，例如 {"hello": 3}
-    """
-    words = text.split()  # 将文本按空格分割成单词列表
-    word_freq = {}  # 初始化空字典存储单词频率
-    
-    for word in words:  # 遍历每个单词
-        if word in word_freq:  # 如果单词已在字典中
-            word_freq[word] += 1  # 出现次数 +1
-        else:  # 如果单词不在字典中
-            word_freq[word] = 1  # 初始化为 1
-    
-    return word_freq  # 返回频率字典
-```
-
 ## 类注释规范
 
 ### 位置
@@ -133,110 +80,32 @@ def count_word_frequency(text: str) -> dict:
 2. **类属性说明**：主要属性的类型和作用
 3. **使用示例**（可选）：简单的使用示例
 
-### 正确示例
-
-```python
-class WordCounter:
-    """
-    单词计数器类，用于统计文本中单词的出现频率
-    
-    属性:
-        text: 原始文本
-        word_freq: 单词频率字典
-    """
-    
-    def __init__(self, text: str):  # 初始化方法
-        """初始化计数器"""
-        self.text = text  # 保存原始文本
-        self.word_freq = {}  # 初始化空字典
-    
-    def count(self) -> dict:  # 统计方法
-        """执行统计并返回结果"""
-        self.word_freq = count_word_frequency(self.text)  # 调用统计函数
-        return self.word_freq  # 返回结果字典
-```
-
 ## 循环和条件注释规范
 
 ### for 循环
 
-```python
-for item in items:  # 遍历列表中的每个元素
-    process(item)  # 处理当前元素
-```
+for 循环的注释应说明循环的遍历对象和目的。
 
 ### if-else 条件
 
-```python
-if condition:  # 如果满足条件
-    do_something()  # 执行操作 A
-else:  # 否则
-    do_other()  # 执行操作 B
-```
+if-else 条件的注释应说明每个分支的判断条件和执行目的。
 
 ### while 循环
 
-```python
-while index < len(items):  # 当索引小于列表长度时循环
-    item = items[index]  # 获取当前元素
-    process(item)  # 处理元素
-    index += 1  # 索引 +1
-```
+while 循环的注释应说明循环的继续条件和循环体的作用。
 
 ## 变量命名与注释配合
 
 ### 变量名应具有描述性
 
-```python
-# 推荐的变量名
-user_name = "Alice"  # 用户名字
-total_price = 100.0  # 总价格
-is_valid = True  # 是否有效
-
-# 不推荐的变量名（单字母除非是循环索引）
-a = "Alice"  # 什么 a？
-```
+变量名应具有描述性，能够清晰表达变量的用途和含义，避免使用单字母变量名（除非是循环索引）。
 
 ### 复杂表达式应分行并注释
 
-```python
-# 计算加权平均分：(成绩 × 权重) 的和 ÷ 权重的和
-weighted_sum = sum(score * weight for score, weight in zip(scores, weights))  # 加权求和
-weight_sum = sum(weights)  # 权重总和
-average = weighted_sum / weight_sum if weight_sum > 0 else 0  # 加权平均（避免除零）
-```
+对于复杂的表达式，应该分行编写，并为每一行添加注释说明其作用。
 
 ## 注释语言规范
 
 - **注释使用中文**：与项目文档语言保持一致
 - **标点符号**：中文文档使用中文标点，代码注释尽量使用中文
 - **术语统一**：使用项目统一的术语，如 BPE、Token、Embedding 等可直接使用英文
-
-## 注释示例：完整函数
-
-```python
-def merge_pair(candidates: list, pair: tuple) -> tuple:
-    """
-    合并候选词列表中的指定字符对
-    
-    参数:
-        candidates: 候选词列表 [{字符元组: 频率}, ...]
-        pair: 要合并的字符对元组，例如 ('e', 's')
-    
-    返回:
-        tuple: (更新后的候选词列表, 本次合并的字符对)
-    """
-    new_candidates = []  # 初始化新的候选词列表
-    
-    for cand in candidates:  # 遍历每个候选词
-        key = list(cand.keys())[0]  # 获取字符元组
-        freq = list(cand.values())[0]  # 获取频率
-        
-        if pair_in_key(key, pair):  # 如果字符元组包含目标 pair
-            merged = merge_in_key(key, pair)  # 执行合并操作
-            new_candidates.append({merged: freq})  # 添加合并后的新词
-        else:  # 如果不包含目标 pair
-            new_candidates.append({key: freq})  # 保持原词不变
-    
-    return new_candidates, pair  # 返回更新后的列表和合并的 pair
-```
