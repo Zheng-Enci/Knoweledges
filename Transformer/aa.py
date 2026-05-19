@@ -64,10 +64,9 @@ def count_pair_frequencies(candidates: list) -> dict:
     pair_frequencies: {(字符, 字符): 频率} 字典
     candidates: [{字符元组: 频率}, ...] 候选词列表
 
-返回:
-    tuple: (合并后的候选词列表, 本次合并的字符对)
+返回合并后的候选词列表
 """
-def merge_pair_in_candidates(pair_frequencies: dict, candidates: list) -> tuple:
+def merge_pair_in_candidates(pair_frequencies: dict, candidates: list) -> list:
     max_freq = max(pair_frequencies.values())  # 找到最高频率，示例：9
     top_pairs = [pair for pair, freq in pair_frequencies.items() if freq == max_freq]  # 获取所有最高频字符对
     top_pairs.sort()  # 按字典序排序
@@ -90,12 +89,12 @@ def merge_pair_in_candidates(pair_frequencies: dict, candidates: list) -> tuple:
         
         new_candidates.append({tuple(new_tuple): freq})  # 添加合并后的词，示例：('n', 'es', 'w', 'es', 't')
     
-    return new_candidates, top_pair  # 返回合并后的列表和本次合并的字符对
+    return new_candidates
 
 if __name__ == '__main__':  # 主程序入口
     text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"  # 测试语料
     word_freq = count_word_frequency(text)  # 统计频率，示例：{"low": 5, "lower": 2}
     candidates = convert_to_candidate_list(word_freq)  # 转换为 [{元组: 频率}]
-    print(candidates)
     pair_frequencies = count_pair_frequencies(candidates)  # 统计字符对，示例：{('l', 'o'): 7}
-    print(pair_frequencies)  # 输出字符对频率字典
+    result = merge_pair_in_candidates(pair_frequencies, candidates)
+    
