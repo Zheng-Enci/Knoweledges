@@ -8,16 +8,16 @@
     dict: {单词: 频率}，例如 {"low": 5, "lower": 2}
 """
 def count_word_frequency(text: str) -> dict:
-    words = text.split()  # 按空格分割文本
-    word_freq = {}  # 初始化空字典存储单词频率
+    words = text.split()  # 分割文本，示例："low low lower" → ["low", "low", "lower"]
+    word_freq = {}  # 初始化空字典
     
-    for word in words:  # 遍历每个单词
-        if word in word_freq:  # 如果单词已在字典中
-            word_freq[word] += 1  # 出现次数 +1
-        else:  # 如果单词不在字典中
-            word_freq[word] = 1  # 初始化为 1
+    for word in words:  # 遍历单词，示例：["low", "low", "lower"]
+        if word in word_freq:  # 判断是否已统计，示例：word_freq={"low": 1}
+            word_freq[word] += 1  # 计数+1，示例：{"low": 1} → {"low": 2}
+        else:  # 新单词
+            word_freq[word] = 1  # 初始化，示例：{} → {"lower": 1}
     
-    return word_freq  # 返回频率字典
+    return word_freq  # 返回频率字典，示例：{"low": 2, "lower": 1}
 
 
 """
@@ -31,15 +31,15 @@ def count_word_frequency(text: str) -> dict:
 """
 def convert_to_candidate_list(word_freq: dict) -> list:
     candidates = []  # 初始化空列表
-    for word, freq in word_freq.items():  # 遍历每个单词及其频率
-        word_tuple = tuple(word)  # 将单词字符串转换为字符元组
-        candidates.append({word_tuple: freq})  # 添加到列表
-    return candidates  # 返回候选词列表
+    for word, freq in word_freq.items():  # 遍历字典，示例：{"low": 2, "lower": 1}
+        word_tuple = tuple(word)  # 转元组，示例："low" → ('l', 'o', 'w')
+        candidates.append({word_tuple: freq})  # 添加，示例：[{"lo": 2}] → [{"lo": 2}, {('l', 'o', 'w', 'e', 'r'): 1}]
+    return candidates  # 返回列表
 
     
 
 if __name__ == '__main__':  # 主程序入口
-    text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"  # 测试文本
-    result = count_word_frequency(text)  # 统计单词频率
-    result = convert_to_candidate_list(result)  # 转换为候选词列表格式
-    print(result)  # 输出结果
+    text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"  # 测试语料
+    result = count_word_frequency(text)  # 统计频率，{"low": 5, "lower": 2, "widest": 3, "newest": 6}
+    result = convert_to_candidate_list(result)  # 转换格式
+    print(result)  # 输出
