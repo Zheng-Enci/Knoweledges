@@ -57,7 +57,34 @@ def count_pair_frequencies(candidates: list) -> dict:
     return pair_frequencies  # 返回字符对频率字典
 
 
+"""
+找到最高频字符对在候选词中的合并位置
+
+参数:
+    pair_frequencies: {(字符, 字符): 频率} 字典
+    candidates: [{字符元组: 频率}, ...] 候选词列表
+
+返回:
+    list: [(候选词索引, 合并起始位置, 合并结束位置), ...]，例如 [(2, 4, 6), (3, 4, 6)]
+"""
+def find_merge_positions(pair_frequencies: dict, candidates: list) -> list:
+    max_freq = max(pair_frequencies.values())  # 找到最高频率，示例：9
+    top_pairs = [pair for pair, freq in pair_frequencies.items() if freq == max_freq]  # 获取所有最高频字符对
+    top_pairs.sort()  # 按字典序排序
+    top_pair = top_pairs[0]  # 取字典序最小的字符对，示例：('e', 's')
+    merge_positions = []  # 初始化合并位置列表
     
+    for cand_idx, candidate in enumerate(candidates):  # 遍历候选词，示例：cand_idx=2, candidate={('n', 'e', 'w', 'e', 's', 't'): 6}
+        char_tuple = list(candidate.keys())[0]  # 获取字符元组，示例：('n', 'e', 'w', 'e', 's', 't')
+        freq = list(candidate.values())[0]  # 获取频率值
+        
+        for i in range(len(char_tuple) - 1):  # 遍历相邻字符位置，示例：i=0 时检查 ('n', 'e')
+            current_pair = (char_tuple[i], char_tuple[i + 1])  # 当前字符对，示例：('n', 'e')
+            if current_pair == top_pair:  # 判断是否为最高频字符对
+                start, end = i, i + 2  # 合并位置：(起始索引, 结束索引+1)
+                merge_positions.append((cand_idx, start, end))  # 记录：示例 [(2, 4, 6)] 表示第3个词的第5-7个字符
+    
+    return merge_positions  # 返回合并位置列表
 
 if __name__ == '__main__':  # 主程序入口
     text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"  # 测试语料
