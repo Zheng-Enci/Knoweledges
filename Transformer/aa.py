@@ -36,6 +36,27 @@ def convert_to_candidate_list(word_freq: dict) -> list:
         candidates.append({word_tuple: freq})  # 添加，示例：[{"lo": 2}] → [{"lo": 2}, {('l', 'o', 'w', 'e', 'r'): 1}]
     return candidates  # 返回列表
 
+"""
+统计候选词列表中所有相邻字符对的频率
+
+参数:
+    candidates: 候选词列表，格式为 [{字符元组: 频率}, ...]
+
+返回:
+    dict: {(字符, 字符): 总频率} 字典
+"""
+def count_pair_frequencies(candidates: list) -> dict:
+    pair_frequencies = {}  # 初始化字符对频率字典
+    for candidate in candidates:  # 遍历候选词，示例：[{("l", "o"): 2}]
+        char_tuple = list(candidate.keys())[0]  # 获取字符元组，示例：("l", "o", "w")
+        freq = list(candidate.values())[0]  # 获取频率值，示例：2
+        for index in range(len(char_tuple) - 1):  # 遍历相邻字符对
+            char_pair = (char_tuple[index], char_tuple[index + 1])  # 提取字符对，示例：('l', 'o')
+            pair_frequencies[char_pair] = pair_frequencies.get(char_pair, 0) + freq  # 累加频率，示例：{('l', 'o'): 0} → {('l', 'o'): 2}
+
+    return pair_frequencies  # 返回字符对频率字典
+
+
     
 
 if __name__ == '__main__':  # 主程序入口
