@@ -140,6 +140,146 @@ pre_tokens = text.split()  # ["low", "lower", "newest"]
 
 为了帮助理解，下面是一个简化的训练示例（效率较低，但逻辑清晰）：
 
+**📊 数据变化全程追踪**
+
+在运行代码之前，让我们先看看每一步数据是如何变化的：
+
+```text
+原始输入：
+text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【第 1 步：预分词】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+输入：原始文本字符串
+输出：{单词: 频率}
+
+pre_tokenized = {
+    'low': 5,      # "low" 出现 5 次
+    'lower': 2,    # "lower" 出现 2 次
+    'widest': 3,   # "widest" 出现 3 次
+    'newest': 6    # "newest" 出现 6 次
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【第 2 步：转换为字符元组】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+输入：{单词: 频率}
+输出：[{字符元组: 频率}, ...]
+
+merges = [
+    {('l', 'o', 'w'): 5},                    # "low" 变成字符元组
+    {('l', 'o', 'w', 'e', 'r'): 2},         # "lower" 变成字符元组
+    {('w', 'i', 'd', 'e', 's', 't'): 3},    # "widest" 变成字符元组
+    {('n', 'e', 'w', 'e', 's', 't'): 6}     # "newest" 变成字符元组
+]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【第 3 步：第 1 轮合并 - 合并 ('e', 's')】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+统计字符对频率：
+pair_cnt = {
+    ('l', 'o'): 7,      # 5(low) + 2(lower)
+    ('o', 'w'): 7,      # 5(low) + 2(lower)
+    ('w', 'e'): 8,      # 2(lower) + 6(newest)
+    ('e', 'r'): 2,      # 2(lower)
+    ('w', 'i'): 3,      # 3(widest)
+    ('i', 'd'): 3,      # 3(widest)
+    ('d', 'e'): 3,      # 3(widest)
+    ('e', 's'): 9,      # 3(widest) + 6(newest) ← 最高频！
+    ('s', 't'): 9,      # 3(widest) + 6(newest) ← 也是 9，但字典序小于 ('e', 's')
+    ('n', 'e'): 6,      # 6(newest)
+}
+
+选择最高频字符对：('e', 's') 频率为 9
+
+执行合并：
+merges 更新为：
+[
+    {('l', 'o', 'w'): 5},                    # 不包含 ('e', 's')，不变
+    {('l', 'o', 'w', 'e', 'r'): 2},         # 不包含 ('e', 's')，不变
+    {('w', 'i', 'd', 'es', 't'): 3},        # ('e', 's') → "es"
+    {('n', 'e', 'w', 'es', 't'): 6}         # ('e', 's') → "es"
+]
+
+新增 token: "es" (ID: 257)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【第 4 步：第 2 轮合并 - 合并 ('es', 't')】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+统计字符对频率（基于更新后的 merges）：
+pair_cnt = {
+    ('l', 'o'): 7,
+    ('o', 'w'): 7,
+    ('w', 'e'): 8,
+    ('e', 'r'): 2,
+    ('w', 'i'): 3,
+    ('i', 'd'): 3,
+    ('d', 'e'): 3,
+    ('es', 't'): 9,     # 3(widest) + 6(newest) ← 最高频！
+    ('n', 'e'): 6,
+    ('e', 'w'): 6,      # 6(newest)
+}
+
+选择最高频字符对：('es', 't') 频率为 9
+
+执行合并：
+merges 更新为：
+[
+    {('l', 'o', 'w'): 5},                    # 不变
+    {('l', 'o', 'w', 'e', 'r'): 2},         # 不变
+    {('w', 'i', 'd', 'est'): 3},            # ('es', 't') → "est"
+    {('n', 'e', 'w', 'est'): 6}             # ('es', 't') → "est"
+]
+
+新增 token: "est" (ID: 258)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【第 5 步：第 3 轮合并 - 合并 ('w', 'e')】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+统计字符对频率：
+pair_cnt = {
+    ('l', 'o'): 7,
+    ('o', 'w'): 7,
+    ('w', 'e'): 8,      # 2(lower) + 6(newest) ← 最高频！
+    ('e', 'r'): 2,
+    ('w', 'i'): 3,
+    ('i', 'd'): 3,
+    ('d', 'est'): 3,    # 注意：现在是 ('d', 'est') 而不是 ('d', 'e')
+    ('n', 'e'): 6,
+    ('e', 'w'): 6,
+}
+
+选择最高频字符对：('w', 'e') 频率为 8
+
+执行合并：
+merges 更新为：
+[
+    {('l', 'o', 'w'): 5},                    # 不包含 ('w', 'e')，不变
+    {('l', 'o', 'we', 'r'): 2},             # ('w', 'e') → "we"
+    {('w', 'i', 'd', 'est'): 3},            # 不包含 ('w', 'e')，不变（'w' 后面是 'i'）
+    {('n', 'e', 'we', 'st'): 6}             # ('w', 'e') → "we"
+]
+
+新增 token: "we" (ID: 259)
+
+... 继续合并 3 轮 ...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【最终结果：6 轮合并后】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+新增的 6 个 token：
+new_tokens = ['es', 'est', 'we', 'low', 'er', 'lower']
+
+最终词表大小：257 + 6 = 263
+```
+
 ```python
 from typing import Dict
 from collections import Counter
@@ -300,16 +440,30 @@ if __name__ == '__main__':
     # 每次合并会添加一个新 token 到词表
     num_merges = 6  # 执行 6 次合并
     
+    print("=" * 60)
+    print("BPE 训练示例 - 完整流程演示")
+    print("=" * 60)
+    
     # ========== 第 1 步：初始化词表 ==========
+    print("\n【第 1 步】初始化词表")
+    print("-" * 60)
     vocab = init_vocab()
-    print(f"初始词表大小: {len(vocab)}")  # 输出: 257
+    print(f"✓ 初始词表大小: {len(vocab)}")
+    print(f"  - 256 个单字节字符 (ID: 0-255)")
+    print(f"  - 1 个特殊 token <|endoftext|> (ID: 256)")
     
     # ========== 第 2 步：预分词 ==========
+    print("\n【第 2 步】预分词 - 按空格分割并统计频率")
+    print("-" * 60)
     pre_tokenized = pre_tokenization(text)
-    print(f"预分词结果: {pre_tokenized}")
-    # 输出: {'low': 5, 'lower': 2, 'widest': 3, 'newest': 6}
+    print(f"✓ 预分词结果: {pre_tokenized}")
+    print(f"  示例数据变化：")
+    print(f"  输入: \"low low low low low\"")
+    print(f"  输出: {{'low': 5}}")
     
     # ========== 第 3 步：将单词转换为字符元组序列 ==========
+    print("\n【第 3 步】将单词转换为字符元组序列")
+    print("-" * 60)
     merges = []
     for word, count in pre_tokenized.items():
         # 将字符串转换为字符元组
@@ -319,30 +473,65 @@ if __name__ == '__main__':
         # 添加到候选词列表，格式: {字符元组: 频率}
         merges.append({item_key: count})
     
-    print(f"初始候选词: {merges}")
+    print(f"✓ 转换后的候选词列表:")
+    for idx, item in enumerate(merges):
+        word_tuple = list(item.keys())[0]
+        freq = list(item.values())[0]
+        word_str = ''.join(word_tuple)
+        print(f"  [{idx}] {repr(word_tuple)}: {freq}  # 单词 \"{word_str}\" 出现 {freq} 次")
     
     # ========== 第 4 步：迭代合并 ==========
+    print("\n【第 4 步】迭代合并 - 执行 6 轮合并")
+    print("=" * 60)
+    
     new_tokens = []  # 记录每轮合并产生的新 token
     
     for round_idx in range(num_merges):
-        print(f"\n{'='*50}")
+        print(f"\n{'━' * 60}")
         print(f"第 {round_idx + 1} 轮合并")
-        print(f"{'='*50}")
+        print(f"{'━' * 60}")
         
         # 统计当前所有字符对的频率
         pair_cnt = pair_count(merges)
-        print(f"字符对频率: {pair_cnt}")
+        
+        # 显示前 5 个最高频的字符对
+        sorted_pairs = sorted(pair_cnt.items(), key=lambda x: (-x[1], x[0]))
+        print(f"📊 字符对频率统计（Top 5）:")
+        for i, (pair, freq) in enumerate(sorted_pairs[:5]):
+            pair_str = ''.join(pair)
+            marker = " ← 选中" if i == 0 else ""
+            print(f"  {pair}: {freq} 次{marker}")
         
         # 执行合并，返回更新后的候选词列表和本次合并的字符对
         merges, new_token = merge(pair_cnt, merges)
         
         # 记录新 token
         new_tokens.append(new_token)
+        new_token_str = ''.join(new_token)
         
-        print(f"本次合并: {new_token} → {''.join(new_token)}")
-        print(f"更新后候选词: {merges}")
+        print(f"\n✅ 合并操作: {new_token} → \"{new_token_str}\"")
+        print(f"   新 token ID: {257 + round_idx}")
+        
+        # 显示哪些词被更新了
+        print(f"   受影响的词:")
+        for item in merges:
+            word_tuple = list(item.keys())[0]
+            freq = list(item.values())[0]
+            word_str = ''.join(word_tuple)
+            if new_token_str in word_str:
+                print(f"     - \"{word_str}\" (频率: {freq})")
+        
+        print(f"\n📝 更新后的候选词列表:")
+        for idx, item in enumerate(merges):
+            word_tuple = list(item.keys())[0]
+            freq = list(item.values())[0]
+            word_str = ''.join(word_tuple)
+            print(f"  [{idx}] {repr(word_tuple)}: {freq}")
     
     # ========== 第 5 步：将新 token 添加到词表 ==========
+    print(f"\n{'=' * 60}")
+    print("【第 5 步】将新 token 添加到词表")
+    print(f"{'=' * 60}")
     
     # 将字符元组转换为字符串
     new_tokens = ["".join(item) for item in new_tokens]
@@ -351,15 +540,26 @@ if __name__ == '__main__':
     for token in new_tokens:
         vocab_size = len(vocab)  # 当前词表大小作为新 token 的 ID
         vocab[token] = vocab_size
+        print(f"✓ 添加 token \"{token}\" → ID: {vocab[token]}")
     
     # ========== 输出最终结果 ==========
     
-    print(f"\n{'='*50}")
-    print("训练完成！")
-    print(f"{'='*50}")
-    print(f"新增 token: {new_tokens}")
-    print(f"最终词表大小: {len(vocab)}")
-    print(f"{'='*50}")
+    print(f"\n{'=' * 60}")
+    print("🎉 训练完成！")
+    print(f"{'=' * 60}")
+    print(f"\n📊 最终统计:")
+    print(f"  • 新增 token 数量: {len(new_tokens)}")
+    print(f"  • 新增 token 列表: {new_tokens}")
+    print(f"  • 最终词表大小: {len(vocab)} (初始 257 + 新增 {len(new_tokens)})")
+    print(f"  • 合并规则列表 (merges): {len(new_tokens)} 条")
+    
+    print(f"\n📝 词表示例:")
+    print(f"  ID 0-255: 单字节字符 (a, b, c, ...)")
+    print(f"  ID 256: <|endoftext|>")
+    for i, token in enumerate(new_tokens):
+        print(f"  ID {257 + i}: {token}")
+    
+    print(f"\n{'=' * 60}")
 ```
 
 运行结果：
