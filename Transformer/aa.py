@@ -61,8 +61,8 @@ def count_pair_frequencies(candidates: list) -> dict:
 
 if __name__ == '__main__':  # 主程序入口
     text = "low low low low low\nlower lower widest widest widest\nnewest newest newest newest newest newest\n"  # 测试语料
-    result = count_word_frequency(text)  # 统计频率，示例：{"low": 5, "lower": 2}
-    result = convert_to_candidate_list(result)  # 转换为 [{元组: 频率}]
-    print(result)
-    result = count_pair_frequencies(result)  # 统计字符对，示例：{('l', 'o'): 7}
-    print(result)  # 输出字符对频率字典
+    word_freq = count_word_frequency(text)  # 统计频率，示例：{"low": 5, "lower": 2}
+    candidates = convert_to_candidate_list(word_freq)  # 转换为 [{元组: 频率}]
+    print(candidates)
+    pair_frequencies = count_pair_frequencies(candidates)  # 统计字符对，示例：{('l', 'o'): 7}
+    print(pair_frequencies)  # 输出字符对频率字典
