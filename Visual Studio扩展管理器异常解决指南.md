@@ -187,8 +187,8 @@ Initialization of 'Microsoft.VisualStudio.ExtensionsExplorer.UI.ThemedToggleButt
 **参考资料：**
 
 - [修复 Visual Studio 安装 -- Microsoft Learn](https://learn.microsoft.com/zh-cn/visualstudio/install/repair-visual-studio?view=visualstudio) ⭐值得阅读
-- [Manage Extensions menu option throws exception -- Visual Studio Developer Community](https://developercommunity.visualstudio.com/t/manage-extensions-menu-option-throws-exception-ini/1464864)
-- [Opening a menu item "Extensions and Updates" from Tools menu fails -- Visual Studio Developer Community](https://developercommunity.visualstudio.com/content/problem/150132/opening-a-menu-item-extensions-and-updates-from-to.html)
+- [Manage Extensions menu option throws exception -- Visual Studio Developer Community](https://developercommunity.visualstudio.com/t/manage-extensions-menu-option-throws-exception-ini/1464864) ⭐值得阅读
+- [Opening a menu item "Extensions and Updates" from Tools menu fails -- Visual Studio Developer Community](https://developercommunity.visualstudio.com/content/problem/150132/opening-a-menu-item-extensions-and-updates-from-to.html) ⭐值得阅读
 
 ### 3.4 方案四：清除扩展缓存
 
@@ -301,9 +301,9 @@ D:\                          # 磁盘根目录
 
 **参考资料：**
 
-- [修复 Visual Studio 安装 -- Microsoft Learn](https://learn.microsoft.com/zh-cn/visualstudio/install/repair-visual-studio?view=visualstudio)
-- [Manage Extensions menu option throws exception -- Visual Studio Developer Community](https://developercommunity.visualstudio.com/t/manage-extensions-menu-option-throws-exception-ini/1464864)
-- [查找、安装和管理 Visual Studio 的扩展 -- Microsoft Learn](https://learn.microsoft.com/zh-cn/visualstudio/ide/finding-and-using-visual-studio-extensions?view=visualstudio)
+- [修复 Visual Studio 安装 -- Microsoft Learn](https://learn.microsoft.com/zh-cn/visualstudio/install/repair-visual-studio?view=visualstudio) ⭐值得阅读
+- [Manage Extensions menu option throws exception -- Visual Studio Developer Community](https://developercommunity.visualstudio.com/t/manage-extensions-menu-option-throws-exception-ini/1464864) ⭐值得阅读
+- [查找、安装和管理 Visual Studio 的扩展 -- Microsoft Learn](https://learn.microsoft.com/zh-cn/visualstudio/ide/finding-and-using-visual-studio-extensions?view=visualstudio) ⭐值得阅读
 - [Error when attempting to copy and paste controls in XtraReport Designer -- DevExpress](https://supportcenter.devexpress.com/ticket/details/t1125472/error--when-attempting-to-copy-and-paste-controls-in-xtrareport-designer)
 - [Extension Manager not working -- Visual Studio Developer Community](https://developercommunity.visualstudio.com/t/Extension-Manager-not-working/10934446)
 
