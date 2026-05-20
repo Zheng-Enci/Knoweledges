@@ -1,4 +1,3 @@
-
 # VS扩展管理器异常解决指南 💻
 
 本文档介绍 Visual Studio 扩展管理器报错 `Initialization of 'Microsoft.VisualStudio.ExtensionsExplorer.UI.ThemedToggleButton' threw an exception` 的解决方法。通过分析问题成因、提供多种解决方案，帮助读者快速恢复扩展管理器的正常使用 🛠️
@@ -34,7 +33,7 @@ flowchart LR
 
 ### 1.1 错误信息
 
-当你在 Visual Studio 中尝试打开 **扩展管理器**（Extensions Manager）时，可能会遇到以下错误：
+当你在 Visual Studio 中尝试打开「**扩展和更新**」窗口（**工具 → 扩展和更新**）或「**管理扩展**」窗口（**扩展 → 管理扩展**）时，可能会遇到以下错误：
 
 ```
 An error occurred while initializing 'Microsoft.VisualStudio.ExtensionsExplorer.UI.ThemedToggleButton': 
