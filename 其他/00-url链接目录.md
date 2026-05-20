@@ -4,8 +4,9 @@
 
 ## Visual Studio 扩展管理器
 
-- [VS扩展管理器异常：Initialization of 'Microsoft.VisualStudio.ExtensionsExplorer.UI.ThemedToggleButton' threw an exception -- 掘金](https://juejin.cn/post/7641533559194992694)
-- [VS扩展管理器异常：Initialization of 'Microsoft.VisualStudio.ExtensionsExplorer.UI.ThemedToggleButton' threw an exception -- CSDN](https://blog.csdn.net/2301_79239314/article/details/161254916)
+| 文件名 | 掘金 | CSDN |
+|--------|------|------|
+| 02-Visual Studio扩展管理器异常解决指南.md | [发布链接](https://juejin.cn/post/) | [发布链接](https://blog.csdn.net/) |
 
 ---
 
