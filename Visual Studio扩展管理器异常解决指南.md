@@ -74,7 +74,7 @@ Initialization of 'Microsoft.VisualStudio.ExtensionsExplorer.UI.ThemedToggleButt
 
 ### 2.1 根本原因
 
-根据用户反馈和社区讨论，**中文路径**是导致此错误的主要原因之一。
+根据用户反馈、社区讨论以及我的实践，**中文路径是导致此错误的主要原因之一**。
 
 当 Visual Studio 或其扩展的安装路径、用户配置路径中包含中文字符时，扩展管理器的 UI 组件无法正确加载，因为某些内部组件在解析路径时未能正确处理 Unicode 字符。
 
