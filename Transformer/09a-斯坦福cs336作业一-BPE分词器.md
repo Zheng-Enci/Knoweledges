@@ -815,94 +815,78 @@ for j in pair_to_indices[('e', 's')]:
 ### 4.1 编码器（Encode）📝
 
 ```python
-class BPETokenizer:
-    """字节级 BPE 分词器"""
+# 字节级 BPE 分词器
+# 功能: 实现 BPE 编码和解码功能，将文本转换为 token IDs 或反向转换
+# 属性: vocab 词表字典 {token_id: token_bytes}, merges 合并列表 [(byte_a, byte_b), ...]
+# 示例: tokenizer = BPETokenizer(vocab, merges); token_ids = tokenizer.encode("hello")
+class BPETokenizer:                                                       # 定义 BPE 分词器类
     
-    def __init__(self, vocab: dict[int, bytes], merges: list[tuple[bytes, bytes]]):
-        """
-        初始化分词器
-        
-        参数:
-            vocab: 词表字典 {token_id: token_bytes}
-            merges: 合并列表 [(byte_a, byte_b), ...]
-        """
-        self.vocab = vocab
-        self.merges = merges
+    # 初始化分词器
+    # 参数: vocab 词表字典 {token_id: token_bytes}, merges 合并列表 [(byte_a, byte_b), ...]
+    # 示例: tokenizer = BPETokenizer({0: b'a', 1: b'b'}, [(b'a', b'b')])
+    def __init__(self, vocab: dict[int, bytes], merges: list[tuple[bytes, bytes]]):  # vocab词表，merges合并列表
+        self.vocab = vocab                                                # 保存词表字典，示例：{0: b'a', 1: b'b', 2: b'ab'}
+        self.merges = merges                                              # 保存合并列表，示例：[(b'a', b'b')]
         
         # 构建快速查找表
-        self.vocab_to_id = {v: k for k, v in vocab.items()}
-        self.merge_rules = set(merges)
+        self.vocab_to_id = {v: k for k, v in vocab.items()}               # 反向映射：token_bytes → token_id，示例：{b'a': 0, b'b': 1}
+        self.merge_rules = set(merges)                                    # 转换为集合加速查找，示例：{(b'a', b'b')}
     
-    def encode(self, text: str) -> list[int]:
-        """
-        将文本编码为 token IDs
-        
-        参数:
-            text: 输入文本
-        
-        返回:
-            token_ids: token ID 列表
-        """
+    # 将文本编码为 token IDs
+    # 参数: text 输入文本字符串
+    # 返回: token_ids token ID 列表
+    # 示例: token_ids = tokenizer.encode("abc") → [3, 2]
+    def encode(self, text: str) -> list[int]:                             # 输入文本，示例："abc"
         # 1. 转换为字节序列
-        token_bytes = [bytes([b]) for b in text.encode("utf-8")]
+        token_bytes = [bytes([b]) for b in text.encode("utf-8")]          # 文本编码为单字节列表，示例："abc" → [b'a', b'b', b'c']
         
         # 2. 应用合并规则
-        token_bytes = self._apply_merges(token_bytes)
+        token_bytes = self._apply_merges(token_bytes)                     # 按 merges 顺序合并，示例：[b'a', b'b', b'c'] → [b'ab', b'c']
         
         # 3. 转换为 token IDs
-        token_ids = [self.vocab_to_id[t] for t in token_bytes]
+        token_ids = [self.vocab_to_id[t] for t in token_bytes]            # 字节映射为 ID，示例：[b'ab', b'c'] → [3, 2]
         
-        return token_ids
+        return token_ids                                                  # 返回 token ID 列表
     
-    def _apply_merges(self, tokens: list[bytes]) -> list[bytes]:
-        """
-        按照 merges 列表顺序应用合并规则
-        
-        参数:
-            tokens: 初始字节序列
-        
-        返回:
-            merged_tokens: 合并后的 token 序列
-        """
-        for merge in self.merges:
-            new_tokens = []
-            i = 0
-            while i < len(tokens):
+    # 按照 merges 列表顺序应用合并规则
+    # 参数: tokens 初始字节序列列表
+    # 返回: merged_tokens 合并后的 token 序列
+    # 示例: merged = _apply_merges([b'a', b'b', b'c']) → [b'ab', b'c']
+    def _apply_merges(self, tokens: list[bytes]) -> list[bytes]:          # 输入字节序列，示例：[b'a', b'b', b'c']
+        for merge in self.merges:                                         # 遍历所有合并规则，示例：merge=(b'a', b'b')
+            new_tokens = []                                               # 初始化合并后的列表
+            i = 0                                                         # 从头开始遍历
+            while i < len(tokens):                                        # 只要还有 token
                 # 如果当前两个字节可以合并
-                if i < len(tokens) - 1 and tokens[i:i+2] == list(merge):
-                    new_tokens.append(merge[0] + merge[1])
-                    i += 2
-                else:
-                    new_tokens.append(tokens[i])
-                    i += 1
-            tokens = new_tokens
+                if i < len(tokens) - 1 and tokens[i:i+2] == list(merge):  # 检查是否匹配合并规则，示例：[b'a', b'b'] == [b'a', b'b']
+                    new_tokens.append(merge[0] + merge[1])                # 添加合并后的 token，示例：b'a' + b'b' → b'ab'
+                    i += 2                                                # 跳过两个字节
+                else:                                                     # 不匹配
+                    new_tokens.append(tokens[i])                          # 添加原 token
+                    i += 1                                                # 跳过一个字节
+            tokens = new_tokens                                           # 更新 token 列表，示例：[b'ab', b'c']
         
-        return tokens
+        return tokens                                                     # 返回合并后的序列
 ```
 
 ### 4.2 解码器（Decode）🔓
 
 ```python
-    def decode(self, token_ids: list[int]) -> str:
-        """
-        将 token IDs 解码为文本
-        
-        参数:
-            token_ids: token ID 列表
-        
-        返回:
-            text: 解码后的文本
-        """
+    # 将 token IDs 解码为文本
+    # 参数: token_ids token ID 列表
+    # 返回: text 解码后的文本字符串
+    # 示例: text = tokenizer.decode([3, 2]) → "abc"
+    def decode(self, token_ids: list[int]) -> str:                        # 输入 token ID 列表，示例：[3, 2]
         # 1. 转换回字节序列
-        token_bytes = [self.vocab[tid] for tid in token_ids]
+        token_bytes = [self.vocab[tid] for tid in token_ids]              # ID 映射为字节，示例：[3, 2] → [b'ab', b'c']
         
         # 2. 拼接所有字节
-        all_bytes = b"".join(token_bytes)
+        all_bytes = b"".join(token_bytes)                                 # 拼接为完整字节串，示例：b'ab' + b'c' → b'abc'
         
         # 3. 解码为 UTF-8 字符串
-        text = all_bytes.decode("utf-8", errors="ignore")
+        text = all_bytes.decode("utf-8", errors="ignore")                 # 字节解码为文本，示例：b'abc' → "abc"
         
-        return text
+        return text                                                       # 返回解码后的文本
 ```
 
 ### 4.3 编码解码示例 💡
