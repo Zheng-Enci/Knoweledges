@@ -76,7 +76,57 @@ BPE 训练包含三个核心步骤：
 
 > 从零实现高效的 BPE 训练器，包含并行处理优化
 
-### 3.1 完整训练代码实现 💻
+### 3.1 关键优化点 🔑
+
+**优化 1：文件分块边界对齐**
+
+**为什么要在特殊 token 处分割？**
+
+核心目的：**确保每个 chunk 是自包含的（self-contained），并行处理结果与单进程处理完全一致**。
+
+如果不在文档边界分割，会出现问题：
+- ❌ **跨文档合并**：chunk1 末尾的词 + chunk2 开头的词会被错误地统计为一个 pair
+- ❌ **频率统计偏差**：同一个文档被切断后，词频会被分散到两个 chunk
+- ❌ **最终词表质量下降**：不同文档的语义被错误关联
+
+**示例**：
+```
+原始数据：
+文档1: "I love AI<|endoftext|>"
+文档2: "Python is great<|endoftext|>"
+
+❌ 错误分割（在中间切开）：
+Chunk1: "I love AI<|endoft"     ← 文档被切断
+Chunk2: "ext|>Python is great"  ← 语义混乱
+
+✅ 正确分割（在特殊 token 处）：
+Chunk1: "I love AI<|endoftext|>"  ← 完整文档
+Chunk2: "Python is great<|endoftext|>"  ← 完整文档
+```
+
+这样每个进程独立处理完整文档，合并后的频率统计与单进程处理完全相同。
+
+**参考资料**：
+- [Building a Fast BPE Tokenizer from Scratch -- Jun Yu Tan](https://jytan.net/blog/2025/bpe/) ⭐值得阅读
+
+**优化 2：倒排索引**
+
+```python
+pair_to_indices = defaultdict(set)  # pair → token 索引集合
+```
+
+- **优化前**：每轮合并遍历所有 token → O(N × V)
+- **优化后**：只更新受影响的 token → O(受影响 token 数)
+
+**优化 3：多进程并行**
+
+使用 `multiprocessing.Pool` 而非 `threading`，因为 Python GIL 限制多线程无法真正并行 CPU 密集型任务。
+
+---
+
+### 3.2 完整训练代码实现 💻
+
+下面整合上述优化策略，提供完整的生产级 BPE 训练器实现：
 
 ```python
 import regex as re                                                # 导入增强版正则表达式库，支持 Unicode 属性匹配
@@ -274,52 +324,6 @@ def train_bpe(
     
     return vocab, merges                                          # 返回词表和合并列表
 ```
-
-### 3.2 关键优化点 🔑
-
-**优化 1：文件分块边界对齐**
-
-**为什么要在特殊 token 处分割？**
-
-核心目的：**确保每个 chunk 是自包含的（self-contained），并行处理结果与单进程处理完全一致**。
-
-如果不在文档边界分割，会出现问题：
-- ❌ **跨文档合并**：chunk1 末尾的词 + chunk2 开头的词会被错误地统计为一个 pair
-- ❌ **频率统计偏差**：同一个文档被切断后，词频会被分散到两个 chunk
-- ❌ **最终词表质量下降**：不同文档的语义被错误关联
-
-**示例**：
-```
-原始数据：
-文档1: "I love AI<|endoftext|>"
-文档2: "Python is great<|endoftext|>"
-
-❌ 错误分割（在中间切开）：
-Chunk1: "I love AI<|endoft"     ← 文档被切断
-Chunk2: "ext|>Python is great"  ← 语义混乱
-
-✅ 正确分割（在特殊 token 处）：
-Chunk1: "I love AI<|endoftext|>"  ← 完整文档
-Chunk2: "Python is great<|endoftext|>"  ← 完整文档
-```
-
-这样每个进程独立处理完整文档，合并后的频率统计与单进程处理完全相同。
-
-**参考资料**：
-- [Building a Fast BPE Tokenizer from Scratch -- Jun Yu Tan](https://jytan.net/blog/2025/bpe/) ⭐值得阅读
-
-**优化 2：倒排索引**
-
-```python
-pair_to_indices = defaultdict(set)  # pair → token 索引集合
-```
-
-- **优化前**：每轮合并遍历所有 token → O(N × V)
-- **优化后**：只更新受影响的 token → O(受影响 token 数)
-
-**优化 3：多进程并行**
-
-使用 `multiprocessing.Pool` 而非 `threading`，因为 Python GIL 限制多线程无法真正并行 CPU 密集型任务。
 
 ---
 
