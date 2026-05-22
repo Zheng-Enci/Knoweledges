@@ -156,39 +156,44 @@ pair_to_indices = defaultdict(set)  # pair → token 索引集合
 
 **数据流动流程图**：
 
+```mermaid
+graph TD
+    A[原始文件<br/>二进制格式] --> B[1. find_chunk_boundaries<br/>文件分块]
+    B --> C[边界列表<br/>0, 3150, 6080, 9200, ...]
+    C --> D[2. process_chunk<br/>并行预分词 多进程]
+    
+    D --> D1[读取块数据<br/>解码为字符串]
+    D1 --> D2[按特殊token分割<br/>独立文档列表]
+    D2 --> D3[正则预分词<br/>token列表]
+    D3 --> D4[拆分为单字节<br/>字节序列列表]
+    
+    D4 --> E[pre_tokens_bytes<br/>b'I', b'l',b'o',b'v',b'e', ...]
+    E --> F[3. 统计初始频率<br/>构建倒排索引]
+    
+    F --> F1[counts字典<br/>b'l',b'o': 5, ...]
+    F --> F2[pair_to_indices<br/>b'l',b'o': 0,5,12, ...]
+    
+    F1 --> G[4. 迭代合并<br/>while idx < vocab_size]
+    F2 --> G
+    
+    G --> G1[找最高频pair<br/>b'e',b's' 频率=9]
+    G1 --> G2[合并字节对<br/>b'e' + b's' → b'es']
+    G2 --> G3[更新词表<br/>vocab[257] = b'es']
+    G3 --> G4[更新受影响token<br/>newest → new + est]
+    G4 --> G5[更新counts和<br/>pair_to_indices]
+    G5 --> G
+    
+    G --> H[5. 返回结果]
+    H --> H1[vocab字典<br/>0: b'\\x00', 257: b'es', ...]
+    H --> H2[merges列表<br/>b'e',b's', b'es',b't', ...]
 ```
-原始文件（二进制）
-    ↓
-[1. find_chunk_boundaries] 文件分块
-    ↓
-边界列表: [0, 3150, 6080, 9200, ...]
-    ↓
-[2. process_chunk] 并行预分词（多进程）
-    ├─ 读取块数据 → 解码为字符串
-    ├─ 按特殊 token 分割 → 独立文档列表
-    ├─ 正则预分词 → token 列表
-    └─ 拆分为单字节 → 字节序列列表
-    ↓
-pre_tokens_bytes: [[b'I'], [b'l',b'o',b'v',b'e'], [b'A',b'I'], ...]
-    ↓
-[3. 统计初始频率] 构建倒排索引
-    ↓
-counts: {(b'l',b'o'): 5, (b'o',b'v'): 3, ...}
-pair_to_indices: {(b'l',b'o'): {0,5,12}, ...}
-    ↓
-[4. 迭代合并] while idx < vocab_size
-    ├─ 找最高频 pair: (b'e', b's') 频率=9
-    ├─ 合并: b'e' + b's' → b'es'
-    ├─ 更新词表: vocab[257] = b'es'
-    ├─ 更新受影响 token: [b'n',b'e',b'w',b'e',b's',b't']
-    │                              ↓
-    │                         [b'n',b'e',b'w',b'es',b't']
-    └─ 更新 counts 和 pair_to_indices
-    ↓
-[5. 返回结果]
-    ├─ vocab: {0: b'\x00', ..., 256: b'<|endoftext|>', 257: b'es', ...}
-    └─ merges: [(b'e',b's'), (b'es',b't'), (b'l',b'o'), ...]
-```
+
+**流程说明**：
+1. **文件分块**：在特殊 token 处分割文件，确保文档完整性
+2. **并行预分词**：多进程处理每个块，将文本转换为字节序列
+3. **统计频率**：构建字节对频率字典和倒排索引
+4. **迭代合并**：循环合并最高频字节对，更新词表和 token
+5. **返回结果**：得到最终词表 vocab 和合并规则 merges
 
 ```python
 import regex as re                                                # 导入增强版正则表达式库，支持 Unicode 属性匹配
