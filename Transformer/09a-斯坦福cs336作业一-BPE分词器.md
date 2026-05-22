@@ -1,4 +1,4 @@
----
+﻿---
 trigger: manual
 alwaysApply: false
 ---
@@ -279,7 +279,34 @@ def train_bpe(
 
 **优化 1：文件分块边界对齐**
 
-在特殊 token（如 `<|endoftext|>`）处分割，保证文档完整性，避免语义跨越。
+**为什么要在特殊 token 处分割？**
+
+核心目的：**确保每个 chunk 是自包含的（self-contained），并行处理结果与单进程处理完全一致**。
+
+如果不在文档边界分割，会出现问题：
+- ❌ **跨文档合并**：chunk1 末尾的词 + chunk2 开头的词会被错误地统计为一个 pair
+- ❌ **频率统计偏差**：同一个文档被切断后，词频会被分散到两个 chunk
+- ❌ **最终词表质量下降**：不同文档的语义被错误关联
+
+**示例**：
+```
+原始数据：
+文档1: "I love AI<|endoftext|>"
+文档2: "Python is great<|endoftext|>"
+
+❌ 错误分割（在中间切开）：
+Chunk1: "I love AI<|endoft"     ← 文档被切断
+Chunk2: "ext|>Python is great"  ← 语义混乱
+
+✅ 正确分割（在特殊 token 处）：
+Chunk1: "I love AI<|endoftext|>"  ← 完整文档
+Chunk2: "Python is great<|endoftext|>"  ← 完整文档
+```
+
+这样每个进程独立处理完整文档，合并后的频率统计与单进程处理完全相同。
+
+**参考资料**：
+- [Building a Fast BPE Tokenizer from Scratch -- Jun Yu Tan](https://jytan.net/blog/2025/bpe/) ⭐值得阅读
 
 **优化 2：倒排索引**
 
