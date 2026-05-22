@@ -154,6 +154,42 @@ pair_to_indices = defaultdict(set)  # pair → token 索引集合
 
 下面整合上述优化策略，提供完整的生产级 BPE 训练器实现：
 
+**数据流动流程图**：
+
+```
+原始文件（二进制）
+    ↓
+[1. find_chunk_boundaries] 文件分块
+    ↓
+边界列表: [0, 3150, 6080, 9200, ...]
+    ↓
+[2. process_chunk] 并行预分词（多进程）
+    ├─ 读取块数据 → 解码为字符串
+    ├─ 按特殊 token 分割 → 独立文档列表
+    ├─ 正则预分词 → token 列表
+    └─ 拆分为单字节 → 字节序列列表
+    ↓
+pre_tokens_bytes: [[b'I'], [b'l',b'o',b'v',b'e'], [b'A',b'I'], ...]
+    ↓
+[3. 统计初始频率] 构建倒排索引
+    ↓
+counts: {(b'l',b'o'): 5, (b'o',b'v'): 3, ...}
+pair_to_indices: {(b'l',b'o'): {0,5,12}, ...}
+    ↓
+[4. 迭代合并] while idx < vocab_size
+    ├─ 找最高频 pair: (b'e', b's') 频率=9
+    ├─ 合并: b'e' + b's' → b'es'
+    ├─ 更新词表: vocab[257] = b'es'
+    ├─ 更新受影响 token: [b'n',b'e',b'w',b'e',b's',b't']
+    │                              ↓
+    │                         [b'n',b'e',b'w',b'es',b't']
+    └─ 更新 counts 和 pair_to_indices
+    ↓
+[5. 返回结果]
+    ├─ vocab: {0: b'\x00', ..., 256: b'<|endoftext|>', 257: b'es', ...}
+    └─ merges: [(b'e',b's'), (b'es',b't'), (b'l',b'o'), ...]
+```
+
 ```python
 import regex as re                                                # 导入增强版正则表达式库，支持 Unicode 属性匹配
 import os                                                         # 导入操作系统接口模块，用于文件路径和大小操作
