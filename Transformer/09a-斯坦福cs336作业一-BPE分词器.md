@@ -177,14 +177,14 @@ graph TD
     F2 --> G
     
     G --> G1[找最高频pair<br/>b'e',b's' 频率=9]
-    G1 --> G2[合并字节对<br/>b'e' + b's' → b'es']
+    G1 --> G2[合并字节对<br/>b'e' + b's' 变为 b'es']
     G2 --> G3[更新词表<br/>vocab[257] = b'es']
-    G3 --> G4[更新受影响token<br/>newest → new + est]
+    G3 --> G4[更新受影响token<br/>newest 变为 new + est]
     G4 --> G5[更新counts和<br/>pair_to_indices]
     G5 --> G
     
     G --> H[5. 返回结果]
-    H --> H1[vocab字典<br/>0: b'\\x00', 257: b'es', ...]
+    H --> H1[vocab字典<br/>0: b'x00', 257: b'es', ...]
     H --> H2[merges列表<br/>b'e',b's', b'es',b't', ...]
 ```
 
