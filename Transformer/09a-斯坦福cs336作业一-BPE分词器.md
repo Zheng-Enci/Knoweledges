@@ -364,13 +364,4 @@ def train_bpe(
 
 ---
 
-**参考资料：**
-
-- [Stanford CS336 | Assignment 1 - BPE Tokenizer Training 实现 -- 知乎](https://zhuanlan.zhihu.com/p/1926644040616646104)
-- [CS336 Assignment 1: BPE Tokenizer's Detailed Implementation -- Qiyao Wang](https://qiyao-wang.github.io/blogs/2025/CS336/Assignment1/BPE/) ⭐值得阅读
-- [斯坦福 CS336 作业解析：手把手实现 BPE Tokenizer 的优化技巧 -- CSDN](https://blog.csdn.net/yolo5detector/article/details/154561149)
-- [Byte-level BPE(BBPE)原理及其代码实现 -- 知乎](https://zhuanlan.zhihu.com/p/652520262) ⭐值得阅读
-
----
-
 **最后更新时间**：2026-05-22
