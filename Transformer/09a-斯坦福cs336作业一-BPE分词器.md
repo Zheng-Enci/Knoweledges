@@ -174,7 +174,8 @@ def find_chunk_boundaries(
     mini_chunk_size = 4096                                        # 每次读取 4KB，用于搜索特殊 token
     
     # 调整边界，确保在特殊 token 处分割
-    for bi in range(1, len(chunk_boundaries) - 1):                # 遍历所有边界（除了首尾），示例：bi=1,2,3,...,15
+    # 从 1 开始的原因：第 0 个边界（文件开头）和最后 1 个边界（文件末尾）不需要调整
+    for bi in range(1, len(chunk_boundaries) - 1):                # 遍历所有中间边界（除了首尾），示例：bi=1,2,3,...,15
         initial_position = chunk_boundaries[bi]                   # 记录初始边界位置，示例：3000
         file.seek(initial_position)                               # 移动文件指针到该位置
         while True:                                               # 循环搜索特殊 token
