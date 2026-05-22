@@ -158,34 +158,34 @@ pair_to_indices = defaultdict(set)  # pair → token 索引集合
 
 ```mermaid
 graph TD
-    A[原始文件<br/>二进制格式] --> B[1. find_chunk_boundaries<br/>文件分块]
-    B --> C[边界列表<br/>0, 3150, 6080, 9200, ...]
-    C --> D[2. process_chunk<br/>并行预分词 多进程]
+    A["原始文件<br/>二进制格式"] --> B["1. find_chunk_boundaries<br/>文件分块"]
+    B --> C["边界列表<br/>0, 3150, 6080, 9200, ..."]
+    C --> D["2. process_chunk<br/>并行预分词 多进程"]
     
-    D --> D1[读取块数据<br/>解码为字符串]
-    D1 --> D2[按特殊token分割<br/>独立文档列表]
-    D2 --> D3[正则预分词<br/>token列表]
-    D3 --> D4[拆分为单字节<br/>字节序列列表]
+    D --> D1["读取块数据<br/>解码为字符串"]
+    D1 --> D2["按特殊token分割<br/>独立文档列表"]
+    D2 --> D3["正则预分词<br/>token列表"]
+    D3 --> D4["拆分为单字节<br/>字节序列列表"]
     
-    D4 --> E[pre_tokens_bytes<br/>b'I', b'l',b'o',b'v',b'e', ...]
-    E --> F[3. 统计初始频率<br/>构建倒排索引]
+    D4 --> E["pre_tokens_bytes<br/>b'I', b'l',b'o',b'v',b'e', ..."]
+    E --> F["3. 统计初始频率<br/>构建倒排索引"]
     
-    F --> F1[counts字典<br/>b'l',b'o': 5, ...]
-    F --> F2[pair_to_indices<br/>b'l',b'o': 0,5,12, ...]
+    F --> F1["counts字典<br/>b'l',b'o': 5, ..."]
+    F --> F2["pair_to_indices<br/>b'l',b'o': 0,5,12, ..."]
     
-    F1 --> G[4. 迭代合并<br/>while idx < vocab_size]
+    F1 --> G["4. 迭代合并<br/>while idx < vocab_size"]
     F2 --> G
     
-    G --> G1[找最高频pair<br/>b'e',b's' 频率=9]
-    G1 --> G2[合并字节对<br/>b'e' + b's' 变为 b'es']
-    G2 --> G3[更新词表<br/>vocab[257] = b'es']
-    G3 --> G4[更新受影响token<br/>newest 变为 new + est]
-    G4 --> G5[更新counts和<br/>pair_to_indices]
+    G --> G1["找最高频pair<br/>b'e',b's' 频率=9"]
+    G1 --> G2["合并字节对<br/>b'e' + b's' 变为 b'es'"]
+    G2 --> G3["更新词表<br/>vocab[257] = b'es'"]
+    G3 --> G4["更新受影响token<br/>newest 变为 new + est"]
+    G4 --> G5["更新counts和<br/>pair_to_indices"]
     G5 --> G
     
-    G --> H[5. 返回结果]
-    H --> H1[vocab字典<br/>0: b'x00', 257: b'es', ...]
-    H --> H2[merges列表<br/>b'e',b's', b'es',b't', ...]
+    G --> H["5. 返回结果"]
+    H --> H1["vocab字典<br/>0: b'x00', 257: b'es', ..."]
+    H --> H2["merges列表<br/>b'e',b's', b'es',b't', ..."]
 ```
 
 **流程说明**：
