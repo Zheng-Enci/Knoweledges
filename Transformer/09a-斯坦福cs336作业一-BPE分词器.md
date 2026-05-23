@@ -154,54 +154,88 @@ pair_to_indices = defaultdict(set)  # pair → token 索引集合
 
 下面整合上述优化策略，提供完整的生产级 BPE 训练器实现：
 
-**数据流动流程图**：
+**数据流动过程**：
 
-```mermaid
-graph TD
-    A["原始文件<br/>b'The quick...<br/><|endoftext|>...'"]:::input --> B["文件分块<br/>在特殊token处切割"]:::process
-    B --> C["边界位置<br/>[0, 3150, 6080, 9200, ...]"]:::data
-    C --> D["并行预分词<br/>多进程处理"]:::process
-    
-    D --> D1["读取并解码<br/>'The quick brown...'"]:::subprocess
-    D1 --> D2["分割文档<br/>['The quick', 'Python is', ...]"]:::subprocess
-    D2 --> D3["正则分词<br/>[b'The', b'quick', b'brown', ...]"]:::subprocess
-    D3 --> D4["拆为单字节<br/>[[b'T',b'h',b'e'], [b'q',b'u',b'i',b'c',b'k'], ...]"]:::subprocess
-    
-    D4 --> E["预分词结果<br/>[[b'T',b'h',b'e'], [b'q',b'u',b'i',b'c',b'k'], ...]"]:::data
-    E --> F["统计频率<br/>构建倒排索引"]:::process
-    
-    F --> F1["字节对频率<br/>{(b'q',b'u'): 3, (b't',b'h'): 5, ...}"]:::datastruct
-    F --> F2["倒排索引<br/>{(b'q',b'u'): {0,5,12}, ...}"]:::datastruct
-    
-    F1 --> G["迭代合并<br/>循环合并最高频字节对"]:::loop
-    F2 --> G
-    
-    G --> G1["找最高频<br/>(b'e',b's') 出现9次"]:::subprocess
-    G1 --> G2["合并<br/>[b'n',b'e',b'w',b'e',b's',b't']<br/>→[b'n',b'e',b'w',b'es',b't']"]:::subprocess
-    G2 --> G3["更新词表<br/>{0: b'x00', ..., 257: b'es', ...}"]:::subprocess
-    G3 --> G4["更新频率<br/>减少旧pair，增加新pair"]:::subprocess
-    G4 --> G
-    
-    G --> H["输出结果"]:::output
-    H --> H1["词表vocab<br/>{0: b'x00', 256: b'<|endoftext|>', 257: b'es', ...}"]:::result
-    H --> H2["合并规则<br/>[(b'e',b's'), (b'es',b't'), (b'l',b'o'), ...]"]:::result
+**步骤 1：文件分块**
+- **做什么**：在特殊 token 处切割文件，确保每个块包含完整文档
+- **输入**：原始二进制文件
+  ```
+  b'The quick brown...<|endoftext|>Python is great...'
+  ```
+- **输出**：边界位置列表
+  ```
+  [0, 3150, 6080, 9200, 12000, ...]
+  ```
 
-    classDef input fill:#e1f5fe
-    classDef process fill:#fff3e0
-    classDef subprocess fill:#ffe0b2
-    classDef data fill:#e8f5e9
-    classDef datastruct fill:#f3e5f5
-    classDef loop fill:#fce4ec
-    classDef output fill:#e0f2f1
-    classDef result fill:#c8e6c9
-```
+**步骤 2：并行预分词**
+- **做什么**：多进程处理每个块，将文本转换为字节序列
+- **输入**：边界位置列表 `[0, 3150, 6080, ...]`
+- **处理流程**：
+  1. 读取块数据并解码 → `'The quick brown fox...'`
+  2. 按特殊 token 分割 → `['The quick...', 'Python is...']`
+  3. 正则表达式分词 → `[b'The', b'quick', b'brown', ...]`
+  4. 拆分为单字节 → `[[b'T',b'h',b'e'], [b'q',b'u',b'i',b'c',b'k'], ...]`
+- **输出**：预分词结果
+  ```
+  [[b'T', b'h', b'e'],
+   [b'q', b'u', b'i', b'c', b'k'],
+   [b'b', b'r', b'o', b'w', b'n'],
+   ...]
+  ```
 
-**流程说明**：
-1. **文件分块**：在特殊 token 处分割文件，确保文档完整性
-2. **并行预分词**：多进程处理每个块，将文本转换为字节序列
-3. **统计频率**：构建字节对频率字典和倒排索引
-4. **迭代合并**：循环合并最高频字节对，更新词表和 token
-5. **返回结果**：得到最终词表 vocab 和合并规则 merges
+**步骤 3：统计字节对频率**
+- **做什么**：遍历所有 token，统计相邻字节对的出现频率
+- **输入**：预分词结果 `[[b'T',b'h',b'e'], [b'q',b'u',b'i',b'c',b'k'], ...]`
+- **输出**：
+  - 字节对频率字典
+    ```
+    {(b't', b'h'): 15,
+     (b'h', b'e'): 12,
+     (b'e', b's'): 9,
+     (b'q', b'u'): 8,
+     ...}
+    ```
+  - 倒排索引表（记录每个 pair 出现在哪些 token 中）
+    ```
+    {(b't', b'h'): {0, 5, 12, 23},
+     (b'h', b'e'): {0, 3, 8, 15},
+     (b'e', b's'): {2, 7, 11, 19, 24, ...},
+     ...}
+    ```
+
+**步骤 4：迭代合并**（循环执行，直到达到目标词表大小）
+- **做什么**：找到频率最高的字节对，合并为新 token，更新词表和频率统计
+- **输入**：频率字典和倒排索引
+- **单次循环示例**：
+  1. **找最高频**：`(b'e', b's')` 出现 9 次
+  2. **合并字节对**：
+     ```
+     合并前：[b'n', b'e', b'w', b'e', b's', b't']
+     合并后：[b'n', b'e', b'w', b'es', b't']
+     ```
+  3. **添加到词表**：`b'es'` → ID 257
+  4. **更新频率**：减少旧 pair 的计数，增加新产生的 pair
+
+**步骤 5：输出最终结果**
+- **词表 vocab**：
+  ```
+  {0: b'\x00',
+   1: b'\x01',
+   ...
+   256: b'\x1f',
+   257: b'es',
+   258: b'est',
+   259: b'lo',
+   ...}
+  ```
+- **合并规则 merges**：
+  ```
+  [(b'e', b's'),
+   (b'es', b't'),
+   (b'l', b'o'),
+   (b't', b'h'),
+   ...]
+  ```
 
 ```python
 import regex as re                                                # 导入增强版正则表达式库，支持 Unicode 属性匹配
