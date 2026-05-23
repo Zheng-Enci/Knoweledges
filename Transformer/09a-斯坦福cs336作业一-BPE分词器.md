@@ -158,34 +158,34 @@ pair_to_indices = defaultdict(set)  # pair → token 索引集合
 
 ```mermaid
 graph TD
-    A["原始文件<br/>二进制格式"]:::input --> B["1. find_chunk_boundaries<br/>文件分块"]:::process
-    B --> C["边界列表<br/>0, 3150, 6080, 9200, ..."]:::data
-    C --> D["2. process_chunk<br/>并行预分词 多进程"]:::process
+    A["原始文件<br/>二进制字节流"]:::input --> B["文件分块<br/>在特殊token处切割"]:::process
+    B --> C["边界位置列表<br/>0, 3150, 6080, 9200, ..."]:::data
+    C --> D["并行预分词<br/>多进程处理每个块"]:::process
     
     D --> D1["读取块数据<br/>解码为字符串"]:::subprocess
-    D1 --> D2["按特殊token分割<br/>独立文档列表"]:::subprocess
-    D2 --> D3["正则预分词<br/>token列表"]:::subprocess
-    D3 --> D4["拆分为单字节<br/>字节序列列表"]:::subprocess
+    D1 --> D2["按特殊token分割<br/>得到独立文档"]:::subprocess
+    D2 --> D3["正则表达式分词<br/>得到token列表"]:::subprocess
+    D3 --> D4["拆分为单字节<br/>每个token转为字节序列"]:::subprocess
     
-    D4 --> E["pre_tokens_bytes<br/>b'I', b'l',b'o',b'v',b'e', ..."]:::data
-    E --> F["3. 统计初始频率<br/>构建倒排索引"]:::process
+    D4 --> E["预分词结果<br/>b'I', b'l',b'o',b'v',b'e', ..."]:::data
+    E --> F["统计字节对频率<br/>构建倒排索引"]:::process
     
-    F --> F1["counts字典<br/>b'l',b'o': 5, ..."]:::datastruct
-    F --> F2["pair_to_indices<br/>b'l',b'o': 0,5,12, ..."]:::datastruct
+    F --> F1["字节对频率字典<br/>b'l',b'o': 5次, ..."]:::datastruct
+    F --> F2["倒排索引表<br/>b'l',b'o'出现在token 0,5,12"]:::datastruct
     
-    F1 --> G["4. 迭代合并<br/>while idx < vocab_size"]:::loop
+    F1 --> G["迭代合并<br/>循环直到达到目标词表大小"]:::loop
     F2 --> G
     
-    G --> G1["找最高频pair<br/>b'e',b's' 频率=9"]:::subprocess
+    G --> G1["找最高频字节对<br/>b'e',b's' 出现9次"]:::subprocess
     G1 --> G2["合并字节对<br/>b'e' + b's' 变为 b'es'"]:::subprocess
-    G2 --> G3["更新词表<br/>vocab[257] = b'es'"]:::subprocess
-    G3 --> G4["更新受影响token<br/>newest 变为 new + est"]:::subprocess
-    G4 --> G5["更新counts和<br/>pair_to_indices"]:::subprocess
+    G2 --> G3["添加到词表<br/>新token ID 257"]:::subprocess
+    G3 --> G4["更新受影响的token<br/>newest 变为 new+est"]:::subprocess
+    G4 --> G5["更新频率统计<br/>重新计算新产生的字节对"]:::subprocess
     G5 --> G
     
-    G --> H["5. 返回结果"]:::output
-    H --> H1["vocab字典<br/>0: b'x00', 257: b'es', ..."]:::result
-    H --> H2["merges列表<br/>b'e',b's', b'es',b't', ..."]:::result
+    G --> H["输出最终结果"]:::output
+    H --> H1["词表vocab<br/>0: b'x00', 257: b'es', ..."]:::result
+    H --> H2["合并规则merges<br/>b'e',b's'、b'es',b't'、..."]:::result
 
     classDef input fill:#e1f5fe
     classDef process fill:#fff3e0
