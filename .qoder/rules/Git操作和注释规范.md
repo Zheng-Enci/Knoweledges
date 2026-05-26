@@ -15,11 +15,17 @@ trigger: always_on
 
 ## 用户修改代码后执行 Git
 
-当用户说"修改了代码"或类似表述，要求执行 git 时：
+当用户说"修改了代码"或类似表述，要求执行 git 时，严格按以下流程**逐个文件**处理：
+
 1. 执行 `git status` 查看变更状态
-2. 执行 `git diff -- "本项目/src" > "本项目/git_diff.diff"` 将差异输出到 diff 文件
-3. 查看 diff 内容了解变更后(必须阅读"本项目/git_diff.diff"了解变更内容)，进行 `git add` 和 `git commit`
-4. 提交完成后**FrontEnd/git_diff.diff 文件**不用删除
+2. **逐个文件**处理：对每个变更文件执行 `git diff -- "文件路径" > "git_diff.diff"`，将单个文件的差异输出到 diff 文件
+3. **必须阅读 `git_diff.diff`**：了解该文件的具体变更内容，为撰写准确的 commit 信息做准备
+4. 执行 `git add <文件名>`：确认 diff 无误后，**每次只 add 一个文件**
+5. 执行 `git commit`：基于 diff 审阅结果（阅读 git_diff.diff 后），撰写匹配实际改动的提交信息
+6. 重复以上步骤，直到所有变更文件处理完毕
+7. 提交完成后 **`git_diff.diff` 文件不用删除**
+
+> ⚠️ 注意：阅读 diff 的目的是**了解变更内容以撰写准确的 commit 信息**，而不是决定是否提交。变更本身已确定，diff 审阅为的是写出匹配实际改动的提交说明。
 
 > ⚠️ 注意：禁止使用 `git diff -p --output`，会造成递归嵌套问题
 
