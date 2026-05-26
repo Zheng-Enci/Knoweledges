@@ -11,26 +11,6 @@
 本文档详细解释Softmax函数的定义、数学公式与计算过程，包括数值稳定性技巧（减去最大值）、与Sigmoid的核心区别，以及在Transformer注意力机制中如何将分数转化为概率分布，最后提供PyTorch代码示例 🛠️
 <!-- 全文摘要结束 -->
 
-```mermaid
-flowchart LR
-    A["1. 什么是Softmax"]:::basic --> B["2. 为什么需要Softmax"]:::why
-    B --> C["3. Softmax的计算过程"]:::calc
-    C --> D["4. Softmax的关键性质"]:::prop
-    D --> E["5. 数值稳定性：减去最大值"]:::stable
-    E --> F["6. Softmax vs Sigmoid"]:::compare
-    F --> G["7. Softmax在注意力机制中的作用"]:::attn
-    G --> H["8. 总结"]:::summary
-
-    classDef basic fill:#e3f2fd,stroke:#1565c0
-    classDef why fill:#e8f5e9,stroke:#2e7d32
-    classDef calc fill:#fff3e0,stroke:#ef6c00
-    classDef prop fill:#f3e5f5,stroke:#6a1b9a
-    classDef stable fill:#fce4ec,stroke:#c62828
-    classDef compare fill:#fff8e1,stroke:#f9a825
-    classDef attn fill:#e0f7fa,stroke:#00838f
-    classDef summary fill:#e0f2f1,stroke:#00695c
-```
-
 **阅读顺序说明**：
 
 - **第1章 → 第2章**：先了解Softmax是什么，再理解为什么必不可少
