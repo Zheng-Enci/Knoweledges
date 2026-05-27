@@ -1,6 +1,6 @@
 <!--
   文档：09aaab-Softmax是什么？.md
-  说明：详细解释Softmax函数的概念、数学公式、计算过程、关键性质与数值稳定性，结合注意力机制中的应用，帮助读者理解这一深度学习核心组件
+  说明：详细解释 Softmax 函数的概念、数学公式、核心性质、数值稳定性原理，以及在 Transformer 注意力机制中的作用，通过手算示例和代码帮助读者深入理解
 -->
 
 # 09aaab-Softmax是什么？🔥
@@ -8,369 +8,334 @@
 <!-- 重要规范：本文档中所有数学公式（包括块级公式 $$...$$ 和行内公式 $...$）必须使用标准 LaTeX 格式编写，禁止使用纯文本或 Unicode 数学符号 -->
 
 <!-- 全文摘要说明：以下段落是本文档的全文摘要，必须精炼概括文档核心内容，字数不能超过100个字 -->
-本文档详细解释Softmax函数的定义、数学公式与计算过程，包括数值稳定性技巧（减去最大值）、与Sigmoid的核心区别，以及在Transformer注意力机制中如何将分数转化为概率分布，最后提供PyTorch代码示例 🛠️
+本文档详细解释 Softmax 函数的核心概念，涵盖数学定义与逐元素拆解、手算示例、三大核心性质（保序性、平移不变性、非缩放不变性）、数值稳定技巧 $x - \max(x)$ 的原理证明、与 Sigmoid 的对比，以及在 Transformer 注意力机制中的关键作用 🛠️
 <!-- 全文摘要结束 -->
+
+---
+
+```mermaid
+flowchart LR
+    A["1. 什么是Softmax"]:::basic --> B["2. 核心公式"]:::formula
+    B --> C["3. 手算示例"]:::example
+    C --> D["4. 核心性质"]:::props
+    D --> E["5. 数值稳定性"]:::stable
+    E --> F["6. Softmax vs Sigmoid"]:::compare
+    F --> G["7. 在注意力机制中的作用"]:::attention
+    G --> H["8. 代码示例"]:::code
+    H --> I["9. 总结"]:::summary
+
+    classDef basic fill:#e3f2fd,stroke:#1565c0
+    classDef formula fill:#e8f5e9,stroke:#2e7d32
+    classDef example fill:#fff3e0,stroke:#ef6c00
+    classDef props fill:#f3e5f5,stroke:#6a1b9a
+    classDef stable fill:#fce4ec,stroke:#c62828
+    classDef compare fill:#e0f7fa,stroke:#00838f
+    classDef attention fill:#fff9c4,stroke:#f9a825
+    classDef code fill:#e8eaf6,stroke:#283593
+    classDef summary fill:#e0f2f1,stroke:#00695c
+```
 
 **阅读顺序说明**：
 
-- **第1章 → 第2章**：先了解Softmax是什么，再理解为什么必不可少
-- **第2章 → 第3章**：掌握动机后，通过手算示例理解计算细节
-- **第3章 → 第4章**：有了计算直觉，系统掌握关键性质
-- **第4章 → 第5章**：理解数值稳定性——实际工程中的必知技巧
-- **第5章 → 第6章**：通过对比Sigmoid理解Softmax的独特定位
-- **第6章 → 第7章**：回归主线，理解Softmax在注意力中的核心作用
+- **第1章 → 第2章**：先了解 Softmax 是什么，再学习其数学公式
+- **第2章 → 第3章**：掌握公式后，通过手算示例验证理解
+- **第3章 → 第4章**：有了计算直觉，深入理解 Softmax 的核心数学性质
+- **第4章 → 第5章**：理解性质后，学习数值稳定性技巧及其数学原理
+- **第5章 → 第6章**：掌握 Softmax 后，与 Sigmoid 对比，明确各自适用场景
+- **第6章 → 第7章**：理解两者的区别后，聚焦 Softmax 在 Transformer 注意力机制中的关键作用
+- **第7章 → 第8章**：理论完备后，通过代码实战加深理解
 
 ---
 
-## 1. 什么是Softmax？📖
+## 1. 什么是 Softmax？🤔
 
-> 本章给出Softmax的基本定义和核心公式
+> 本章从直观类比出发，介绍 Softmax 的基本概念和定义
 
-### 1.1 Softmax的基本定义
+### 1.1 直观类比：投票计数器 🗳️
 
-**Softmax函数**，全称"归一化指数函数"（Normalized Exponential Function），是逻辑斯谛函数（Sigmoid）从二分类到多分类的推广。它能把一个含任意实数的向量 $\mathbf{z} = [z_1, z_2, \ldots, z_n]$ 转换为一个概率分布向量 $\mathbf{p} = [p_1, p_2, \ldots, p_n]$，满足每个元素在 $(0, 1)$ 区间内，且所有元素之和为 1。
+想象一个班级评选"最受欢迎的同学"，每个同学都给其他人打分（分数可以是任意实数，正数表示喜欢，负数表示讨厌）。但最终我们需要的是**得票百分比**——每个人的支持率加起来等于 100%。
+
+Softmax 函数就像一个"投票计数器"：
+- **输入**：任意实数分数（可正可负，可大可小）→ 就像同学们的"支持度打分"
+- **输出**：`[0, 1]` 区间的概率值，且总和为 1 → 就像最终的"得票百分比"
+
+更重要的是，Softmax 不是简单地按比例缩放——它通过指数函数 $e^x$ **放大差异**，让高分者获得更高的权重，低分者被进一步压制。
+
+### 1.2 基本定义
+
+**Softmax 函数**（又称 softargmax、归一化指数函数）是一个将任意实数向量转换为概率分布的函数。给定一个 $K$ 维实数向量 $\mathbf{x} = [x_1, x_2, \ldots, x_K]$，Softmax 对每个元素 $x_i$ 的输出为：
 
 <!-- 数学公式必须使用 LaTeX 格式 -->
 $$
-\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j=1}^{n} e^{z_j}}, \quad i = 1, 2, \ldots, n
+\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{K} e^{x_j}}
 $$
 <!-- 数学公式必须使用 LaTeX 格式 -->
 
-其中：
-- **$z_i$**：输入向量的第 $i$ 个元素（也叫 logit，即未归一化的原始分数）
-- **$e^{z_i}$**：对每个元素取指数（以自然常数 $e \approx 2.718$ 为底）
-- **$\sum_{j=1}^{n} e^{z_j}$**：所有元素的指数之和，作为归一化的分母
-- **$n$**：类别总数（向量的维度）
+其中 $e \approx 2.71828$ 是自然对数的底数。
 
-### 1.2 通俗理解
-
-Softmax 的核心思想可以用一句话概括：**先放大差异（指数运算），再统一换算成百分比（除以总和）。**
-
-类比场景：假设有 3 位评委给选手打分：`[2, 5, 8]`。我们想知道每位评委的"话语权"占多大比例。
-
-- 普通归一化：`2/(2+5+8) = 0.133`，`5/15 = 0.333`，`8/15 = 0.533` → 差异不够明显
-- Softmax 归一化：先做 $e^{z}$ 放大差异，再归一化 → 最高分8获得压倒性权重，低分2几乎被忽略
-
-**Softmax 的特点就是"强者愈强，弱者愈弱"**——它用指数函数把原本线性的差距放大为指数级的差距，让模型能够清晰聚焦于最重要的选项。
+**输出满足两个条件**（概率分布的定义）：
+1. 每个输出值在 $(0, 1)$ 区间内：$0 < \text{softmax}(x_i) < 1$
+2. 所有输出值之和恰好为 1：$\sum_{i=1}^{K} \text{softmax}(x_i) = 1$
 
 ---
 
 **参考资料：**
 
-- [A Simple Explanation of the Softmax Function -- Victor Zhou](https://victorzhou.com/blog/softmax/) ⭐值得阅读
-- [Softmax函数 -- 维基百科](https://zh.wikipedia.org/zh-cn/Softmax%E5%87%BD%E6%95%B0)
-- [一文详解Softmax函数 -- 知乎](https://zhuanlan.zhihu.com/p/105722023)
-- [Softmax Activation Function: Everything You Need to Know -- Pinecone](https://www.pinecone.io/learn/softmax-activation/) ⭐值得阅读
-
----
-
-## 2. 为什么需要Softmax？🤔
-
-> 本章解释Softmax在深度学习中的核心价值
-
-### 2.1 从原始分数到概率分布
-
-神经网络的最后一层通常会输出一组实数（logits），例如 `[2.0, 1.0, 0.1]`。这些原始分数不能直接当作"概率"使用，因为它们：
-
-1. **可以是任意实数**（正数、负数、很大或很小），不在 $[0, 1]$ 区间
-2. **总和不为 1**，无法解释为"各类别的可能性占比"
-3. **相邻分数之间的相对差距不直观**：分数差 1 意味着什么？很难直接解释
-
-Softmax 把这三个问题一次性解决——输出的每个值都在 0 到 1 之间，加起来恰好等于 1，而且分数高的类别获得更高的概率。
-
-### 2.2 Softmax的三大核心价值
-
-1. **转化为概率分布**
-   
-   Softmax 将任意实数向量映射为概率向量，使得输出可以被解释为"模型对各类别的置信度"。这在分类任务中至关重要——我们关心的不是原始分数本身，而是"模型认为这张图是猫的概率有 95%"。
-
-2. **放大差异，突出重点**
-   
-   Softmax 使用指数函数 $e^x$，具有"放大差异"的特性：分数略高的选项会获得远高于比例值的权重。例如三个分数 $[1.0, 2.0, 3.0]$ 简单归一化得到 $[0.17, 0.33, 0.50]$，而 Softmax 得到 $[0.09, 0.24, 0.67]$——最高分从 50% 提升到 67%，差异更显著。
-
-3. **可导且梯度简洁**
-   
-   Softmax 与交叉熵损失（Cross-Entropy Loss）组合使用时，梯度公式会退化为极其简洁的形式：$\frac{\partial L}{\partial z_i} = p_i - y_i$（预测概率减去真实标签）。这不仅计算高效，还能有效缓解梯度消失问题。
-
-### 2.3 为什么用 $e$ 而不是其他底数？
-
-选择自然常数 $e$ 作为指数底数有三个原因：
-
-- **求导方便**：$(e^x)' = e^x$，指数函数的导数等于自身，在反向传播中计算简洁
-- **单调递增**：$e^x$ 严格单调递增，保证输入越大 → 输出概率越大，不改变顺序
-- **输出恒正**：$e^x > 0$ 对所有实数 $x$ 成立，确保概率不会出现负数或零（理论上无限接近零）
-
----
-
-**参考资料：**
-
-- [为什么大模型还在用Softmax？从概率归一化到注意力机制的底层逻辑 -- 腾讯云](https://cloud.tencent.com/developer/article/2598688) ⭐值得阅读
-- [为什么softmax公式里有自然常数e -- 知乎](https://zhuanlan.zhihu.com/p/32019455928)
-- [使用softmax函数进行归一化原因 -- CSDN](https://blog.csdn.net/weixin_41048094/article/details/140528380)
+- [Softmax function -- Wikipedia](https://en.wikipedia.org/wiki/Softmax_function) ⭐值得阅读
 - [Softmax Function Definition -- DeepAI](https://deepai.org/machine-learning-glossary-and-terms/softmax-layer)
-
----
-
-## 3. Softmax的计算过程 🔢
-
-> 本章通过一个具体数值演示例，手把手计算Softmax
-
-### 3.1 手算示例
-
-假设输入向量为 $\mathbf{z} = [-1, 0, 3, 5]$，我们要计算 Softmax 后的概率分布。
-
-**第1步：计算每个元素的指数**
-
-<!-- 数学公式必须使用 LaTeX 格式 -->
-$$
-e^{-1} = 0.368,\quad e^{0} = 1,\quad e^{3} = 20.086,\quad e^{5} = 148.413
-$$
-<!-- 数学公式必须使用 LaTeX 格式 -->
-
-**第2步：求和（分母）**
-
-<!-- 数学公式必须使用 LaTeX 格式 -->
-$$
-\sum_{j=1}^{4} e^{z_j} = 0.368 + 1 + 20.086 + 148.413 = 169.867
-$$
-<!-- 数学公式必须使用 LaTeX 格式 -->
-
-**第3步：每个指数除以总和（得到概率）**
-
-<!-- 数学公式必须使用 LaTeX 格式 -->
-$$
-\begin{aligned}
-p_1 &= \frac{0.368}{169.867} = 0.0022 \\
-p_2 &= \frac{1}{169.867} = 0.0059 \\
-p_3 &= \frac{20.086}{169.867} = 0.1182 \\
-p_4 &= \frac{148.413}{169.867} = 0.8737
-\end{aligned}
-$$
-<!-- 数学公式必须使用 LaTeX 格式 -->
-
-**结果汇总**：
-
-| 原始分数 $z_i$ | 指数 $e^{z_i}$ | Softmax 概率 $p_i$ |
-|:-:|:-:|:-:|
-| -1 | 0.368 | 0.22% |
-| 0 | 1.000 | 0.59% |
-| 3 | 20.086 | 11.82% |
-| 5 | 148.413 | **87.37%** |
-
-> ✅ 验证：$0.0022 + 0.0059 + 0.1182 + 0.8737 = 1.0000$，概率之和恰为 1。
-
-**关键观察**：原始分数从 -1 到 5 差了 6，但经过 Softmax 后，最高分的概率（87.37%）是最低分（0.22%）的约 400 倍——指数函数将线性差距放大为指数级差距。
-
-### 3.2 NumPy 实现（基础版）
-
-```python
-import numpy as np                                         # 导入 NumPy，用于数组运算
-
-"""Softmax 的基础 NumPy 实现（不含数值稳定性优化）
-
-参数:
-    z: 输入向量 [n]，元素为任意实数
-    
-返回:
-    probs: 概率分布向量 [n]，每个元素在 (0,1) 且和为 1
-    
-示例:
-    probs = softmax_naive(np.array([-1, 0, 3, 5]))
-"""
-def softmax_naive(z):
-    exp_z = np.exp(z)                                      # 计算每个元素的指数，数据流动：[-1,0,3,5] → [0.368,1,20.09,148.41]
-    sum_exp = np.sum(exp_z)                                # 求和作为分母，数据流动：[0.368,1,20.09,148.41] → 169.87
-    probs = exp_z / sum_exp                                # 逐一除以总和，数据流动：exp_z / 169.87 → probs
-    return probs
-
-# 测试
-z = np.array([-1, 0, 3, 5])                                # 输入向量，与手算示例一致
-print(softmax_naive(z))                                    # 输出：[0.0022 0.0059 0.1182 0.8737]
-```
-
-> ⚠️ 这个实现有**数值稳定性问题**，当输入值很大时（如 $z_i = 1000$），$e^{1000}$ 会溢出超出浮点数范围。第5章将介绍解决方案。
-
----
-
-**参考资料：**
-
-- [A Simple Explanation of the Softmax Function -- Victor Zhou](https://victorzhou.com/blog/softmax/) ⭐值得阅读
-- [Softmax函数全面而详细的解读 -- 博客园](https://www.cnblogs.com/tlnshuju/p/19226188)
-
----
-
-## 4. Softmax的关键性质 📐
-
-> 本章系统总结Softmax的数学性质，帮助理解其行为
-
-### 4.1 五大核心性质
-
-| 性质 | 说明 | 意义 |
-|------|------|------|
-| **输出为概率分布** | $\sum_{i} p_i = 1$，且 $p_i \in (0, 1)$ | 可直接解释为各类别的置信度 |
-| **单调递增性** | 若 $z_i > z_j$，则 $p_i > p_j$ | 保持输入的大小顺序不变 |
-| **平移不变性** | $\text{Softmax}(z_i + c) = \text{Softmax}(z_i)$ | 给所有输入加相同常数，输出不变（这是数值稳定性技巧的基础） |
-| **非饱和性** | 导数不会严格为 0 | 与 Sigmoid/Tanh 不同，Softmax 没有"死区" |
-| **可微性** | 处处可导，梯度公式简洁 | 适合反向传播训练 |
-
-### 4.2 平移不变性的推导
-
-平移不变性（Translation Invariance）是 Softmax 最优雅的性质之一：
-
-<!-- 数学公式必须使用 LaTeX 格式 -->
-$$
-\text{Softmax}(z_i + c) = \frac{e^{z_i + c}}{\sum_{j} e^{z_j + c}} = \frac{e^{c} \cdot e^{z_i}}{e^{c} \cdot \sum_{j} e^{z_j}} = \frac{e^{z_i}}{\sum_{j} e^{z_j}} = \text{Softmax}(z_i)
-$$
-<!-- 数学公式必须使用 LaTeX 格式 -->
-
-分子和分母的 $e^c$ 因子被约掉了，所以给所有输入同时加任何常数 $c$，输出概率完全不变。
-
-**实际应用**：这个性质正是第5章"减去最大值"技巧的数学基础——我们可以把所有输入减去最大值（$c = -\max(z)$），让最大输入变成 0，避免指数运算溢出，而输出结果完全等价。
-
-### 4.3 Softmax 是"软"的 argmax
-
-Softmax 可以被理解为 argmax 的**可导近似**（soft version of argmax）：
-
-| | argmax | Softmax |
-|------|---------|---------|
-| **输出** | 硬选择：最大值的索引（one-hot） | 软选择：概率分布（所有选项都有权重） |
-| **可导性** | 不可导 | 可导 |
-| **信息保留** | 丢失"第二名"的信息 | 保留所有分数的相对大小信息 |
-| **适用场景** | 推理时取最终结果 | 训练时需要梯度反向传播 |
-
-这就是名字 "Soft"-"max" 的由来：它做的是类似 max 的事情（突出最大的），但用"软"的方式（保留所有选项的权重），而不是"硬"地只选一个。
-
----
-
-**参考资料：**
-
+- [The Softmax Function, Simplified -- Medium](https://medium.com/data-science/softmax-function-simplified-714068bf8156)
 - [Softmax函数 -- 维基百科](https://zh.wikipedia.org/zh-cn/Softmax%E5%87%BD%E6%95%B0)
-- [Softmax is everywhere! -- GitHub](https://github.com/QingyaFan/blog/issues/179)
-- [The Softmax function and its derivative -- Eli Bendersky](https://eli.thegreenplace.net/2016/the-softmax-function-and-its-derivative/) ⭐值得阅读
 
 ---
 
-## 5. 数值稳定性：减去最大值 🛡️
+## 2. 核心公式 📝
 
-> 本章讲解Softmax实际部署中的关键优化——防止指数溢出
+> 本章逐元素拆解 Softmax 公式，解释每一步的含义
 
-### 5.1 问题：指数运算容易溢出
+Softmax 的计算分为两步：
 
-Softmax 要对每个元素计算 $e^{z_i}$。当 $z_i$ 很大时（如 $z_i = 1000$），$e^{1000} \approx 10^{434}$，远超 float32 能表示的最大值（约 $3.4 \times 10^{38}$），导致**上溢（overflow）**，计算结果变成 `inf` 或 `nan`。
+**第1步：指数化** → 对每个输入 $x_i$ 计算 $e^{x_i}$
+
+**第2步：归一化** → 将每个指数值除以所有指数值之和
+
+用数学语言表达：
+
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\text{softmax}(x_i) = \frac{e^{x_i}}{e^{x_1} + e^{x_2} + \cdots + e^{x_K}} = \frac{e^{x_i}}{\sum_{j=1}^{K} e^{x_j}}
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+### 2.1 为什么要用指数函数 $e^x$？
+
+指数函数在 Softmax 中承担了三个关键角色：
+
+1. **将任意实数映射为正数**：$e^x > 0$ 对所有 $x \in \mathbb{R}$ 成立，保证输出为正
+2. **放大差异**：指数函数的增长速度极快，$e^3 \approx 20.1$ 而 $e^1 \approx 2.72$，即使输入只差 2，输出已差约 7 倍——让高分者脱颖而出
+3. **保持单调性**：$e^x$ 是严格递增的，$x_i > x_j \Rightarrow e^{x_i} > e^{x_j}$，即输入顺序得以保留
+
+### 2.2 为什么分母要用求和？
+
+分母 $\sum_{j} e^{x_j}$ 的作用是**归一化**——把所有指数值加起来作为"总基数"，然后用每个指数值除以总基数。这样做的结果是：
+
+- 每个输出都变成了**相对占比**（0 到 1 之间）
+- 所有输出加起来恰好等于 **1**
+- 形成了合法的**概率分布**
+
+---
+
+## 3. 手算示例 🔍
+
+> 本章通过一个具体数值演示 Softmax 的计算全过程
+
+假设输入向量 $\mathbf{x} = [2.0, 1.0, 0.1]$，我们来一步步计算 Softmax：
+
+**第1步：计算 $e^{x_i}$**
+
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\begin{align}
+e^{2.0} &= 7.389 \\
+e^{1.0} &= 2.718 \\
+e^{0.1} &= 1.105
+\end{align}
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+**第2步：计算分母（所有指数值之和）**
+
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\sum_{j=1}^{3} e^{x_j} = 7.389 + 2.718 + 1.105 = 11.212
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+**第3步：计算每个 Softmax 值**
+
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\begin{align}
+\text{softmax}(x_1) &= \frac{7.389}{11.212} = 0.659 \\
+\text{softmax}(x_2) &= \frac{2.718}{11.212} = 0.242 \\
+\text{softmax}(x_3) &= \frac{1.105}{11.212} = 0.099
+\end{align}
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+**验证**：$0.659 + 0.242 + 0.099 = 1.000$ ✅
+
+**观察**：
+- 输入最高的 2.0 获得了 **65.9%** 的概率权重
+- 输入最低的 0.1 只获得了 **9.9%** 的权重
+- 输入之间的原始差距是 $2.0 - 0.1 = 1.9$，但 Softmax 输出的权重差距是 $0.659 - 0.099 = 0.56$
+
+---
+
+## 4. 核心性质 📐
+
+> 本章介绍 Softmax 的三大数学性质：保序性、平移不变性和非缩放不变性
+
+### 4.1 保序性（Order Preservation）
+
+**定义**：Softmax 保持输入的顺序不变。如果 $x_i > x_j$，则 $\text{softmax}(x_i) > \text{softmax}(x_j)$。
+
+**直观理解**：打分最高的同学，最终得票率也最高。Softmax 不会"颠覆"排名。
+
+**数学原因**：指数函数 $e^x$ 是严格单调递增的，且除以同一个正分母不改变大小关系。
+
+### 4.2 平移不变性（Translation Invariance）
+
+**定义**：对输入向量的所有元素同时加上同一个常数 $c$，Softmax 的输出不变。
+
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\text{softmax}(x_i + c) = \frac{e^{x_i + c}}{\sum_j e^{x_j + c}} = \frac{e^c \cdot e^{x_i}}{e^c \cdot \sum_j e^{x_j}} = \frac{e^{x_i}}{\sum_j e^{x_j}} = \text{softmax}(x_i)
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+**直观理解**：假设所有同学的分数都加了 10 分（平移），但每个人加的一样多，那么最终得票百分比不变。
+
+**实际意义**：这个性质是**数值稳定性技巧**的理论基础——我们可以安全地减去 $\max(x)$ 来防止数值溢出，而不改变结果。
+
+### 4.3 非缩放不变性（Non-Scaling Invariance）
+
+**定义**：对输入向量的所有元素同时乘以一个正数 $a > 0$（$a \neq 1$），Softmax 的输出会**改变**。
+
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\text{softmax}(a \cdot x_i) \neq \text{softmax}(x_i) \quad (\text{当 } a \neq 1)
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+**直观理解**：当 $a > 1$ 时，所有分数被"拉大"，高分的优势被指数函数进一步放大，输出分布更"尖锐"（更集中在最大值）；当 $0 < a < 1$ 时，分数被"压缩"，输出分布更"平滑"（更均匀）。
+
+**在注意力机制中的体现**：缩放因子 $\frac{1}{\sqrt{d_k}}$ 正是利用了这一点——通过缩小点积分数，防止 Softmax 输出过于尖锐（进入梯度很小的饱和区）。
+
+---
+
+**参考资料：**
+
+- [Softmax Preserves Order, Is Translation Invariant But Not Scaling Invariant -- Omniverse](https://www.gaohongnan.com/playbook/why_softmax_preserves_order_translation_invariant_not_invariant_scaling.html) ⭐值得阅读
+- [On the Properties of the Softmax Function with Application in Game Theory -- arXiv](https://arxiv.org/pdf/1704.00805)
+- [The softmax function: Properties, motivation, and interpretation -- Stanford ALPS Lab](https://alpslab.stanford.edu/papers/FrankeDegen_submitted.pdf)
+
+---
+
+## 5. 数值稳定性 ⚠️
+
+> 本章解释 Softmax 的数值溢出问题及 $x - \max(x)$ 技巧的数学原理
+
+### 5.1 问题：直接计算可能产生 NaN
+
+考虑输入 $\mathbf{x} = [1000, 2000, -4000]$，直接按公式计算：
+
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+e^{2000} \approx \infty \quad (\text{超出 float64 可表示范围})
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+这会导致 $\frac{\infty}{\infty} = \text{NaN}$，计算失败。
 
 ### 5.2 解决方案：减去最大值
 
-基于平移不变性（第4.2节），我们可以将所有输入减去向量中的最大值 $m = \max(z)$：
+利用平移不变性，从每个元素中减去最大值 $\max(x)$：
 
 <!-- 数学公式必须使用 LaTeX 格式 -->
 $$
-\text{Softmax}(z_i) = \frac{e^{z_i - m}}{\sum_{j} e^{z_j - m}}, \quad m = \max(z_1, z_2, \ldots, z_n)
+\text{softmax}(x_i) = \frac{e^{x_i - \max(x)}}{\sum_{j} e^{x_j - \max(x)}}
 $$
 <!-- 数学公式必须使用 LaTeX 格式 -->
 
-**为什么这样安全？**
+### 5.3 数学证明
 
-- 减去最大值后，最大的元素变成 $e^{0} = 1$，其余元素 $\le 1$
-- 分子不可能溢出（都 $\le 1$），分母至少为 1（因为至少有一个 $e^0 = 1$）
-- 根据平移不变性，输出概率与原始公式**完全一致**
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\begin{align}
+\text{softmax}(x_i)
+&= \frac{e^{x_i}}{\sum_j e^{x_j}} \\[4pt]
+&= \frac{C}{C} \cdot \frac{e^{x_i}}{\sum_j e^{x_j}} \\[4pt]
+&= \frac{C \cdot e^{x_i}}{\sum_j C \cdot e^{x_j}} \\[4pt]
+&= \frac{e^{x_i + \log C}}{\sum_j e^{x_j + \log C}}
+\end{align}
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
 
-**例子**：输入 $[1000, 999, 998]$，$m = 1000$
+令 $\log C = -\max(x)$（即 $C = e^{-\max(x)}$），则：
 
-- 原始公式：$e^{1000}$ 直接溢出 ❌
-- 稳定公式：$[e^{0}, e^{-1}, e^{-2}] = [1, 0.368, 0.135]$
-- 归一化后：$[0.665, 0.245, 0.090]$
-- 与理论值 $[0.665, 0.245, 0.090]$ 完全一致 ✅
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\text{softmax}(x_i) = \frac{e^{x_i - \max(x)}}{\sum_j e^{x_j - \max(x)}}
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
 
-### 5.3 NumPy 实现（稳定版）
+### 5.4 为什么这样就稳定了？
 
-```python
-import numpy as np                                         # 导入 NumPy，用于数组运算
-
-"""Softmax 的数值稳定 NumPy 实现
-
-参数:
-    z: 输入向量 [n]，元素为任意实数
-    
-返回:
-    probs: 概率分布向量 [n]，每个元素在 (0,1) 且和为 1
-    
-示例:
-    probs = softmax(np.array([1000, 999, 998]))
-"""
-def softmax(z):
-    z_max = np.max(z)                                      # 找到最大值 m，示例：[1000,999,998] → 1000
-    z_shifted = z - z_max                                  # 减去最大值，数据流动：z - m → z_shifted。确保所有值 ≤ 0，避免指数溢出
-    exp_z = np.exp(z_shifted)                              # 计算稳定后的指数，数据流动：z_shifted → exp_z（最大值为 e^0=1）
-    sum_exp = np.sum(exp_z)                                # 求和作为分母
-    probs = exp_z / sum_exp                                # 逐一除以总和，数据流动：exp_z / sum_exp → probs
-    return probs
-
-# 测试：大数值输入
-z_big = np.array([1000, 999, 998])                         # 大数值输入，原始公式会溢出
-print(softmax(z_big))                                      # 输出：[0.6652 0.2447 0.0900]（稳定且正确）
-```
-
-> 💡 PyTorch 和 TensorFlow 内置的 Softmax 函数已经自动应用了此优化，你不需要手动处理。
+- 减去最大值后，所有指数输入 $\leq 0$，因此 $0 < e^{x_i - \max(x)} \leq 1$
+- 最大值对应的项 $e^{\max(x) - \max(x)} = e^0 = 1$，保证分母 $\geq 1$
+- 不会出现 $e^{\text{巨大正数}} \to \infty$ 的溢出
+- 分母 $\geq 1$ 也防止了除以零
 
 ---
 
 **参考资料：**
 
-- [Numerically Stable Softmax -- Brian Lester](https://blester125.com/blog/softmax.html) ⭐值得阅读
+- [Numerically Stable Softmax and Cross Entropy -- Jay Mody](https://jaykmody.com/blog/stable-softmax/) ⭐值得阅读
 - [Numerically stable softmax -- Stack Overflow](https://stackoverflow.com/questions/42599498/numerically-stable-softmax)
-- [Softmax Uncovered: Balancing Precision with Numerical Stability -- Medium](https://medium.com/@harrietfiagbor/softmax-uncovered-balancing-precision-with-numerical-stability-in-deep-learning-b8876490d411)
+- [You Don't Really Know Softmax -- Sewade Ogun](https://ogunlao.github.io/2020/04/26/you_dont_really_know_softmax.html) ⭐值得阅读
+- [Numerically Stable Softmax -- Brian Lester](https://blester125.com/blog/softmax.html)
 
 ---
 
 ## 6. Softmax vs Sigmoid ⚔️
 
-> 本章通过对比Sigmoid，帮助读者在工作流中正确选择
+> 本章对比 Softmax 和 Sigmoid 的核心区别及各自适用场景
 
-Sigmoid 和 Softmax 是最常用的两种概率化激活函数，但它们的适用场景截然不同。
+### 6.1 Sigmoid 回顾
 
-### 6.1 核心公式对比
+Sigmoid 函数将一个实数映射到 $(0, 1)$ 区间：
 
-| | Sigmoid | Softmax |
+<!-- 数学公式必须使用 LaTeX 格式 -->
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}
+$$
+<!-- 数学公式必须使用 LaTeX 格式 -->
+
+### 6.2 核心区别
+
+| 特性 | Softmax | Sigmoid |
 |------|---------|---------|
-| **公式** | $\sigma(z) = \frac{1}{1 + e^{-z}}$ | $\text{Softmax}(z_i) = \frac{e^{z_i}}{\sum_{j} e^{z_j}}$ |
-| **输入** | 单个标量 | 长度为 $n$ 的向量 |
-| **输出** | 单个概率值 $\in (0, 1)$ | 概率分布向量 $\in (0, 1)^n$，和为 1 |
-| **输出之间** | 相互独立 | 相互竞争（一个增高，其他降低） |
+| 输入 | 向量（多个值） | 标量（单个值） |
+| 输出 | 概率分布（和为 1） | 单个概率值（0~1） |
+| 输出之间关系 | **互斥**（此消彼长） | **独立**（互不影响） |
+| 适用任务 | 多分类（$K > 2$） | 二分类 / 多标签分类 |
+| 决策边界 | 相对比较（谁最大） | 绝对阈值（> 0.5？） |
 
-### 6.2 适用场景对比
+### 6.3 为什么多分类不能用 Sigmoid？
 
-| 场景 | 推荐函数 | 原因 |
-|------|---------|------|
-| **二分类** | Sigmoid | 只需一个概率值判断"是/否" |
-| **多分类（互斥）** | Softmax | 各类别互斥，概率之和为 1，一个样本只属于一类 |
-| **多标签分类** | Sigmoid（逐元素） | 各类别独立，一个样本可以同时属于多个类别 |
-| **注意力权重** | Softmax | 所有位置的关注权重之和必须为 1 |
+假设对一个三分类问题使用 Sigmoid，可能得到输出 $[0.8, 0.7, 0.6]$——三个概率之和为 2.1，不构成合法的概率分布。而 Softmax 保证输出之和为 1，且各类别概率**相互制约**——某一类概率升高，其他类必然降低。
 
-### 6.3 关键区别：竞争 vs 独立
+### 6.4 什么时候用哪个？
 
-Sigmoid 对每个输出**独立**做决策——即使有 100 个类别，每个类别的概率也是独立计算的，总和不为 1。
-
-Softmax 则引入**竞争**机制——所有类别共享一个分母，一个类别的概率升高必然导致其他类别降低。这更符合"互斥多分类"的直觉：如果一张图 90% 是猫，它就不太可能同时 80% 是狗。
-
-> 💡 **选型口诀**：互斥多分类用 Softmax，独立多标签用 Sigmoid，二分类两者等价（但习惯用 Sigmoid 更省资源）。
+- **多分类（互斥类别）** → Softmax：手写数字识别（0~9，一个图片只能是一个数字）
+- **二分类** → Sigmoid：垃圾邮件检测（是/否）
+- **多标签分类（非互斥）** → Sigmoid（每个标签独立）：一篇文章可以同时有"科技""教育""AI"标签
 
 ---
 
 **参考资料：**
 
-- [Softmax vs Sigmoid Activation function -- GeeksforGeeks](https://www.geeksforgeeks.org/deep-learning/softmax-vs-sigmoid-activation-function/) ⭐值得阅读
-- [Understanding Logits, Sigmoid, Softmax, and Cross-Entropy Loss -- Weights & Biases](https://wandb.ai/amanarora/Written-Reports/reports/Understanding-Logits-Sigmoid-Softmax-and-Cross-Entropy-Loss-in-Deep-Learning--Vmlldzo0NDMzNTU3) ⭐值得阅读
-- [Sigmoid and SoftMax Functions in 5 minutes -- Medium](https://medium.com/data-science/sigmoid-and-softmax-functions-in-5-minutes-f516c80ea1f9)
+- [Understanding Logits, Sigmoid, Softmax, and Cross-Entropy Loss in Deep Learning -- W&B](https://wandb.ai/amanarora/Written-Reports/reports/Understanding-Logits-Sigmoid-Softmax-and-Cross-Entropy-Loss-in-Deep-Learning--Vmlldzo0NDMzNTU3) ⭐值得阅读
+- [Comparison between Sigmoid Function and Softmax Function -- Medium](https://medium.com/@sksyedroshan007/comparison-between-sigmoid-function-and-softmax-function-with-python-code-implementation-df05a978060d)
+- [Softmax vs. Sigmoid: Neural Networks Variation Explained -- MyScale](https://myscale.com/blog/neural-networks-softmax-sigmoid/)
 
 ---
 
-## 7. Softmax在注意力机制中的作用 🎯
+## 7. 在 Transformer 注意力机制中的作用 🎯
 
-> 本章回归Transformer主线，解释Softmax在注意力中的核心地位
+> 本章解释为什么 Transformer 的注意力机制必须使用 Softmax
 
-### 7.1 注意力公式中的Softmax
-
-在[04-缩放点积注意力代码实现](https://juejin.cn/post/7635839300292362267)（[CSDN](https://blog.csdn.net/2301_79239314/article/details/160774442)）中，我们学过缩放点积注意力的核心公式：
+在 Transformer 的[缩放点积注意力](https://juejin.cn/post/7635839300292362267)（[CSDN](https://blog.csdn.net/2301_79239314/article/details/160774442)）中，Softmax 位于计算流程的核心位置：
 
 <!-- 数学公式必须使用 LaTeX 格式 -->
 $$
@@ -378,71 +343,160 @@ $$
 $$
 <!-- 数学公式必须使用 LaTeX 格式 -->
 
-Softmax 在这里承担了**将注意力分数转化为注意力权重**的关键角色。
+### 7.1 Softmax 在注意力中的三大作用
 
-### 7.2 为什么注意力机制必须用Softmax？
+**1. 将原始分数转化为概率分布**
 
-注意力分数矩阵 $Q \times K^T$ 是一个 `[seq_len, seq_len]` 的矩阵，其中每个元素可以是任意实数。这个矩阵不能直接用来对 Value 做加权求和，原因有三：
+$Q \times K^T$ 计算出的注意力分数是可正可负的任意实数。Softmax 将它们转换为 $[0, 1]$ 区间且和为 1 的**注意力权重**，表示每个位置"应该被关注多少"。
 
-1. **分数可以是负数**：如果用负数权重去加权 $V$，会抵消其他位置的信息，违背"加权贡献"的初衷
-2. **分数范围不统一**：分数大小受 $d_k$ 影响（所以需要先除以 $\sqrt{d_k}$ 缩放），但仍缺乏统一的上界
-3. **权重应该归一化**：一个词对所有位置的关注程度本质上是一个"注意力预算分配"问题——如果总共只有 100% 的注意力，哪些词分多少？
+**2. 放大差异，突出重点**
 
-Softmax 恰好完美解决这三个问题：输出恒正、自动归一化到 $[0,1]$ 且和为 1、放大重要位置的权重差异。
+指数函数 $e^x$ 的放大特性使模型能够**聚焦**——与当前词高度相关的词获得压倒性的权重，无关词的权重被压制到接近 0。例如，在翻译"the cat sat on the mat"时，"cat"对"sat"的注意力权重可能高达 0.6，而对"the"的权重可能只有 0.05。
 
-### 7.3 Softmax + 掩码 = 选择性注意力
+**3. 确保加权求和的数学合理性**
 
-在 Transformer 中，Softmax 经常与掩码（Mask）配合使用。掩码操作把不需要关注的位置的分数设为 $-\infty$，经过 Softmax 后：
+最终的注意力输出是 $\text{weights} \times V$ 的加权求和。如果权重不是概率分布（和不为 1），加权求和的结果会被人为放大或缩小，破坏语义表示的尺度。Softmax 确保权重是合法的"加权系数"。
 
-<!-- 数学公式必须使用 LaTeX 格式 -->
-$$
-\lim_{x \to -\infty} e^{x} = 0
-$$
-<!-- 数学公式必须使用 LaTeX 格式 -->
+### 7.2 为什么 $\sqrt{d_k}$ 与 Softmax 紧密相关？
 
-这些位置的权重变为 0，实现了"选择性屏蔽"。这就是为什么 Softmax 和掩码是注意力机制的黄金搭档——Softmax 提供归一化，掩码提供筛选。
+当 $d_k$（每个头的维度）很大时，点积 $Q \cdot K$ 的值也会很大。回顾第 4.3 节的**非缩放不变性**——大的输入会让 Softmax 输出变得极其"尖锐"（概率几乎全集中在最大值），梯度趋近于 0（饱和区），导致模型难以训练。
 
-### 7.4 一行代码看本质
-
-```python
-import torch.nn.functional as F                           # 导入函数式 API，包含 Softmax 操作
-
-# 注意力分数矩阵（已缩放）：scores.shape = [seq_len, seq_len]
-# 数据流动：scores[10,10] → Softmax(dim=-1) → weights[10,10]（每行和为 1）
-attention_weights = F.softmax(scores, dim=-1)             # dim=-1 表示沿最后一个维度（每一行）做 Softmax
-```
-
-`dim=-1` 的含义：对于 `[batch, heads, seq_q, seq_k]` 的张量，在 `seq_k` 维度上做 Softmax，使得每个 Query 对所有 Key 的注意力权重之和为 1。这正是一个 Query 的"注意力预算"在 $n$ 个 Key 之间的分配。
+除以 $\sqrt{d_k}$ 正是为了将点积值控制在合理范围，让 Softmax 输出"适度平滑"，保持梯度流畅。
 
 ---
 
 **参考资料：**
 
-- [Transformer自注意力中的Softmax归一化详解 -- CSDN](https://blog.csdn.net/qq_41803278/article/details/151754381) ⭐值得阅读
-- [深度学习之注意力机制中的"线性变换"、"归一化"与"加权求和" -- 腾讯云](https://cloud.tencent.com/developer/article/2634501)
-- [What is an attention mechanism? -- IBM](https://www.ibm.com/think/topics/attention-mechanism) ⭐值得阅读
-- [Pytorch学习笔记17----Attention机制的原理与softmax函数 -- 博客园](https://www.cnblogs.com/luckyplj/p/13612646.html)
+- [Why do we use Softmax in Transformers? -- Medium](https://medium.com/@maitydi567/why-do-we-use-softmax-in-transformers-fdfd50f5f4c1)
+- [The Softmax Function for Attention Weights -- ApX Machine Learning](https://apxml.com/courses/foundations-transformers-architecture/chapter-2-attention-mechanism-core-concepts/softmax-attention-weights) ⭐值得阅读
+- [Scalable-Softmax Is Superior for Attention -- arXiv](https://arxiv.org/html/2501.19399v1)
+
+在[注意力机制基础](https://juejin.cn/post/7634873282535161882)（[CSDN](https://blog.csdn.net/2301_79239314/article/details/160742121)）和[自注意力机制详解](https://juejin.cn/post/7636643735278845995)（[CSDN](https://blog.csdn.net/2301_79239314/article/details/160831512)）中，你可以看到 Softmax 在整个注意力计算流程中的具体应用。
 
 ---
 
-## 8. 总结 📝
+## 8. 代码示例 💻
 
-Softmax 是深度学习中最常用的激活函数之一，核心要点回顾：
+> 本章提供 NumPy 手动实现和 PyTorch 原生实现的对比
 
-| 方面 | 核心结论 |
-|------|---------|
-| **数学定义** | $\text{Softmax}(z_i) = e^{z_i} / \sum_{j} e^{z_j}$，将任意实数向量转为概率分布 |
-| **核心价值** | 转化为概率分布、放大差异、可导且梯度简洁 |
-| **平移不变性** | $\text{Softmax}(z_i + c) = \text{Softmax}(z_i)$，是数值稳定性技巧的数学基础 |
-| **数值稳定性** | 减去最大值 $m = \max(z)$ 后计算，输出等价且防止溢出 |
-| **vs Sigmoid** | Softmax 用于多分类（互斥），Sigmoid 用于二分类或多标签（独立） |
-| **在注意力中** | 将注意力分数 $QK^T/\sqrt{d_k}$ 归一化为权重分布，配合掩码实现选择性关注 |
+### 8.1 NumPy 手动实现（含数值稳定版）
+
+```python
+import numpy as np                                          # 导入 NumPy，用于数组运算
+
+
+"""Softmax 函数的朴素实现（不推荐，数值不稳定）
+
+参数:
+    x: 输入向量，形状 (K,)，元素为任意实数
+    
+返回:
+    概率分布向量，形状 (K,)，元素 ∈ (0,1)，和为 1
+    
+示例:
+    softmax_naive(np.array([2.0, 1.0, 0.1]))  → [0.659, 0.242, 0.099]
+"""
+def softmax_naive(x):
+    # 直接计算 e^x / sum(e^x)，数据流动：[2.0,1.0,0.1] → [0.659,0.242,0.099]
+    exp_x = np.exp(x)                                         # 计算每个元素的指数，示例：e^2.0=7.389
+    return exp_x / np.sum(exp_x)                              # 归一化，数据流动：[7.389,2.718,1.105] → [0.659,0.242,0.099]
+
+
+"""Softmax 函数的数值稳定实现（推荐）
+
+参数:
+    x: 输入向量，形状 (K,)，元素为任意实数
+    
+返回:
+    概率分布向量，形状 (K,)，元素 ∈ (0,1)，和为 1
+    
+示例:
+    softmax(np.array([1000, 2000, -4000]))  → [0., 1., 0.]
+"""
+def softmax(x):
+    # 减去最大值防止溢出，数据流动：[1000,2000,-4000] - 2000 → [-1000,0,-6000]
+    x_shifted = x - np.max(x)                                 # 利用平移不变性，结果不变但数值稳定
+    exp_x = np.exp(x_shifted)                                 # 指数化，所有值 ≤ 1，不会溢出
+    return exp_x / np.sum(exp_x)                              # 归一化，分母 ≥ 1，不出现除零
+
+
+# ========== 测试 ==========
+# 普通输入，示例：三个分数 [2.0, 1.0, 0.1]
+x_small = np.array([2.0, 1.0, 0.1])
+print("普通输入:", softmax(x_small))                           # 输出：[0.65900114 0.24243297 0.09856589]
+print("和:", np.sum(softmax(x_small)))                        # 输出：1.0
+
+# 大数值输入，朴素版会溢出，示例：[1000, 2000, -4000]
+x_large = np.array([1000.0, 2000.0, -4000.0])
+print("大数值输入（稳定版）:", softmax(x_large))              # 输出：[0. 1. 0.]
+print("和:", np.sum(softmax(x_large)))                        # 输出：1.0
+```
+
+### 8.2 PyTorch 原生实现
+
+```python
+import torch                                                # 导入 PyTorch 核心库
+import torch.nn as nn                                       # 导入神经网络模块
+
+
+# 方式1：使用 torch.softmax（函数式 API）
+x = torch.tensor([2.0, 1.0, 0.1])                           # 创建输入张量，示例：三个分数 [2.0, 1.0, 0.1]
+output = torch.softmax(x, dim=0)                             # dim=0 沿第0维做 Softmax，数据流动：[2.0,1.0,0.1] → [0.659,0.242,0.099]
+print("torch.softmax 输出:", output)                         # 输出：tensor([0.6590, 0.2424, 0.0986])
+print("和:", output.sum())                                   # 输出：tensor(1.0000)
+
+# 方式2：使用 nn.Softmax（模块化 API）
+softmax_layer = nn.Softmax(dim=0)                            # 创建 Softmax 层，dim=0 沿第0维计算
+output2 = softmax_layer(x)                                   # 前向传播，输出同上
+print("nn.Softmax 输出:", output2)
+
+# 二维输入示例（batch处理），形状 [batch_size=2, num_classes=3]
+x_batch = torch.randn(2, 3)                                  # 随机生成 2 个样本，每个有 3 个类别的 logits
+output_batch = torch.softmax(x_batch, dim=1)                 # dim=1 沿类别维度做 Softmax
+print("每行和:", output_batch.sum(dim=1))                    # 输出：tensor([1.0000, 1.0000])
+```
+
+### 8.3 PyTorch 内置的数值稳定处理
+
+PyTorch 的 `torch.softmax` 和 `F.softmax` 内部已经实现了 $x - \max(x)$ 的数值稳定技巧，开发者无需手动处理。此外，PyTorch 还提供了 `F.log_softmax`，它在计算 $\log(\text{softmax}(x))$ 时使用更稳定的 $\log\text{-}\sum\text{-}\exp$ 技巧，避免了 $\log(0)$ 的问题，推荐与 `NLLLoss` 配合使用。
+
+```python
+import torch.nn.functional as F                              # 导入函数式 API
+
+x = torch.tensor([2.0, 1.0, 0.1])                            # 创建输入张量
+log_probs = F.log_softmax(x, dim=0)                          # 计算 log_softmax，内部已做数值稳定处理
+print("log_softmax:", log_probs)                             # 输出：tensor([-0.4170, -1.4170, -2.3170])
+print("exp(log_softmax):", torch.exp(log_probs))             # 还原为 Softmax，验证一致性
+```
+
+---
+
+**参考资料：**
+
+- [Softmax -- PyTorch 官方文档](https://pytorch.org/docs/stable/generated/torch.nn.Softmax.html) ⭐值得阅读
+- [torch.nn.functional.softmax -- PyTorch](https://pytorch.org/docs/stable/generated/torch.nn.functional.softmax.html)
+- [以softmax与交叉熵的实例解释numpy的部分用法 -- 知乎](https://zhuanlan.zhihu.com/p/622296591)
+- [Python实现Softmax函数 -- 百度智能云](https://cloud.baidu.com/article/2992364)
+
+---
+
+## 9. 总结 📝
+
+| 要点 | 说明 |
+|------|------|
+| **定义** | $\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_j e^{x_j}}$，将任意实数向量转为概率分布 |
+| **输出** | 每个值在 $(0,1)$，全部之和为 $1$ |
+| **保序性** | $x_i > x_j \Rightarrow \text{softmax}(x_i) > \text{softmax}(x_j)$ |
+| **平移不变性** | 所有元素加同一常数，输出不变 → 数值稳定技巧的数学基础 |
+| **非缩放不变性** | 所有元素乘同一系数（$\neq 1$），输出改变 → 注意力缩放因子的理论依据 |
+| **数值稳定** | 计算前先减去 $\max(x)$，利用平移不变性，防止 $e^{\text{大数}} \to \infty$ |
+| **vs Sigmoid** | Softmax 用于互斥多分类（和为1），Sigmoid 用于二分类/多标签（各自独立） |
+| **在注意力中** | 将 $QK^T$ 分数转为概率权重，放大差异实现"聚焦"，确保加权求和的数学合理性 |
 
 🔴 **关键理解**：
-
-- **Softmax 的本质是"归一化 + 放大"**：指数函数放大差异，除以总和完成归一化，两者配合将原始分数变为可解释的概率
-- **"soft" 意味着可导**：Softmax 是 argmax 的可导近似，保留了所有选项的权重信息，使梯度能反向传播
-- **平移不变性是工程基石**：理解减去最大值的原理，是写出数值稳定代码的关键
+- Softmax 的本质是"指数化 + 归一化"，将原始分数转化为合法概率分布
+- 数值稳定技巧 $x - \max(x)$ 不是 trick，而是平移不变性的直接推论
+- 在 Transformer 中，Softmax 是注意力"聚焦"能力的数学核心——没有它，模型无法区分"该关注谁"
 
 ---
 
