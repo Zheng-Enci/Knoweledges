@@ -13,37 +13,17 @@
 
 ---
 
-```mermaid
-flowchart LR
-    A["1. 什么是Softmax"]:::basic --> B["2. 核心公式"]:::formula
-    B --> C["3. 手算示例"]:::example
-    C --> D["4. 核心性质"]:::props
-    D --> E["5. 数值稳定性"]:::stable
-    E --> F["6. Softmax vs Sigmoid"]:::compare
-    F --> G["7. 在注意力机制中的作用"]:::attention
-    G --> H["8. 代码示例"]:::code
-    H --> I["9. 总结"]:::summary
+## 章节阅读路线图 🗺️
 
-    classDef basic fill:#e3f2fd,stroke:#1565c0
-    classDef formula fill:#e8f5e9,stroke:#2e7d32
-    classDef example fill:#fff3e0,stroke:#ef6c00
-    classDef props fill:#f3e5f5,stroke:#6a1b9a
-    classDef stable fill:#fce4ec,stroke:#c62828
-    classDef compare fill:#e0f7fa,stroke:#00838f
-    classDef attention fill:#fff9c4,stroke:#f9a825
-    classDef code fill:#e8eaf6,stroke:#283593
-    classDef summary fill:#e0f2f1,stroke:#00695c
-```
-
-**阅读顺序说明**：
-
-- **第1章 → 第2章**：先了解 Softmax 是什么，再学习其数学公式
-- **第2章 → 第3章**：掌握公式后，通过手算示例验证理解
-- **第3章 → 第4章**：有了计算直觉，深入理解 Softmax 的核心数学性质
-- **第4章 → 第5章**：理解性质后，学习数值稳定性技巧及其数学原理
-- **第5章 → 第6章**：掌握 Softmax 后，与 Sigmoid 对比，明确各自适用场景
-- **第6章 → 第7章**：理解两者的区别后，聚焦 Softmax 在 Transformer 注意力机制中的关键作用
-- **第7章 → 第8章**：理论完备后，通过代码实战加深理解
+1. **什么是Softmax** → 从直观类比出发，先了解 Softmax 是什么，再给出严谨数学定义
+2. **核心公式** → 掌握公式后，逐元素拆解 $e^x$ 和分母的作用
+3. **手算示例** → 通过具体数值验证公式理解
+4. **核心性质** → 深入理解保序性、平移不变性和非缩放不变性
+5. **数值稳定性** → 学习数值溢出问题及 $x - \max(x)$ 技巧的数学原理
+6. **Softmax vs Sigmoid** → 对比两者的区别，明确各自适用场景
+7. **在Transformer注意力机制中的作用** → 理解 Softmax 在注意力计算中的关键角色
+8. **代码示例** → 通过 NumPy 和 PyTorch 代码实战加深理解
+9. **总结** → 回顾核心要点
 
 ---
 
