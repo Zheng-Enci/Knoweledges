@@ -231,11 +231,6 @@ class GemmaRMSNorm(nn.Module):
         return output.type_as(x)
 ```
 
-**为什么用单位偏移？**
-
-- `weight` 初始化为 `0` 而非 `1`：经过 `1 + weight` 后，实际使用的值是 `1`，效果与初始化为 `1` 相同
-- 这种设计使得梯度更新路径更直接——优化器直接调整 `weight` 本身，不需要"对抗"初始值 `1`
-
 ### 5.3 为什么大模型都选择 RMSNorm？🔍
 
 现代大语言模型几乎清一色选择 RMSNorm 而非 LayerNorm，背后的原因可以归结为三点：
