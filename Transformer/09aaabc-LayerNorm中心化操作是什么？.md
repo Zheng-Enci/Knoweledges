@@ -177,7 +177,7 @@ $$
 
 > 💡 **几何直觉**：中心化操作就像把一个散落在三维空间中的点云"拍扁"到 $x + y + z = 0$ 这个平面上。在这个平面上，所有点的重心位于原点。
 
-![中心化 = 正交投影：向量 x 投影到与 1 正交的超平面 x1+x2=0](https://raw.gitcode.com/ZhengEnCi/knoweledges/raw/master/Transformer/09aaabc_centering_projection.png)
+![中心化几何意义示意图：减去均值等于正交投影](https://raw.gitcode.com/ZhengEnCi/knoweledges/raw/master/Transformer/09aaabc_centering_projection.png)
 
 ***图：中心化的几何意义示意（d=2）***——蓝色向量 $\mathbf{x} = [3.5, 1.0]$ 减去均值 $\mu$ 后得到绿色向量 $\mathbf{x}' = [1.25, -1.25]$，它落在与 $\vec{1}$ 正交的超平面（灰色虚线 $x_1 + x_2 = 0$）上。橙色向量 $\mu \cdot \vec{1}$ 是 $\mathbf{x}$ 在 $\vec{1}$ 方向上的投影。三个直角标记标出了各处的正交关系。
 
