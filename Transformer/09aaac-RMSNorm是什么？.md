@@ -7,10 +7,9 @@
 1. **归一化背景与动机** → 为什么深度学习需要归一化
 2. **从 LayerNorm 到 RMSNorm** → LayerNorm 的原理与 RMSNorm 的改进思路
 3. **RMSNorm 数学原理** → 核心公式推导与直观理解
-4. **RMSNorm PyTorch 手动实现** → 从零编写代码，逐行解析
-5. **PyTorch 原生 RMSNorm** → 使用 `nn.RMSNorm` 原生函数
-6. **RMSNorm 在大模型中的应用** → Llama、Gemma 等主流模型实践
-7. **总结** → 核心要点回顾
+4. **PyTorch 原生 RMSNorm** → 使用 `nn.RMSNorm` 原生函数
+5. **RMSNorm 在大模型中的应用** → Llama、Gemma 等主流模型实践
+6. **总结** → 核心要点回顾
 
 ---
 
@@ -174,206 +173,13 @@ $$
 - [均方根归一化RMSNorm 详解：原理、实现与应用 -- CSDN](https://blog.csdn.net/shizheng_Li/article/details/145830637) ⭐值得阅读
 - [RMSNorm与LayerNorm有何不同？ -- 飞书文档](https://docs.feishu.cn/v/wiki/WYnrwKwqeiCkuQkxRxgcvQ6Wnpd/ac)
 
-## 4. RMSNorm PyTorch 手动实现 💻
-
-> 本章从零编写 RMSNorm 的 PyTorch 代码，通过代码深入理解其计算过程
-
-### 5.1 基础实现
-
-下面是一个最基础的 RMSNorm 实现，严格遵循数学公式：
-
-```python
-import torch                                              # 导入 PyTorch 核心库，提供张量运算
-import torch.nn as nn                                     # 导入神经网络模块，包含 Parameter 等
-
-"""均方根归一化（RMSNorm）的 PyTorch 手动实现
-
-参数:
-    dim: 输入向量的特征维度，示例：dim=4096 表示每个 token 的隐藏维度为 4096
-    eps: 数值稳定常数，防止除零（默认 1e-6）
-    
-示例:
-    rms_norm = RMSNorm(dim=4096, eps=1e-6)
-"""
-class RMSNorm(nn.Module):
-    """初始化可学习缩放参数
-    
-    参数:
-        dim: 输入特征维度，示例：dim=4096 → self.weight 形状为 [4096]
-        eps: 数值稳定常数（默认 1e-6）
-        
-    返回:
-        无
-        
-    示例:
-        super().__init__(); self.weight = nn.Parameter(torch.ones(4096))
-    """
-    def __init__(self, dim, eps=1e-6):
-        super(RMSNorm, self).__init__()
-        self.eps = eps                        # 保存 eps，用于防止除零，示例：eps = 1e-6
-        self.weight = nn.Parameter(torch.ones(dim))  # 可学习缩放参数 γ，形状 [dim]，初始化为 1
-    
-    """计算输入向量的均方根（RMS）
-    
-    参数:
-        x: 输入张量，形状 [..., dim]，示例：[batch_size=2, seq_len=10, dim=4096]
-        
-    返回:
-        x_rms: RMS 归一化后的张量，形状与输入相同，示例：[2, 10, 4096]
-        
-    示例:
-        output = rms_norm._norm(x)  # x.shape=[2,10,4096] → output.shape=[2,10,4096]
-    """
-    def _norm(self, x):
-        # 计算 RMS：sqrt(mean(x^2) + eps)
-        # 数据流动：x[2,10,4096] → x.pow(2)[2,10,4096] → .mean(-1,keepdim=True)[2,10,1]
-        # → +eps → sqrt → rms[2,10,1]
-        rms = torch.sqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
-        
-        # 归一化：x / rms
-        # 数据流动：x[2,10,4096] / rms[2,10,1] → output[2,10,4096]
-        return x / rms
-    
-    """前向传播：对输入应用 RMSNorm
-    
-    参数:
-        x: 输入张量，形状 [..., dim]，示例：[batch_size=2, seq_len=10, dim=4096]
-        
-    返回:
-        output: RMSNorm 输出，形状与输入相同，示例：[2, 10, 4096]
-        
-    示例:
-        output = rms_norm(x)  # x.shape=[2,10,4096] → output.shape=[2,10,4096]
-    """
-    def forward(self, x):
-        # 1. 计算 RMS 归一化，数据流动：x[2,10,4096] → _norm(x) → x_norm[2,10,4096]
-        x_norm = self._norm(x.float())                     # 转为 float 确保计算精度
-        
-        # 2. 乘以可学习缩放参数 γ，数据流动：x_norm[2,10,4096] * weight[4096] → output[2,10,4096]
-        output = x_norm * self.weight
-        
-        return output.type_as(x)                            # 恢复原始数据类型（如 FP16）
-```
-
-### 5.2 代码逐行解析 🔍
-
-> 本节详细拆解 RMSNorm 的核心计算步骤
-
-**关键方法：`_norm`**
-
-```python
-rms = torch.sqrt(x.pow(2).mean(-1, keepdim=True) + self.eps)
-```
-
-这行代码完成了 RMS 的计算，分解来看：
-
-1. `x.pow(2)`：对输入张量的每个元素求平方，即 $x_i^2$
-2. `.mean(-1, keepdim=True)`：在最后一个维度（特征维度）上计算均值，即 $\frac{1}{d}\sum x_i^2$
-   - `keepdim=True` 保持维度，使得形状从 `[2, 10, 4096]` → `[2, 10, 1]`，便于后续广播（broadcast）除法
-3. `+ self.eps`：加上一个极小的常数，防止除零
-4. `torch.sqrt(...)`：对结果开平方，即 $\sqrt{\frac{1}{d}\sum x_i^2 + \epsilon}$
-
-**为什么使用 `x.float()`？**
-
-```python
-x_norm = self._norm(x.float())
-```
-
-当输入是 FP16（半精度）时，平方和运算可能导致下溢。先将输入转换为 FP32 计算 RMS，再乘回原始精度，可以保证数值稳定性。
-
-**为什么 `weight` 初始化为 1 而非 0？**
-
-```python
-self.weight = nn.Parameter(torch.ones(dim))
-```
-
-归一化后的输出 $\overline{x}$ 已经是单位 RMS 的分布。如果 `weight` 初始化为 0，整个输出将被置零，导致梯度无法更新。初始化为 1 表示"先保持归一化输出不变，让模型在训练中学习如何缩放"。
-
-### 5.3 使用 `torch.rsqrt` 的优化版本 🚀
-
-在基础实现中，我们使用 `torch.sqrt` 计算 RMS，然后做除法。更高效的做法是使用 `torch.rsqrt` 直接计算平方根的倒数：
-
-```python
-"""使用 torch.rsqrt 优化的 RMSNorm
-
-torch.rsqrt 一次性计算 1/sqrt(x)，比先 sqrt 再除法更高效
-
-参数:
-    x: 输入张量，形状 [..., dim]，示例：[batch=2, seq=10, dim=4096]
-    
-返回:
-    归一化后的张量，形状与输入相同，示例：[2, 10, 4096]
-    
-示例:
-    normed_x = _norm_optimized(x)
-"""
-def _norm_optimized(x):
-    # 使用 rsqrt 同时完成：计算 RMS 的倒数 × 归一化
-    # 数据流动：x[2,10,4096] → x.pow(2)[2,10,4096] → .mean(-1,keepdim=True)[2,10,1]
-    # → +eps → rsqrt → rms_recip[2,10,1] → x * rms_recip[2,10,4096]
-    return x * torch.rsqrt(x.pow(2).mean(-1, keepdim=True) + 1e-6)
-```
-
-**优化原理**：
-- `torch.rsqrt(x) = 1 / sqrt(x)`
-- 将两步操作 `rms = sqrt(...)` + `x / rms` 合并为一步 `x * rsqrt(...)`
-- 减少了 kernel 启动次数和内存访问，在 GPU 上更高效
-
-### 5.4 验证 RMSNorm ✏️
-
-下面用代码验证 RMSNorm 的效果，观察其如何将输入的 RMS 值归一化到接近 1：
-
-```python
-import torch                                              # 导入 PyTorch 核心库
-import torch.nn as nn                                     # 导入神经网络模块
-
-# 创建 RMSNorm 模块，dim=4096（标准 Transformer 隐藏维度）
-rms_norm = RMSNorm(dim=4096, eps=1e-6)
-
-# 生成随机输入，模拟 batch_size=2, seq_len=5, dim=4096
-x = torch.randn(2, 5, 4096)                                # 随机输入，形状 [2,5,4096]
-
-# 前向传播
-output = rms_norm(x)                                       # RMSNorm 输出，形状 [2,5,4096]
-
-# 计算输出的 RMS，验证归一化效果
-output_rms = output.pow(2).mean(-1).sqrt()                 # 输出的 RMS 值，形状 [2,5]
-print(f"输入的 RMS 范围: {x.pow(2).mean(-1).sqrt().min().item():.4f} ~ "
-      f"{x.pow(2).mean(-1).sqrt().max().item():.4f}")     # 打印输入 RMS 的波动范围
-print(f"输出的 RMS 范围: {output_rms.min().item():.4f} ~ "
-      f"{output_rms.max().item():.4f}")                    # 打印输出 RMS，应接近 1.0
-print(f"输出形状: {output.shape}")                         # 打印输出形状，应与输入一致
-```
-
-预期输出：
-
-```
-输入的 RMS 范围: 0.8923 ~ 1.1234
-输出的 RMS 范围: 0.9999 ~ 1.0001
-输出形状: torch.Size([2, 5, 4096])
-```
-
-可以看到：
-- 输入 RMS 在 0.89 ~ 1.12 之间波动（随机初始化的结果）
-- 输出 RMS 被归一化到接近 1.0（验证了归一化效果）
-- 输出形状与输入一致（保持了张量结构）
-
----
-
-**参考资料：**
-
-- [从PyTorch代码实现看RMSNorm的5个优化技巧 -- CSDN](https://blog.csdn.net/cake8/article/details/154712622) ⭐值得阅读
-- [PyTorch 于2.4版本原生支持RMSNorm -- 掘金](https://juejin.cn/post/7414732719039578112)
-
----
-
-## 6. PyTorch 原生 RMSNorm ⚡
+## 5. PyTorch 原生 RMSNorm ⚡
 
 > 本章介绍 PyTorch 从 2.4 版本开始提供的原生 `nn.RMSNorm`
 
 从 PyTorch 2.4 开始，官方在 `torch.nn` 中直接提供了 `RMSNorm` 模块，无需再手动实现。
 
-### 6.1 基本用法
+### 5.1 基本用法
 
 ```python
 import torch                                              # 导入 PyTorch 核心库
@@ -391,7 +197,7 @@ x = torch.randn(2, 5, 4096)                                # 随机输入 [2,5,4
 output = rms_norm(x)                                       # 前向传播 [2,5,4096]
 ```
 
-### 6.2 参数说明
+### 5.2 参数说明
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
@@ -401,7 +207,7 @@ output = rms_norm(x)                                       # 前向传播 [2,5,4
 
 > 💡 `normalized_shape` 如果是单个整数 `4096`，等价于 `[4096]`，表示对最后一维做 RMSNorm。也可以传入多维如 `[1024, 4096]`，表示对最后两个维度做 RMSNorm。
 
-### 6.3 手动实现 vs 原生函数对比
+### 5.3 手动实现 vs 原生函数对比
 
 | 特性 | 手动实现 | PyTorch 原生 |
 |------|---------|-------------|
@@ -422,11 +228,11 @@ output = rms_norm(x)                                       # 前向传播 [2,5,4
 
 ---
 
-## 7. RMSNorm 在大模型中的应用 🏗️
+## 6. RMSNorm 在大模型中的应用 🏗️
 
 > 本章展示 RMSNorm 在主流大语言模型中的实际应用
 
-### 7.1 LLaMA 系列
+### 6.1 LLaMA 系列
 
 Meta 发布的 **LLaMA（Large Language Model Meta AI）** 系列模型是 RMSNorm 的标志性应用。LLaMA 论文明确指出使用 RMSNorm 替代 LayerNorm，原因如下：
 
@@ -438,7 +244,7 @@ Meta 发布的 **LLaMA（Large Language Model Meta AI）** 系列模型是 RMSNo
 1. **注意力层之前（Pre-Norm）**：对输入到多头注意力的张量做归一化
 2. **前馈网络层之前（Pre-Norm）**：对输入到 FFN 的张量做归一化
 
-### 7.2 Gemma 模型
+### 6.2 Gemma 模型
 
 Google 的 **Gemma** 系列模型同样采用了 RMSNorm。Gemma 的实现中还引入了一个技巧——**单位偏移（Unit Offset）**：
 
@@ -486,7 +292,7 @@ class GemmaRMSNorm(nn.Module):
 - `weight` 初始化为 `0` 而非 `1`：经过 `1 + weight` 后，实际使用的值是 `1`，效果与初始化为 `1` 相同
 - 这种设计使得梯度更新路径更直接——优化器直接调整 `weight` 本身，不需要"对抗"初始值 `1`
 
-### 7.3 为什么大模型都选择 RMSNorm？🔍
+### 6.3 为什么大模型都选择 RMSNorm？🔍
 
 现代大语言模型几乎清一色选择 RMSNorm 而非 LayerNorm，背后的原因可以归结为三点：
 
@@ -513,7 +319,7 @@ class GemmaRMSNorm(nn.Module):
 
 ---
 
-## 8. 总结 📝
+## 7. 总结 📝
 
 RMSNorm 是 LayerNorm 的一种轻量化变体，通过移除均值中心化步骤降低计算开销，在现代大语言模型中获得了广泛采用。
 
