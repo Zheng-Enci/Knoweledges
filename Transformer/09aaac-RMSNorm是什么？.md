@@ -7,9 +7,8 @@
 1. **归一化背景与动机** → 为什么深度学习需要归一化
 2. **从 LayerNorm 到 RMSNorm** → LayerNorm 的原理与 RMSNorm 的改进思路
 3. **RMSNorm 数学原理** → 核心公式推导与直观理解
-4. **PyTorch 原生 RMSNorm** → 使用 `nn.RMSNorm` 原生函数
-5. **RMSNorm 在大模型中的应用** → Llama、Gemma 等主流模型实践
-6. **总结** → 核心要点回顾
+4. **RMSNorm 在大模型中的应用** → Llama、Gemma 等主流模型实践
+5. **总结** → 核心要点回顾
 
 ---
 
@@ -173,66 +172,11 @@ $$
 - [均方根归一化RMSNorm 详解：原理、实现与应用 -- CSDN](https://blog.csdn.net/shizheng_Li/article/details/145830637) ⭐值得阅读
 - [RMSNorm与LayerNorm有何不同？ -- 飞书文档](https://docs.feishu.cn/v/wiki/WYnrwKwqeiCkuQkxRxgcvQ6Wnpd/ac)
 
-## 5. PyTorch 原生 RMSNorm ⚡
-
-> 本章介绍 PyTorch 从 2.4 版本开始提供的原生 `nn.RMSNorm`
-
-从 PyTorch 2.4 开始，官方在 `torch.nn` 中直接提供了 `RMSNorm` 模块，无需再手动实现。
-
-### 5.1 基本用法
-
-```python
-import torch                                              # 导入 PyTorch 核心库
-import torch.nn as nn                                     # 导入神经网络模块
-
-# 创建 RMSNorm 模块
-# 参数: normalized_shape - 归一化的特征维度(支持 int 或 list)
-#       eps - 数值稳定常数(默认使用计算类型的机器精度)
-#       elementwise_affine - 是否使用可学习参数 γ(默认 True)
-rms_norm = nn.RMSNorm(normalized_shape=4096,              # 特征维度 4096
-                      eps=1e-6,                            # 数值稳定常数
-                      elementwise_affine=True)             # 启用可学习参数 γ
-
-x = torch.randn(2, 5, 4096)                                # 随机输入 [2,5,4096]
-output = rms_norm(x)                                       # 前向传播 [2,5,4096]
-```
-
-### 5.2 参数说明
-
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `normalized_shape` | int / list / torch.Size | 必填 | 归一化的特征维度，可以是单个整数或形状列表 |
-| `eps` | float | 计算类型的机器精度 | 数值稳定常数，FP32 默认约 1.19e-7 |
-| `elementwise_affine` | bool | True | 是否使用可学习缩放参数 $\gamma$（初始化为 1） |
-
-> 💡 `normalized_shape` 如果是单个整数 `4096`，等价于 `[4096]`，表示对最后一维做 RMSNorm。也可以传入多维如 `[1024, 4096]`，表示对最后两个维度做 RMSNorm。
-
-### 5.3 手动实现 vs 原生函数对比
-
-| 特性 | 手动实现 | PyTorch 原生 |
-|------|---------|-------------|
-| 代码量 | 约 20 行 | 一行代码 |
-| 性能 | 一般 | 优化内核，性能更优 |
-| 灵活性 | 高，可自定义 | 低，固定行为 |
-| 学习价值 | 高，理解原理 | 低，封装了细节 |
-| 适用场景 | 学习、自定义变体 | 生产环境 |
-
-> 💡 **建议**：学习阶段用手动实现理解原理，实际项目中使用 PyTorch 原生 `nn.RMSNorm` 获得最佳性能。
-
----
-
-**参考资料：**
-
-- [PyTorch RMSNorm 官方文档 -- PyTorch](https://pytorch.org/docs/stable/generated/torch.nn.RMSNorm.html) ⭐值得阅读
-- [RMSNorm — PyTorch 2.11 文档（中文） -- PyTorch](https://docs.pytorch.ac.cn/docs/stable/generated/torch.nn.RMSNorm.html)
-
----
-
-## 6. RMSNorm 在大模型中的应用 🏗️
+## 5. RMSNorm 在大模型中的应用 🏗️
 
 > 本章展示 RMSNorm 在主流大语言模型中的实际应用
 
-### 6.1 LLaMA 系列
+### 5.1 LLaMA 系列
 
 Meta 发布的 **LLaMA（Large Language Model Meta AI）** 系列模型是 RMSNorm 的标志性应用。LLaMA 论文明确指出使用 RMSNorm 替代 LayerNorm，原因如下：
 
@@ -244,7 +188,7 @@ Meta 发布的 **LLaMA（Large Language Model Meta AI）** 系列模型是 RMSNo
 1. **注意力层之前（Pre-Norm）**：对输入到多头注意力的张量做归一化
 2. **前馈网络层之前（Pre-Norm）**：对输入到 FFN 的张量做归一化
 
-### 6.2 Gemma 模型
+### 5.2 Gemma 模型
 
 Google 的 **Gemma** 系列模型同样采用了 RMSNorm。Gemma 的实现中还引入了一个技巧——**单位偏移（Unit Offset）**：
 
@@ -292,7 +236,7 @@ class GemmaRMSNorm(nn.Module):
 - `weight` 初始化为 `0` 而非 `1`：经过 `1 + weight` 后，实际使用的值是 `1`，效果与初始化为 `1` 相同
 - 这种设计使得梯度更新路径更直接——优化器直接调整 `weight` 本身，不需要"对抗"初始值 `1`
 
-### 6.3 为什么大模型都选择 RMSNorm？🔍
+### 5.3 为什么大模型都选择 RMSNorm？🔍
 
 现代大语言模型几乎清一色选择 RMSNorm 而非 LayerNorm，背后的原因可以归结为三点：
 
@@ -319,7 +263,7 @@ class GemmaRMSNorm(nn.Module):
 
 ---
 
-## 7. 总结 📝
+## 6. 总结 📝
 
 RMSNorm 是 LayerNorm 的一种轻量化变体，通过移除均值中心化步骤降低计算开销，在现代大语言模型中获得了广泛采用。
 
