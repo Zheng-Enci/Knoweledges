@@ -225,12 +225,67 @@ $$
 w_{ij} \sim U\left(-\sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}, \sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}\right)
 $$
 
+### 3.4 为什么公式中会出现 2 和 6？ 🤔 / Why 2 and 6 in the Formulas
+
+在代码中，我们分别看到 `sqrt(2 / (fan_in + fan_out))` 和 `sqrt(6 / (fan_in + fan_out))`。这两个常数 **2** 和 **6** 不是随意设定的，而是从方差保持条件推导出来的。
+
+#### 正态分布中的 2 📐 / The 2 in Normal Distribution
+
+方差保持条件要求权重方差为：
+
+$$
+\sigma_w^2 = \frac{2}{n_{\text{in}} + n_{\text{out}}}
+$$
+
+对于正态分布 $\mathcal{N}(0, \sigma^2)$，参数 `std` 就是标准差 $\sigma$，所以：
+
+$$
+\text{std} = \sqrt{\sigma_w^2} = \sqrt{\frac{2}{n_{\text{in}} + n_{\text{out}}}}
+$$
+
+**这就是为什么代码中用 `sqrt(2 / (fan_in + fan_out))`** ——分子 2 来自前向和反向传播方差的调和平均。
+
+#### 均匀分布中的 6 📐 / The 6 in Uniform Distribution
+
+对于均匀分布 $U(-a, a)$，其方差为：
+
+$$
+\text{Var}[U(-a, a)] = \frac{(a - (-a))^2}{12} = \frac{(2a)^2}{12} = \frac{4a^2}{12} = \frac{a^2}{3}
+$$
+
+我们要求这个方差等于 Xavier 的方差条件 $\sigma_w^2 = \dfrac{2}{n_{\text{in}} + n_{\text{out}}}$：
+
+$$
+\frac{a^2}{3} = \frac{2}{n_{\text{in}} + n_{\text{out}}}
+$$
+
+两边同时乘以 3：
+
+$$
+a^2 = \frac{6}{n_{\text{in}} + n_{\text{out}}}
+$$
+
+开平方得：
+
+$$
+a = \sqrt{\frac{6}{n_{\text{in}} + n_{\text{out}}}}
+$$
+
+**这就是为什么代码中用 `sqrt(6 / (fan_in + fan_out))`** ——6 是由 $2 \times 3 = 6$ 得来的，其中 2 来自方差保持条件，3 来自均匀分布方差公式 $\dfrac{a^2}{3}$ 的分母。
+
+**直观理解** 🎯：把 6 拆解为两个部分
+- **2** = 前向传播 + 反向传播（调和平均的两个方向）
+- **3** = 均匀分布 $U(-a, a)$ 的方差特性（区间宽度的平方除以 12 化简后的结果）
+- **6 = 2 × 3** = 方差保持条件与均匀分布特性的结合
+
+> 💡 **记忆技巧** 💭：均匀分布的 6 是正态分布的 2 的 3 倍，因为均匀分布 "更平"（概率密度在整个区间均匀分布），需要更大的范围才能达到相同的方差效果。
+
 ### 3.5 公式总结 📋 / Formula Summary
 
-| 形式 | 公式 | 适用场景 |
-|------|------|---------|
-| **Xavier Normal** | $w \sim \mathcal{N}\left(0, \dfrac{2}{n_{\text{in}} + n_{\text{out}}}\right)$ | 需要精确控制方差时 |
-| **Xavier Uniform** | $w \sim U\left(-\sqrt{\dfrac{6}{n_{\text{in}} + n_{\text{out}}}}, \sqrt{\dfrac{6}{n_{\text{in}} + n_{\text{out}}}}\right)$ | PyTorch 默认形式 |
+| 形式 | 公式 | 常数来源 | 适用场景 |
+|------|------|---------|---------|
+| **Xavier Normal** | $w \sim \mathcal{N}\left(0, \dfrac{2}{n_{\text{in}} + n_{\text{out}}}\right)$ | 2 = 前向 + 反向调和平均 | 需要精确控制方差时 |
+| **Xavier Uniform** | $w \sim U\left(-\sqrt{\dfrac{6}{n_{\text{in}} + n_{\text{out}}}}, \sqrt{\dfrac{6}{n_{\text{in}} + n_{\text{out}}}}\right)$ | 6 = 2 × 3（均匀分布方差特性） | PyTorch 默认形式 |
 
 > 💡 **注意**：在 CS336 作业中，Xavier 初始化通常使用正态分布形式，权重标准差为 $\sigma = \sqrt{\dfrac{2}{n_{\text{in}} + n_{\text{out}}}}$。
 
