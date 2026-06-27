@@ -9,7 +9,7 @@ trigger: always_on
 
 ## 文件变更提交
 
-每次修改、创建或删除文件后，**必须自动执行** `git add` 和 `git commit`（提交信息使用中文）。
+每次修改、创建或删除文件后，**必须自动执行** `git add` 和 `git commit`（提交信息使用英文）。
 
 > ⚠️ 注意：禁止自动执行 `git push`
 
