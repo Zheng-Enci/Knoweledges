@@ -129,6 +129,8 @@ graph TD
 - P2I-Python正则表达式-什么是正则表达式？为什么程序员都在用re模块？怎么快速掌握模式匹配和替换？：[掘金](https://juejin.cn/post/7567769662478761993) ✅
 - P2J-Python-collections-什么是namedtuple、defaultdict和Counter？为什么一线开发者都在用？怎么快速掌握？：[掘金](https://juejin.cn/post/7568315756073615410) ✅
 - P2K-Python-collections-什么是deque和OrderedDict？为什么需要双端队列和有序字典？怎么快速掌握？：[掘金](https://juejin.cn/post/7568388327729545226) ✅
+- P2L-Matplotlib饼图完全指南-从数据可视化到图表定制的Python绘图利器：[掘金](https://juejin.cn/post/7656300675648208905) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/162408617) ✅
+- P2M-Matplotlib折线图完全指南-从数据可视化到趋势分析的Python绘图利器：[掘金](https://juejin.cn/post/7656342465024524334) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/162411055) ✅
 - P3A-Python函数定义和调用详解：[掘金](https://juejin.cn/post/7615827622843940915) ✅
 - P3B-90%Python初学者参数传错位置？合格程序员都这样选择参数类型：[掘金](https://juejin.cn/post/7569548172534136872) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/154541746)
 - P3C-为什么95%初学者踩坑可变默认参数？合格程序员都用args和kwargs写出灵活函数：[掘金](https://juejin.cn/post/7569886315197431859) ✅
