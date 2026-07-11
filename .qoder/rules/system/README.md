@@ -1,6 +1,6 @@
 ---
-trigger: manual
-alwaysApply: false
+trigger: always_on
+alwaysApply: true
 ---
 # System 提示词目录
 
