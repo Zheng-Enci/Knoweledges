@@ -2,14 +2,17 @@
 trigger: model_decision
 description: 所有语言的代码注释与类型注释规范强制要求
 ---
+
 # 代码注释规范
 
 ## 概述
+
 本规则定义了所有项目的代码注释标准。**所有函数级别的代码必须将注释写在函数签名行的上方。** 重点以 Python 为主，其他语言遵循类似约定。
 
 ## 通用原则
 
 ### 1. 类型注释（强制）
+
 - **所有参数和返回值必须有显式的 type annotation** — 所有支持类型标注的语言都不能例外
 - **Python**：在所有函数签名上使用原生 type hints（`str`, `int`, `float`, `list[T]`, `dict[K,V]`, `Optional[T]`, `Union[T,U]` 等）
 - **TypeScript/JavaScript**：所有函数参数和返回类型使用 TypeScript type annotations
@@ -18,17 +21,22 @@ description: 所有语言的代码注释与类型注释规范强制要求
 - **类型模糊的变量**（如初始化为 `None` 或 `{}`）也必须显式标注类型
 
 ### 2. 强制注释
+
 - **公共 API**：所有 public 方法、函数和类必须有 doc comments
 - **复杂逻辑**：任何超出标准流程的算法复杂度必须加以解释
 - **安全性**：涉及安全的关键代码必须说明为什么以及如何应用安全措施
 - **性能**：有性能影响的代码必须解释其设计理由
+- **异常抛出**：所有可能抛出的异常必须在函数级注释中标注异常类型和触发条件（如 Javadoc 的 `@throws`、NumPy Style 的 `Raises`、JSDoc 的 `@throws` 等）
+- **抛出点的行内注释**：每个 throw（或 raise）语句必须在其所在行（或紧邻上方）注释说明抛出的错误类型及选择此类型的原因。注意：错误类型应使用自然语言描述（如"参数异常""权限异常""数据异常"），而非直接引用代码中的异常类名（如 `IllegalArgumentException`）。即使有函数级注释，抛出点也应当额外说明该次抛出的具体原因
 
 ### 3. 注释位置 — 仅限函数级
+
 - **注释必须写在函数/方法签名行的上方，而不是下方**
 - **Python 中**，docstring（三重引号字符串）写在 `def` 行的**上方**——而不是放在函数体内
 - **其他语言中**，块注释（`/** */`）或行注释（`//`）直接放在函数签名上方
 
 ### 4. 注释风格
+
 - Python 代码使用 **NumPy Style**（主要关注点 — 详见下方示例）
 - JavaScript/TypeScript 代码使用 **JSDoc** 格式
 - Java 代码使用 **Google Style**
@@ -134,7 +142,8 @@ def find_attendance_record(records: list[dict], date: str) -> dict | None:
 
 ### 函数文档 — 注释在函数上方
 
- **JSDoc 示例**：
+**JSDoc 示例**：
+
 ```typescript
 /**
  * 根据项目特定模式验证用户输入。
@@ -153,6 +162,7 @@ function validateUserInput(email: string, age: number): boolean {
 ```
 
 ### 行内注释
+
 ```typescript
 // 根据项目标准公式计算百分比
 const percentage = (value / maxValue) * 100;
@@ -218,6 +228,7 @@ int initializeIPMonitor(int port, int threshold);
 ```
 
 ### 行内注释
+
 ```cpp
 // 在传输前对数据应用项目特定的加密
 encryptData(payload);
@@ -231,6 +242,7 @@ std::shared_ptr<Data> cachedResult = processData();
 ## 注释质量标准
 
 ### 不要注释代码在做什么
+
 ```typescript
 // 差 — 从代码本身就能看出来
 let x = 5; // 把 x 设为 5
@@ -317,23 +329,24 @@ parsed: Student | None = None
 
 ```typescript
 // 差 — 行内注释跟在函数签名后面
-function computeScore(input: number): number { // 计算最终分数
+function computeScore(input: number): number {
+  // 计算最终分数
 }
 
 // 好 — 注释在函数上方
 // 通过项目加权公式计算最终分数
-function computeScore(input: number): number {
-}
+function computeScore(input: number): number {}
 ```
 
 ### 简洁但完整
+
 ```typescript
 // 差
 // 这个函数做了很多事情并返回一些东西
 
 // 好
 // 汇总学生成绩并应用项目的评分公式
-function aggregateScores(): number
+function aggregateScores(): number;
 ```
 
 ---
@@ -341,16 +354,19 @@ function aggregateScores(): number
 ## 项目特定要求
 
 ### 安全注释
+
 - 记录所有安全措施
 - 说明为什么使用某些库或方法
 - 用安全标记标注敏感操作
 
 ### 性能注释
+
 - 记录性能关键部分
 - 解释优化选择
 - 标记应用了缓存或懒加载的位置
 
 ### API 文档
+
 - 记录所有公共接口
 - 包含使用示例
 - 说明错误条件
@@ -360,6 +376,7 @@ function aggregateScores(): number
 ## 代码审查清单
 
 审查代码时，请验证：
+
 - [ ] 所有公共 API 都有文档说明
 - [ ] 所有函数级注释都放在函数签名上方
 - [ ] Python docstring 写在 `def` 上方，而不是函数体内
@@ -371,6 +388,8 @@ function aggregateScores(): number
 - [ ] 注释使用一般现在时
 - [ ] 注释不重复代码已经在做的事情
 - [ ] TODO/FIXME 注释是可执行的
+- [ ] 所有抛出的异常都在注释中标注了异常类型和触发条件
+- [ ] 每个 throw/raise 语句都有行内注释说明抛出的异常类型及选择该类型的原因
 - [ ] 安全措施已记录
 - [ ] 性能考量已注明
 
@@ -379,6 +398,7 @@ function aggregateScores(): number
 ## 执行
 
 本规则适用于：
+
 - 项目中编写的所有新代码
 - 对现有代码的所有修改
 - Pull requests 必须通过注释质量检查
