@@ -101,6 +101,10 @@ flowchart TD
 - 掘金：[11c. Token智能压缩技术](https://juejin.cn/spost/7615446397371301938)
 - CSDN：[11c. Token智能压缩技术](https://blog.csdn.net/2301_79239314/article/details/158892286)
 
+### 11e-长上下文时代，RAG还有必要吗？
+- 掘金：[11e. 长上下文时代，RAG还有必要吗？](https://juejin.cn/post/7666089320763523082)
+- CSDN：[11e. 长上下文时代，RAG还有必要吗？](https://blog.csdn.net/2301_79239314/article/details/163216273)
+
 ## 📎 专栏链接
 
 - 掘金专栏：[RAG专栏](https://juejin.cn/column/7603673564908863523)

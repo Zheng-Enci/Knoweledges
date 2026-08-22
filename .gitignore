@@ -1,0 +1,7 @@
+# Git diff 临时文件（仅用于本地查看变更）
+git_diff.diff
+
+# 以下目录不进行 git 跟踪（仅本地保存）
+/其他/
+/English/
+/Live/

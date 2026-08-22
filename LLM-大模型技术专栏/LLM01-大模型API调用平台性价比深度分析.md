@@ -1,8 +1,3 @@
----
-alwaysApply: false
-description: 2026年大模型API调用平台性价比深度分析,涵盖价格体系、模型能力、平台稳定性、合规性等核心维度,为个人开发者提供科学选型指南
----
-
 # 2026年大模型API调用平台性价比深度分析 💰
 
 本文档基于 2026 年最新市场数据,从价格、模型能力、平台稳定性、合规性等多个维度,深度分析国内外主流大模型 API 调用平台的性价比表现,为个人开发者提供科学的选型指南 🎯
@@ -687,6 +682,8 @@ GPT-5.5 Vision 输出:
 ### 3.6 综合能力雷达图: 各模型优劣势一目了然 📊
 
 基于以上评测结果,我们可以绘制各模型的综合能力雷达图:
+
+![五大模型综合能力雷达图对比](https://raw.gitcode.com/ZhengEnCi/knoweledges/raw/master/LLM-大模型技术专栏/resources/LLM01/photo/llm01_model_capability_radar_chart.png)
 
 | 维度 | DeepSeek V4-Pro | GLM-5.1 | Qwen3 Max | GPT-5.5 | Claude Opus 4.7 |
 |------|----------------|---------|-----------|---------|----------------|
