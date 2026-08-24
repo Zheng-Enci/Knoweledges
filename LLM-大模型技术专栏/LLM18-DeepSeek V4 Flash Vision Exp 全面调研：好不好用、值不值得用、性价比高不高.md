@@ -2,7 +2,7 @@
 
 > **摘要** 📝：2026 年 8 月 21 日，DeepSeek 上线了实验性多模态视觉模型 `deepseek-v4-flash-vision-exp`。这是 DeepSeek Flash 系列首次具备图片理解能力，标志着 DeepSeek 正式进入 multimodal 赛道。本文从 model overview、pricing mechanism、benchmark performance、competitive analysis、integration compatibility 和 decision guide 六个维度进行全面调研，回答三个核心 problem：好不好用、值不值得用、性价比高不高。
 >
-> **Summary** 🌐：On August 21, 2026, DeepSeek launched `deepseek-v4-flash-vision-exp`, an experimental multimodal vision model — the first image-capable model in the Flash family. This article provides a comprehensive analysis covering model overview, pricing mechanism, benchmark performance, competitive analysis, integration compatibility, and decision guide to answer three core questions: Is it good? Is it worth using? Is the cost-performance ratio competitive?
+
 
 ---
 
