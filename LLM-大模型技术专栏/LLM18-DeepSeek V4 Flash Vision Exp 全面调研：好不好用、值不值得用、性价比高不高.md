@@ -194,11 +194,11 @@
 |------|---------|----------|------|----------------|
 | Conclave v8 Sonnet | 88.6% | 87.7% | 89.7% | $0.82 |
 | Claude Code Opus 4.8 v8-combined | 85.8% | 83.9% | 88.5% | $1.29 |
-| **Claude Code DeepSeek V4 Flash** | **85.0%** | **83.9%** | **86.5%** | **$0.033** |
+| **Claude Code DeepSeek V4 Flash** | **85.0%** | **83.9%** | **86.5%** | **\$0.033** |
 | Claude Code Opus 4.6 (baseline) | 84.0% | 88.0% | 80.0% | $1.18 |
 | Claude Code Opus 4.8 vanilla | 83.9% | 81.8% | 87.0% | $1.33 |
 
-> **关键发现** 🔍：V4-Flash 在 Thunderdome 测评中以 **$0.033/trial（试验）** 的成本达到了 **85.0% overall（综合）**，与 Opus 4.8 v8-combined（85.8%，$1.29/trial）几乎打平，但成本仅为后者的 **1/39**。这是目前所有 standalone model（独立模型）中 cost-quality tradeoff（成本-质量权衡）的 Pareto optimal point（帕累托最优点）。
+> **关键发现** 🔍：V4-Flash 在 Thunderdome 测评中以 **\$0.033/trial（试验）** 的成本达到了 **85.0% overall（综合）**，与 Opus 4.8 v8-combined（85.8%，$1.29/trial）几乎打平，但成本仅为后者的 **1/39**。这是目前所有 standalone model（独立模型）中 cost-quality tradeoff（成本-质量权衡）的 Pareto optimal point（帕累托最优点）。
 
 **参考资料：**
 
