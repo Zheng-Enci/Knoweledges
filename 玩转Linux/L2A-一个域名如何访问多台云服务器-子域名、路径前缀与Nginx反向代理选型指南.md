@@ -14,8 +14,8 @@
 
 这个想法对了一半。DNS 确实支持给同一个 Host Record（主机记录）配置多条 A Record，并采用 Round Robin（轮询）或 Weight（权重）策略返回不同 IP，但它的分发能力极其粗暴：
 
-- **DNS 只看域名，不看 URL Path（路径）** 🔍：`example.com/blog` 和 `example.com/api` 在 DNS 眼里是同一个名字 `example.com`，它压根不知道你想按路径分流
-- **DNS 不看 HTTP Header（请求头）** 🙈：它工作在 Application Layer（应用层）之下，连你发的是 GET 还是 POST 都无从知晓
+- **DNS 只看域名，不看 URL Path（路径）** 🔍：`example.com/blog` 和 `example.com/api` 在 DNS 眼里是同一个名字 `example.com`，按路径分流这件事它压根不知道
+- **DNS 不看 HTTP Header（请求头）** 🙈：它工作在 Application Layer（应用层）之下，连请求发的是 GET 还是 POST 都无从知晓
 - **DNS Round Robin 没有健康检查** ⚠️：某台 Server 挂了，DNS 依然会把 User（用户）导过去，只能干等 TTL（Time To Live，生存时间）过期
 
 阿里云官方文档对解析记录字段的定义也印证了这一点——Host Record（主机记录）就是 Domain（域名）的前缀部分：`www.example.com` 的主机记录是 `www`，`@` 代表主域名本身，`*` 代表 Wildcard Resolution（泛解析）。也就是说，**DNS 的分流粒度是「域名前缀」，而不是「URL」** ✅
@@ -31,12 +31,12 @@
 
 把整个链路想象成一个大型小区：
 
-- **Domain（域名）** = 小区名称「幸福里」，写在你导航 App 里
-- **DNS** = 导航系统，只能把你带到 **小区正门** 🚪
+- **Domain（域名）** = 小区名称「幸福里」，写在导航 App 里
+- **DNS** = 导航系统，只能把人带到 **小区正门** 🚪
 - **多台 ECS（云服务器）** = 小区里的 1 号楼（博客）、2 号楼（API）、3 号楼（后台管理）
-- **Nginx 入口层** = 门口保安 👮，他会看你的 **访客牌（Host Header）** 或 **你要办的业务（URL Path）** ，再告诉你去几号楼
+- **Nginx 入口层** = 门口保安 👮，他会看 **访客牌（Host Header）** 或 **要办的业务（URL Path）**，再指路去几号楼
 
-导航（DNS）永远只能送你到门口，进小区之后去哪栋楼，**必须由保安（Nginx）二次分发** ——这就是 Reverse Proxy（反向代理）存在的根本原因 💡
+导航（DNS）永远只能送到门口，进小区之后去哪栋楼，**必须由保安（Nginx）二次分发** ——这就是 Reverse Proxy（反向代理）存在的根本原因 💡
 
 ```mermaid
 graph LR
@@ -75,11 +75,11 @@ Nginx 拿到这个 Header 后，就能用 `server_name` Directive（指令）做
 
 ## 2. ⚔️ 四方案全景对比：前缀、后缀、子域名、负载均衡到底怎么选
 
-> 📖 **Note（提示）：** 先看清全貌，再钻细节——本章回答你最初的四个疑问
+> 📖 **Note（提示）：** 先看清全貌，再钻细节——本章回答最常见的四个疑问
 
-你问的「加前缀？后缀？子域名？Nginx 转发？」其实混了两个层面的概念，先把它们摆正 🧐：
+「加前缀？后缀？子域名？Nginx 转发？」其实混了两个层面的概念，先把它们摆正 🧐：
 
-| 你的说法 | 技术术语 | 分流依据 | 谁来干活 |
+| 常见说法 | 技术术语 | 分流依据 | 谁来干活 |
 |---------|---------|---------|---------|
 | 加前缀 / 子域名 | Subdomain（子域名），如 `blog.example.com` | Host Header（主机头） | DNS + Nginx `server_name` |
 | 加后缀 | Path Prefix（路径前缀），如 `example.com/blog` | URI Path（请求路径） | 只能靠 Nginx `location` |
@@ -237,7 +237,7 @@ curl -H "Host: blog.example.com" http://127.0.0.1/ -I     # 本地伪造 Host �
 
 ### 3.4 泛解析 + 通配 `server_name`：批量子域名的偷懒大法 😴
 
-如果你在做多租户 SaaS（每个客户一个子域名），一个个加 DNS Record 和 `server` 块会累到手抽筋。这时可以「DNS 泛解析 + Nginx 正则 `server_name`」组合拳 👊
+做多租户 SaaS（每个客户一个子域名）时，一个个加 DNS Record 和 `server` 块会累到手抽筋。这时可以「DNS 泛解析 + Nginx 正则 `server_name`」组合拳 👊
 
 ```nginx
 # /etc/nginx/conf.d/tenant.conf —— 多租户通配配置 🏢
@@ -260,7 +260,7 @@ server {                                                  # 单个 server 块服
 
 子域名方案最爽的一点：**一张 `*.example.com` 的泛域名证书，可以覆盖所有同级子域名**，不用为 `blog`、`api`、`admin` 各申请一张 🎁
 
-但有个硬性前提——Let's Encrypt 规定：**签发泛域名证书必须通过 DNS-01 Challenge（DNS 验证）**，也就是要在你的 DNS 里添加一条 `_acme-challenge.example.com` 的 TXT Record（文本记录）来证明域名所有权。HTTP-01（放文件到网站根目录）那套在泛域名场景下无效 ❌
+但有个硬性前提——Let's Encrypt 规定：**签发泛域名证书必须通过 DNS-01 Challenge（DNS 验证）**，也就是要在域名的 DNS 里添加一条 `_acme-challenge.example.com` 的 TXT Record（文本记录）来证明域名所有权。HTTP-01（放文件到网站根目录）那套在泛域名场景下无效 ❌
 
 用 `acme.sh` 配合阿里云 DNS API 可以实现全自动签发与续期 👇
 
@@ -309,7 +309,7 @@ server {                                                  # HTTP 强制跳转 HT
 }
 ```
 
-⚠️ **Wildcard Hosts ≠ Wildcard Certificates** 🚨：Nginx 里配了 `server_name *.example.com` 只代表「愿意接受这些域名的 HTTP 请求」，跟 TLS 证书毫无关系。想让 `*.example.com` 跑 HTTPS，**必须真的持有一张泛域名证书**，否则浏览器会毫不客气地甩你一个 `NET::ERR_CERT_COMMON_NAME_INVALID` 🙄
+⚠️ **Wildcard Hosts ≠ Wildcard Certificates** 🚨：Nginx 里配了 `server_name *.example.com` 只代表「愿意接受这些域名的 HTTP 请求」，跟 TLS 证书毫无关系。想让 `*.example.com` 跑 HTTPS，**必须真的持有一张泛域名证书**，否则浏览器会毫不客气地甩出一个 `NET::ERR_CERT_COMMON_NAME_INVALID` 🙄
 
 ### 3.6 备案（ICP Filing）边界：子域名到底要不要单独备案 🇨🇳
 
@@ -354,7 +354,7 @@ server {                                                  # HTTP 强制跳转 HT
 
 ### 4.1 核心认知：DNS 根本不认识路径 🙈
 
-你问「加后缀行不行」——先泼一盆温柔的冷水 🚿：`example.com/blog/` 和 `example.com/api/` 在 DNS 眼里是 **同一个名字**，解析记录里压根没有「路径」这个字段。路径分流发生在 HTTP 请求到达 Server **之后**，由 Nginx 的 `location` 指令完成。
+有人问「加后缀行不行」——先泼一盆温柔的冷水 🚿：`example.com/blog/` 和 `example.com/api/` 在 DNS 眼里是 **同一个名字**，解析记录里压根没有「路径」这个字段。路径分流发生在 HTTP 请求到达 Server **之后**，由 Nginx 的 `location` 指令完成。
 
 所以路径前缀方案 **天然是统一入口架构**：域名只解析一条 A Record 指向入口机，剩下的全交给 Nginx 👇
 
@@ -586,7 +586,7 @@ example.com:9000  →  🖥️ ECS-3 后台管理
 - **用户得记端口号** 🙄：URL 丑且反人类，`example.com:8080` 怎么看都不像一个正经网站
 - **安全组必须放行每个端口** 🔓：8080、9000 全部暴露公网，攻击面（Attack Surface）直接翻倍
 - **非标端口不能规避备案** ⚠️：ICP 备案看的是「域名解析指向中国内地 Server」这个事实，跟端口号无关，别抱侥幸心理
-- **部分企业防火墙封杀非标端口** 🚫：客户在公司网络里打不开你的 `:8080`，你连排查方向都没有
+- **部分企业防火墙封杀非标端口** 🚫：客户在公司网络里打不开 `:8080`，连排查方向都无从下手
 
 ✅ **正确用法**：仅限内网调试、临时联调、给同事发个预览链接。对外服务请老老实实走 80/443 + 反向代理。
 
@@ -685,7 +685,7 @@ example.com:9000  →  🖥️ ECS-3 后台管理
 | 阿里云个人测试证书（免费版） | 约 3 个月 | 每自然年 20 张 | ❌ 到期手动重新申请 | 临时测试、演示环境 |
 | 阿里云付费证书（Pro/DV/OV） | 6 个月 ~ 1 年 | 按购买 | 部分支持托管续期 | 企业生产、需要 SLA 与合规 |
 
-⚠️ Let's Encrypt 90 天有效期不是缺陷，是设计哲学——短周期 + 全自动续期，泄露了也很快作废。真正危险的是「手动续期 + 一年有效期」的组合：总有一个深夜，证书过期的告警把你从被窝里拽出来 😭
+⚠️ Let's Encrypt 90 天有效期不是缺陷，是设计哲学——短周期 + 全自动续期，泄露了也很快作废。真正危险的是「手动续期 + 一年有效期」的组合：总有一个深夜，证书过期的告警把运维从被窝里拽出来 😭
 
 ### 7.4 SNI：一个 IP 挂多张证书的黑科技 🪄
 
@@ -799,7 +799,7 @@ Server 迁移、方案切换时，按这份 checklist 走，能避开 90% 的「
 
 ### 8.5 全文总结 📌
 
-回到最初的问题——「一个阿里云域名 + 多台云服务器，怎么访问」🎯：
+回到本文开头的问题——「一个阿里云域名 + 多台云服务器，怎么访问」🎯：
 
 1. **DNS 只管「域名 → IP」**，路径、端口、Header 它一概不看，多机分流必须引入入口层（第 1 章）
 2. **「加前缀」= 子域名**，DNS 与 Nginx `server_name` 双层都能玩；**「加后缀」= 路径前缀**，只能靠 Nginx `location`，前端还要配合改 base（第 2-4 章）
