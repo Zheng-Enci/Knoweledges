@@ -163,6 +163,8 @@ graph TD
 
 ### 📊 第二阶段：文件系统与权限管理
 
+- [L2A-一个域名如何访问多台云服务器-子域名、路径前缀与Nginx反向代理选型指南](f:\BaiduSyncdisk\ZhengEnCi\Note\Knowledge\玩转Linux\L2A-一个域名如何访问多台云服务器-子域名、路径前缀与Nginx反向代理选型指南.md) - [掘金](https://juejin.cn/post/7685651354878525449) | [CSDN](https://blog.csdn.net/2301_79239314/article/details/165492560)
+
 ### ⚙️ 第三阶段：用户管理与进程控制
 
 ### 🏗️ 第四阶段：软件包管理与环境配置
