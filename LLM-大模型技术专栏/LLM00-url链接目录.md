@@ -23,6 +23,7 @@
 | **LLM13-2026年8月国内AI大模型性价比排行榜：DeepSeek涨价之后** | 掘金社区 | [2026年8月国内AI大模型性价比排行榜：DeepSeek涨价之后 -- 掘金](https://juejin.cn/post/7676262434967896114) | 2026-08-21 |
 | **LLM18-DeepSeek V4 Flash Vision Exp 全面调研** | CSDN博客 | [DeepSeek V4 Flash Vision Exp 全面调研 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/164023783) | 2026-08-24 |
 | **LLM18-DeepSeek V4 Flash Vision Exp 全面调研** | 掘金社区 | [DeepSeek V4 Flash Vision Exp 全面调研 -- 掘金](https://juejin.cn/post/7677161347232169990) | 2026-08-24 |
+| **LLM20-2026年9月国内大模型排行：语言最强·语言性价比·多模态最强** | — | 待发布 | — |
 |---
 ---
 
@@ -45,3 +46,4 @@ LLM-大模型技术专栏 专注于大语言模型（LLM）的技术分析与应
 - 2026-08-11: 添加第九篇文档 "LLM09-为什么DeepSeek V4 Flash可以超过V4 Pro Preview" 链接
 - 2026-08-21: 添加第十三篇文档 "LLM13-2026年8月国内AI大模型性价比排行榜：DeepSeek涨价之后" 链接（CSDN + 掘金）
 - 2026-08-24: 添加第十八篇文档 "LLM18-DeepSeek V4 Flash Vision Exp 全面调研：好不好用、值不值得用、性价比高不高" 链接（CSDN + 掘金）
+- 2026-09-18: 添加第二十篇文档 "LLM20-2026年9月国内大模型排行：语言最强·语言性价比·多模态最强"（待发布）
