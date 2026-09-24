@@ -7,6 +7,12 @@ This article provides a comprehensive comparison between Mini Programs and Mini 
 
 ---
 
+## 全文摘要
+
+在微信生态中，小游戏是小程序的「游戏」类目——账号共用一套体系，但一级类目选择后不可更改；而在抖音开放平台，小程序与小游戏是两种并列的应用类型，各自走独立开发流程。技术层面，小程序基于 WebView + WXML/WXSS 以 Page 页面组织界面，小游戏基于 Canvas + game.js 以帧循环驱动画面，运行环境无 BOM/DOM，双方项目结构与解析入口完全不同。代码互用方面：小程序与小游戏账号相互隔离、格式互不兼容，不能互相上传；但游戏引擎（Cocos、Laya、Unity）+ 适配层让「一份源码、双端小游戏」成为现实——构建时选择微信或抖音目标，引擎自动消化 wx/tt 前缀 API 差异。核心结论可概括为「账号堵死，格式不同，引擎通天」：账号与格式的墙是平台的「安全边界」，引擎与适配层则是开发者的「自由通道」🎮
+
+---
+
 ## 术语表 / Terminology
 
 | 术语 / Term | 说明 / Description |
@@ -39,8 +45,6 @@ This article provides a comprehensive comparison between Mini Programs and Mini 
 ---
 
 ## 1. 微信小程序 vs 小游戏 🎮 / WeChat Mini Program vs Mini Game
-
-> 🎮 **Note:** 本章梳理微信平台小程序与小游戏在产品定位、账号类目、包体限制上的核心区别 / This chapter sorts out the core differences between Mini Programs and Mini Games on WeChat.
 
 ### 1.1 产品定位：小游戏是小程序的「一个类目」 📦
 
@@ -100,8 +104,6 @@ This article provides a comprehensive comparison between Mini Programs and Mini 
 
 ## 2. 抖音小程序 vs 小游戏 🎵 / Douyin Mini Program vs Mini Game
 
-> 🎵 **Note:** 本章对比抖音开放平台上小程序与小游戏的账号体系、类目规则与包体限制，并给出与微信的横向对比表 / This chapter compares the account system, category rules and package limits of Mini Programs and Mini Games on Douyin, providing a lateral comparison with WeChat.
-
 ### 2.1 抖音开放平台：小程序与小游戏并列 👥
 
 和微信「小游戏是小程序的一个类目」不同，抖音开放平台把 **小程序** 和 **小游戏** 作为两种并列的应用类型 👥 进入 `microapp.bytedance.com` 可以看到「小程序 / 小游戏 / 直播小玩法 / 移动应用 / 网站应用」等多个入口，各自走独立的开发流程 🎯
@@ -151,8 +153,6 @@ This article provides a comprehensive comparison between Mini Programs and Mini 
 ---
 
 ## 3. 技术架构差异 ⚙️ / Technical Architecture Differences
-
-> ⚙️ **Note:** 本章深入小程序与小游戏的渲染机制、项目结构、运行环境差异，为第 4 章代码互用分析打好技术基础 / This chapter dives into the rendering mechanisms, project structures and runtime differences between Mini Programs and Mini Games, laying the technical foundation for the interoperability analysis.
 
 ### 3.1 渲染机制：WebView vs Canvas 🖼️
 
@@ -217,8 +217,6 @@ This article provides a comprehensive comparison between Mini Programs and Mini 
 
 ## 4. 代码互用可行性分析 🔄 / Code Interoperability Analysis
 
-> 🔄 **Note:** 本章正式回答开头抛出的两个灵魂拷问：申请小程序能不能上传游戏引擎写的代码？申请游戏能不能用小程序的代码？答案按账号层、格式层、引擎层、跨平台层逐层拆解 / This chapter answers the two core questions raised at the beginning, breaking down the answer layer by layer: account, format, engine and cross-platform.
-
 ### 4.1 账号与 AppID：代码跟着类目走 🔑
 
 先说最硬的一条结论：**代码能不能传，第一关是账号类目，不是代码本身** 🔑 微信小游戏账号与小程序账号相互独立，一级类目「游戏」选定后不可更改；开发者工具的 AppID 决定它按「小程序」还是「小游戏」来解析你的代码包 🎯
@@ -282,8 +280,6 @@ Cocos 社区的 FAQ 记录了一个经典翻车现场：开发者拿小游戏构
 ---
 
 ## 5. 总结与选型建议 📌 / Summary & Selection Guide
-
-> 📌 **Note:** 本章用一张决策矩阵把全文收敛成可执行建议，并拆解三个高频误区，最后给出动手前的 check 清单 / This chapter converges the article into actionable recommendations with a decision matrix, debunks three common myths, and provides a pre-flight checklist.
 
 ### 5.1 一句话总结全文 🧭
 
