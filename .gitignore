@@ -5,3 +5,6 @@ git_diff.diff
 /其他/
 /English/
 /Live/
+
+# Trae MCP 配置含 Agent Plan API Key，不进行 git 跟踪（仅本地保存）
+/.trae/mcp.json
