@@ -9,3 +9,8 @@
 
 - [CSDN - AI Agent 记忆管理系统设计](https://blog.csdn.net/2301_79239314/article/details/163342087)
 - [掘金 - AI Agent 记忆管理系统设计](https://juejin.cn/post/7668204673983889418)
+
+## AI05-AI生成App原型图
+
+- [CSDN - AI 生成 App 原型图](https://blog.csdn.net/2301_79239314/article/details/167263636)
+- [掘金 - AI 生成 App 原型图](https://juejin.cn/post/7693748651006378010)
