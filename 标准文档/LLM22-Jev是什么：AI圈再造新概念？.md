@@ -6,26 +6,22 @@
 
 ## 目录
 
-- [全文摘要](#sec0)
-- [1. Jev 是什么：一个「不说人话」的 AI 模型](#sec1)
-- [2. System One Model（系统一模型）：从卡尼曼双系统到「判断型 AI」](#sec2)
-- [3. 工作机制：状态进、判断出](#sec3)
-- [4. 性能与实测：70-500ms 与「快 193 倍」的真相](#sec4)
-- [5. 争议与冷思考：「不会幻觉」是真是假](#sec5)
-- [6. 行业影响与展望](#sec6)
-- [7. 总结：Jev 不是 LLM 的替代品，而是程序的「判断协处理器」](#sec7)
+- 全文摘要
+- 1. Jev 是什么：一个「不说人话」的 AI 模型
+- 2. System One Model（系统一模型）：从卡尼曼双系统到「判断型 AI」
+- 3. 工作机制：状态进、判断出
+- 4. 性能与实测：70-500ms 与「快 193 倍」的真相
+- 5. 争议与冷思考：「不会幻觉」是真是假
+- 6. 行业影响与展望
+- 7. 总结：Jev 不是 LLM 的替代品，而是程序的「判断协处理器」
 
 ---
-
-<a id="sec0"></a>
 
 ## 全文摘要
 
 Jev 是 TypeSafe AI 在 2026 年 9 月发布的 System One Model（系统一模型）：不生成文本，只按预设类型返回 Choice（多选一）、Score（分级评分）、Noul（是非概率）三类结构化判断。它把 AI 判断变成程序里的 if 语句，但「不会幻觉」只等于「不会输出非法枚举值」，枚举内的自信错误依然存在。
 
 ---
-
-<a id="sec1"></a>
 
 ## 1. 🚀 Jev 是什么：一个「不说人话」的 AI 模型
 
@@ -81,8 +77,6 @@ TypeSafe AI 的故事之所以有戏剧性，是因为创始团队正好是「�
 
 ---
 
-<a id="sec2"></a>
-
 ## 2. 🧠 System One Model（系统一模型）：从卡尼曼双系统到「判断型 AI」
 
 要看懂 TypeSafe 的命名逻辑，得先回到 2011 年卡尼曼的那本《思考，快与慢》（Thinking, Fast and Slow）。这本书提出的 **Dual Process Theory（双过程理论）** 把人类认知拆成两套系统：
@@ -130,8 +124,6 @@ Jev 的「系统一」和传统 LLM（大语言模型） 的「System 1（系统
 - [Test-Time Compute：大模型推理的新范式 -- CSDN AI 编程社区](https://aicoding.csdn.net/6a686fa810ee7a33f29355f4.html)
 
 ---
-
-<a id="sec3"></a>
 
 ## 3. ⚙️ 工作机制：状态进、判断出
 
@@ -230,8 +222,6 @@ print(parse_choice(["同意", "拒绝"], {"同意": 0.68, "拒绝": 0.32}))
 
 ---
 
-<a id="sec4"></a>
-
 ## 4. 📊 性能与实测：70-500ms 与「快 193 倍」的真相
 
 把性能数字从营销语境里捞出来，分三步走：先看官方说了什么，再看官方没强调什么，最后看第三方量出来的结果 🕵️。
@@ -289,8 +279,6 @@ TypeSafe 官方口径如下 📋：
 
 ---
 
-<a id="sec5"></a>
-
 ## 5. ⚔️ 争议与冷思考：「不会幻觉」是真是假？
 
 Jev 刷屏的另一面，是 Hacker News 上两个讨论串里 400 多条评论的火力输出 🔥。这一章把社区的核心质疑摆开，也把乐观派的回应摆开——最后我自己站个队。
@@ -342,8 +330,6 @@ Schema（结构契约） 保证像「转账必到账」——到账是真的，�
 - [Jev: The Model That Can't Talk Took Over Dev Twitter in 72 Hours -- Aoyii](https://www.aoyii.com/en/jev-event-72-hours/)
 
 ---
-
-<a id="sec6"></a>
 
 ## 6. 🔭 行业影响与展望：RLHF（基于人类反馈的强化学习） 弯路论与「每美元智能」
 
@@ -408,8 +394,6 @@ LangChain 官方博客的观察很能说明问题：agent（智能体） loop（
 - [Building a Harness with Jev -- LangChain Blog](https://langchain.com/blog/building-a-harness-with-jev)
 
 ---
-
-<a id="sec7"></a>
 
 ## 7. 📌 总结：Jev 不是 LLM（大语言模型） 的替代品，而是程序的「判断协处理器」
 
