@@ -27,6 +27,8 @@
 | **LLM22-Jev是什么：AI圈再造新概念？** | CSDN博客 | [Jev 是什么：AI 圈再造新概念？一个不生成文字的 System One（系统一）决策模型 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/166686843) | 2026-09-26 |
 | **LLM24-多 Agent 系统如何复用 KV 缓存-前缀对齐比缓存开关更重要** | 掘金社区 | [多 Agent 系统如何复用 KV 缓存-前缀对齐比缓存开关更重要 -- 掘金](https://juejin.cn/post/7699072089819070474) | 2026-10-22 |
 | **LLM24-多 Agent 系统如何复用 KV 缓存-前缀对齐比缓存开关更重要** | CSDN博客 | [多 Agent 系统如何复用 KV 缓存-前缀对齐比缓存开关更重要 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/168750614) | 2026-10-22 |
+| **LLM25-MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比** | 掘金社区 | [MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比 -- 掘金](https://juejin.cn/post/7699836911887745074) | 2026-10-24 |
+| **LLM25-MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比** | CSDN博客 | [MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/168971266) | 2026-10-24 |
 ---
 
 ## 专栏简介
@@ -51,3 +53,4 @@ LLM-大模型技术专栏 专注于大语言模型（LLM）的技术分析与应
 - 2026-09-18: 添加第二十篇文档 "LLM20-2026年9月国内大模型排行：语言最强·语言性价比·多模态最强"（待发布）
 - 2026-09-28: 添加第二十二篇文档 "LLM22-Jev是什么：AI圈再造新概念？" 链接（CSDN）
 - 2026-10-22: 添加 "LLM24-多 Agent 系统如何复用 KV 缓存-前缀对齐比缓存开关更重要" 链接（CSDN + 掘金）
+- 2026-10-24: 添加 "LLM25-MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比" 链接（CSDN + 掘金）
