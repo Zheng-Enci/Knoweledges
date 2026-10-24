@@ -4,11 +4,28 @@
 
 ---
 
-## 全文摘要
+## 目录
 
-2026 年 9 月 15 日，前 OpenAI 研究员 Diogo Almeida 创办的 TypeSafe AI 发布了首个 System One Model（系统一模型）——**Jev** 🎯。它基于 Transformer 但刻意拒绝文本生成：输入一段非结构化状态（文本或 JSON）和若干预先定义好类型的问题，70-500ms 内直接返回 **Choice（多选一）、Score（分级评分）、Noul（是非概率）** 三类结构化判断与校准置信度，官方称比逐 token（词元） 生成的前沿 LLM（大语言模型） 快 40-200 倍，且「从构造上就不会幻觉」🚀。支撑这套输出的是 **RLCD（Reinforcement Learning for Calibrated Decisions，校准决策强化学习）** 训练与并行采样器——优化目标不是「让人类觉得说得好」，而是「概率在统计上诚实」⚖️。本文从 Jev 爆火现象切入，拆解 System One Model 的概念溯源（卡尼曼双系统理论）、接口设计与训练方法，再用第三方实测与 Hacker News 社区的核心质疑——「不会幻觉」可能只是「不会输出非法 schema（结构契约） 值」，schema（结构契约） 内的自信错误依然存在——来校准预期 🤔。核心结论：**Jev 不是要取代聊天式 LLM（大语言模型），而是把 AI 判断嵌入程序 if 语句的「决策协处理器」**；它能否站住脚，取决于校准概率在真实业务中的诚实度，而非营销页上的倍数 📌。
+- [全文摘要](#sec0)
+- [1. Jev 是什么：一个「不说人话」的 AI 模型](#sec1)
+- [2. System One Model（系统一模型）：从卡尼曼双系统到「判断型 AI」](#sec2)
+- [3. 工作机制：状态进、判断出](#sec3)
+- [4. 性能与实测：70-500ms 与「快 193 倍」的真相](#sec4)
+- [5. 争议与冷思考：「不会幻觉」是真是假](#sec5)
+- [6. 行业影响与展望](#sec6)
+- [7. 总结：Jev 不是 LLM 的替代品，而是程序的「判断协处理器」](#sec7)
 
 ---
+
+<a id="sec0"></a>
+
+## 全文摘要
+
+Jev 是 TypeSafe AI 在 2026 年 9 月发布的 System One Model（系统一模型）：不生成文本，只按预设类型返回 Choice（多选一）、Score（分级评分）、Noul（是非概率）三类结构化判断。它把 AI 判断变成程序里的 if 语句，但「不会幻觉」只等于「不会输出非法枚举值」，枚举内的自信错误依然存在。
+
+---
+
+<a id="sec1"></a>
 
 ## 1. 🚀 Jev 是什么：一个「不说人话」的 AI 模型
 
@@ -64,6 +81,8 @@ TypeSafe AI 的故事之所以有戏剧性，是因为创始团队正好是「�
 
 ---
 
+<a id="sec2"></a>
+
 ## 2. 🧠 System One Model（系统一模型）：从卡尼曼双系统到「判断型 AI」
 
 要看懂 TypeSafe 的命名逻辑，得先回到 2011 年卡尼曼的那本《思考，快与慢》（Thinking, Fast and Slow）。这本书提出的 **Dual Process Theory（双过程理论）** 把人类认知拆成两套系统：
@@ -112,6 +131,8 @@ Jev 的「系统一」和传统 LLM（大语言模型） 的「System 1（系统
 
 ---
 
+<a id="sec3"></a>
+
 ## 3. ⚙️ 工作机制：状态进、判断出
 
 Jev 的接口设计哲学可以浓缩成六个字：**状态进，判断出**。整条链路里没有「生成」这个动作，只有「映射」。
@@ -154,6 +175,48 @@ Jev 不用 RLHF（基于人类反馈的强化学习） 训练，用的是 TypeSa
 
 需要坦诚说明的是：**Jev 的完整训练配方没有公开，也尚未发布论文**。第三方技术作者根据官方描述复述的训练思路是——对采样出的概率分布打分，把网络往更高分的候选方向更新。可以对照的学术工作是 MIT CSAIL 的 **RLCR（Reinforcement Learning with Calibration Rewards，基于校准奖励的强化学习）**：用校准奖励训练模型输出置信度，在多个 benchmark（基准测试） 上把 calibration error（校准误差） 最多降低 90%——这说明「校准可以训练出来」在学术上有依据，但 Jev 的 RLCD（校准决策强化学习） 具体做得怎么样，目前只能听官方的 🤷。
 
+### 3.5 🧪 最小可运行实现：把三类原语解析成结构化结果
+
+Jev 的接口没有公开 SDK（软件开发工具包）细节，但三类原语的处理逻辑可以本地复现。下面这段只用标准库，直接跑：
+
+```python
+from dataclasses import dataclass
+from typing import Literal
+
+@dataclass
+class JevResult:
+    kind: Literal["choice", "score", "noul"]
+    value: object
+    confidence: float
+
+def parse_noul(prob: float, threshold: float = 0.5) -> JevResult:
+    return JevResult("noul", prob >= threshold, round(prob, 4))
+
+def parse_score(prob: float, lo: int = 1, hi: int = 5) -> JevResult:
+    value = lo + round(prob * (hi - lo))
+    return JevResult("score", min(max(value, lo), hi), round(prob, 4))
+
+def parse_choice(options: list[str], probs: dict[str, float]) -> JevResult:
+    best = max(options, key=lambda op: probs.get(op, 0.0))
+    return JevResult("choice", best, round(probs.get(best, 0.0), 4))
+
+print(parse_noul(0.92))
+print(parse_score(0.78))
+print(parse_choice(["同意", "拒绝"], {"同意": 0.68, "拒绝": 0.32}))
+```
+
+三个调用分别得到：Noul（是非概率）判断为 `True` 且置信度 0.92；Score（分级评分）落在 5 档中的第 4 档；Choice（多选一）选中概率更高的「同意」。
+
+### 3.6 🩺 常见问题对照（Symptom → Cause → Fix）
+
+| 症状（Symptom） | 原因（Cause） | 解法（Fix） |
+| --- | --- | --- |
+| 下游代码偶发解析失败 | 把结构化返回当自由文本，用正则去抓 | 直接读 schema（结构契约）字段，不做字符串匹配 |
+| 置信度 0.55 被直接当结论 | 忽略 calibration（校准），把概率当标签 | 设阈值分流，低于 0.6 转人工或追问 |
+| 号称零幻觉，业务上仍出错 | 「零幻觉」只保证枚举合法，不保证语义正确 | 在枚举值内部再做一层规则或二次校验 |
+| 换版本后字段对不上 | 字段名硬编码散落在业务代码里 | 用 dataclass 或 TypedDict 定义契约 |
+| 响应时间达不到官方区间 | 每次调用都重新传完整问题定义 | 问题定义固定复用，只让 state（状态）变化 |
+
 **参考资料：**
 
 - [Decoding Jev — Architecture, inference, and RLCD（校准决策强化学习） -- Navin Pai](https://navinpai.github.io/decoding-jev/) ⭐值得阅读
@@ -166,6 +229,8 @@ Jev 不用 RLHF（基于人类反馈的强化学习） 训练，用的是 TypeSa
 - [最火哑巴模型Jev加上微信，直接治好了我的低情商 -- 36氪](https://36kr.com/p/3992576831002240)
 
 ---
+
+<a id="sec4"></a>
 
 ## 4. 📊 性能与实测：70-500ms 与「快 193 倍」的真相
 
@@ -224,6 +289,8 @@ TypeSafe 官方口径如下 📋：
 
 ---
 
+<a id="sec5"></a>
+
 ## 5. ⚔️ 争议与冷思考：「不会幻觉」是真是假？
 
 Jev 刷屏的另一面，是 Hacker News 上两个讨论串里 400 多条评论的火力输出 🔥。这一章把社区的核心质疑摆开，也把乐观派的回应摆开——最后我自己站个队。
@@ -275,6 +342,8 @@ Schema（结构契约） 保证像「转账必到账」——到账是真的，�
 - [Jev: The Model That Can't Talk Took Over Dev Twitter in 72 Hours -- Aoyii](https://www.aoyii.com/en/jev-event-72-hours/)
 
 ---
+
+<a id="sec6"></a>
 
 ## 6. 🔭 行业影响与展望：RLHF（基于人类反馈的强化学习） 弯路论与「每美元智能」
 
@@ -339,6 +408,8 @@ LangChain 官方博客的观察很能说明问题：agent（智能体） loop（
 - [Building a Harness with Jev -- LangChain Blog](https://langchain.com/blog/building-a-harness-with-jev)
 
 ---
+
+<a id="sec7"></a>
 
 ## 7. 📌 总结：Jev 不是 LLM（大语言模型） 的替代品，而是程序的「判断协处理器」
 

@@ -4,11 +4,29 @@
 
 ---
 
-## 全文摘要
+## 目录
 
-MoE（混合专家模型）架构通过 Sparse Activation（稀疏激活）机制，在计算资源不显著增加的情况下实现模型规模的扩展。本文从 Routing（路由）机制出发，逐步拆解 MoE（混合专家模型） 的核心原理——从基础的 Router（路由器）到 Top-K（前 K 个）专家选择，再到 Weighted Sum（加权求和）。进一步分析普通 MoE（混合专家模型） 面临的「专家粗粒度」问题，以及 DeepSeek MoE 提出的 Fine-Grained Expert Segmentation（细粒度专家分割）与 Shared Expert Isolation（共享专家隔离）解法。核心批判在于：MoE（混合专家模型） 的专家并非人类理解的领域专家，而是隐空间中几何结构的 byproduct（副产品），Routing（路由）反映的是几何结构而非领域知识。基于此，本文澄清了「角色扮演提示词会激活特定专家」这一常见误解，指出 Style（风格）不等于 Capability（能力），人类倾向于将风格误读为能力，而角色扮演的效果更多来自对输出风格的约束，而非对特定专家的精准激活。
+- [全文摘要](#sec0)
+- [1. MoE 的核心问题：规模与计算资源的矛盾](#sec1)
+- [2. 基本机制：路由器与 Top-K（前 K 个）选择](#sec2)
+- [3. 普通 MoE 的困境：粗粒度专家与知识混杂](#sec3)
+- [4. DeepSeek MoE 的思路：细粒度专家分割与共享专家](#sec4)
+- [5. 专家专业化的迷思：路由反映的是几何结构](#sec5)
+- [6. 角色扮演与提示词的误解](#sec6)
+- [7. 风格与能力：为什么人类会把风格误读成能力](#sec7)
+- [8. 总结](#sec8)
 
 ---
+
+<a id="sec0"></a>
+
+## 全文摘要
+
+MoE（混合专家模型）用 Sparse Activation（稀疏激活）把模型规模做大，却不让算力等比膨胀：Router（路由器）打分、Top-K（前 K 个）选专家、Weighted Sum（加权求和）合成输出。但专家不是人类理解的领域专家，Routing（路由）反映的是隐空间几何结构，所以「角色扮演提示词能精准激活某个专家」只是误解。
+
+---
+
+<a id="sec1"></a>
 
 ## 1. 🚀 MoE（混合专家模型） 的核心问题：规模与计算资源的矛盾
 
@@ -27,6 +45,8 @@ MoE（混合专家模型） 的答案很巧妙——<strong>Sparse Activation（
 - [混合专家模型（MoE）全景解析 -- 博客园](https://www.cnblogs.com/SCCQ/p/19964631)
 
 ---
+
+<a id="sec2"></a>
 
 ## 2. ⚙️ MoE（混合专家模型） 的基本机制：路由器与 Top-K（前 K 个）选择
 
@@ -56,6 +76,46 @@ $$ \text{output} = \sum_{i \in \text{TopK}} \text{score}_i \cdot \text{Expert}_i
 
 MoE（混合专家模型） 训练中有一个著名难题——<strong>Load Collapse（负载坍塌）</strong>💥：Router（路由器）倾向于将大部分 token（词元）路由到少数几个 expert（专家），导致这些 expert（专家）越来越强，而其他 expert（专家）得不到训练信号，形成「强者愈强」的恶性循环。为了解决这个问题，训练时通常会添加<strong>Auxiliary Loss（辅助损失）</strong>来惩罚 Router（路由器）的不均衡行为，鼓励它均匀地分配 token（词元）到各个 expert（专家）。
 
+### 2.5 🧪 最小可运行实现
+
+把上面的公式落成代码只需二十行。下面这段可以直接跑，输出每个 token（词元）选中的专家编号和归一化权重。
+
+```python
+import torch
+import torch.nn as nn
+
+class TopKRouter(nn.Module):
+    def __init__(self, hidden_dim, n_experts, top_k=2):
+        super().__init__()
+        self.gate = nn.Linear(hidden_dim, n_experts, bias=False)
+        self.top_k = top_k
+
+    def forward(self, x):
+        scores = torch.softmax(self.gate(x), dim=-1)
+        weights, indices = torch.topk(scores, self.top_k, dim=-1)
+        weights = weights / weights.sum(dim=-1, keepdim=True)
+        return weights, indices
+
+torch.manual_seed(0)
+x = torch.randn(4, 8)
+router = TopKRouter(hidden_dim=8, n_experts=6, top_k=2)
+weights, indices = router(x)
+print(indices)
+print(weights.sum(dim=-1))
+```
+
+运行后 `indices` 每行给出该 token（词元）选中的 2 个 expert（专家）编号，`weights.sum(dim=-1)` 每行应输出 `1.0000`，说明归一化生效。
+
+### 2.6 🩺 常见问题对照（Symptom → Cause → Fix）
+
+| 症状（Symptom） | 原因（Cause） | 解法（Fix） |
+| --- | --- | --- |
+| 训练中大多数 token（词元）落到同一两个专家 | Load Collapse（负载坍塌），路由自我强化 | 加 Auxiliary Loss（辅助损失）惩罚不均衡 |
+| `topk` 后的权重加起来不等于 1 | 只取 Top-K（前 K 个）没有重新归一化 | `weights / weights.sum(dim=-1, keepdim=True)` |
+| 路由结果几乎不随输入变化 | gate 权重初始化异常或输入未归一化 | 检查 `nn.Linear` 初始化与输入 scale（尺度） |
+| 显存占用远高于同参数稠密模型 | 把所有专家都算了一遍，没按 K 切片 | 只对选中的 K 个 expert（专家）做前向 |
+| 推理速度没有提升 | 一个 batch（批处理）内的 token（词元）各选不同专家，无法合并计算 | 按专家分组后再做 grouped GEMM（分组矩阵乘） |
+
 **参考资料：**
 
 - [MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？-- 小林笔记](https://xiaolinnote.com/ai/llm/moe.html) ⭐值得阅读
@@ -65,6 +125,8 @@ MoE（混合专家模型） 训练中有一个著名难题——<strong>Load Col
 - [Mixture-of-Experts (MoE) LLMs -- Cameron R. Wolfe](https://cameronrwolfe.substack.com/p/moe-llms) ⭐值得阅读
 
 ---
+
+<a id="sec3"></a>
 
 ## 3. ⚠️ 普通 MoE（混合专家模型） 的困境：粗粒度专家与知识混杂
 
@@ -84,6 +146,8 @@ MoE（混合专家模型） 训练中有一个著名难题——<strong>Load Col
 - [DeepSeek MoE and V2 -- ChipStrat](https://www.chipstrat.com/p/deepseek-moe-and-v2)
 
 ---
+
+<a id="sec4"></a>
 
 ## 4. 💡 DeepSeek MoE 的思路：细粒度专家分割与共享专家
 
@@ -124,6 +188,8 @@ DeepSeek 的 MoE（混合专家模型） 技术路线一直在演进：
 
 ---
 
+<a id="sec5"></a>
+
 ## 5. 🤔 专家专业化的迷思：路由反映的是几何结构，而非领域知识
 
 在前面几章，我们一直在用「专家」这个词来描述 MoE（混合专家模型） 中的各个子网络。但这里有一个根本性的问题——**MoE（混合专家模型） 的专家真的专吗？它们真的是人类理解意义上的「领域专家」吗？**
@@ -159,6 +225,8 @@ DeepSeek 的 MoE（混合专家模型） 技术路线一直在演进：
 - [不是所有MoE 模型都适合专家卸载！揭示MoE 模型路由一致性的秘密 -- BAAI](https://hub.baai.ac.cn/view/52231)
 
 ---
+
+<a id="sec6"></a>
 
 ## 6. 🎭 角色扮演与提示词的误解：为什么不会精准激活特定专家
 
@@ -198,6 +266,8 @@ Role-Playing Prompt（角色扮演提示词）之所以有效，<strong>不是�
 - [LLM 中的角色扮演和个性化：两种角色的调查 -- AlphaXiv](https://www.alphaxiv.org/zh/overview/2406.01171v1)
 
 ---
+
+<a id="sec7"></a>
 
 ## 7. 🧠 风格与能力：为什么人类会把风格误读成能力
 
@@ -271,6 +341,8 @@ Role-Playing Prompt（角色扮演提示词）之所以有效，<strong>不是�
 - [Prompt最佳实践：如何编写一个合格的Prompt -- 百度千帆](https://qianfan.cloud.baidu.com/qianfandev/topic/267061)
 
 ---
+
+<a id="sec8"></a>
 
 ## 8. 📋 总结
 
