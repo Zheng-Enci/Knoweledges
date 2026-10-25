@@ -169,8 +169,8 @@ DeepSeek 的 MoE（混合专家模型） 技术路线一直在演进：
 
 **参考资料：**
 
-- [DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models -- arXiv](https://arxiv.org/html/2401.06066v1) ⭐值得阅读
-- [DeepSeek-V3 Technical Report -- arXiv](https://arxiv.org/html/2412.19437v1) ⭐值得阅读
+- [DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models -- arXiv](https://doi.org/10.48550/arXiv.2401.06066) ⭐值得阅读
+- [DeepSeek-V3 Technical Report -- arXiv](https://doi.org/10.48550/arXiv.2412.19437) ⭐值得阅读
 - [Fine-grained Expert 与Shared Expert 双柱设计的奠基之作 -- yudonglee.me](https://yudonglee.me/deepseekmoe-explained/)
 - [探秘Transformer系列之（29）--- DeepSeek MoE -- 博客园](https://www.cnblogs.com/rossiXYZ/p/18835426)
 - [DeepSeek-V3 Explained 2: DeepSeekMoE -- Shirley Li](https://ai.gopubby.com/deepseek-v3-explained-2-deepseekmoe-106cffcc56c1)
@@ -184,7 +184,7 @@ DeepSeek 的 MoE（混合专家模型） 技术路线一直在演进：
 
 ### 5.1 🔍 核心发现：路由反映几何结构
 
-2026 年的一篇论文《The Myth of Expert Specialization in MoEs》给出了一个非常直接的回答：<strong>MoE（混合专家模型） 的 Router（路由器）是 linear map（线性映射），expert（专家）的使用相似性完全由 hidden state（隐状态）的相似性决定，专业化是 representation space（表征空间）的几何结构的 emergent property（涌现属性），而不是路由架构本身的产物。</strong>
+2026 年的一篇论文《The Myth of Expert Specialization in MoEs》（arXiv:2604.09780，DOI: 10.48550/arXiv.2604.09780）给出了一个非常直接的回答：<strong>MoE（混合专家模型） 的 Router（路由器）是 linear map（线性映射），expert（专家）的使用相似性完全由 hidden state（隐状态）的相似性决定，专业化是 representation space（表征空间）的几何结构的 emergent property（涌现属性），而不是路由架构本身的产物。</strong>
 
 通俗地说：<strong>MoE（混合专家模型） 的 expert（专家）并不是针对「代码」、「数学」、「法律」等人类定义的领域进行分类的。</strong> Router（路由器）根据 token（词元）在隐空间中的位置来决定路由，而这个位置由训练数据中的统计模式决定，与人类认知中的「领域」没有必然对应关系。
 
@@ -197,6 +197,8 @@ DeepSeek 的 MoE（混合专家模型） 技术路线一直在演进：
 - **跨模型一致性**：不同模型回答相同问题时，expert（专家）的 overlap（重叠度）与回答完全不同问题时没有显著差异，大约在 60% 左右
 - **深层现象**：在 deeper layers（深层）中，语义上毫无关联的输入会激活几乎相同的 expert（专家），这种现象在 reasoning models（推理模型）中尤为明显
 
+> 📐 **证据口径说明**：上面四条是**定性观察 + 点估计**，不是统一定义下的可复现指标，读的时候要分清三层边界。第一，Mixtral 与 OpenMoE 两条出自不同论文，token（词元）采样量、统计的层范围、判「是否按 topic 专业化」的标准都不统一，结论方向一致但数值不可对齐。第二，`overlap（重叠度）约 60%` 强依赖 overlap 的定义——按 Top-1 命中率算与按专家集合的 Jaccard 相似度（Jaccard similarity）算，得到的数会明显不同，原文未交代采用哪种，也未给置信区间（confidence interval）。第三，「深层无关输入激活相同 expert」是单模型、单数据集上的一次观测，属于存在性证据（existence evidence），不能直接外推成所有 MoE（混合专家模型） 的普遍规律。这四条合起来只支持「不是按人类领域分工」这个定性判断，不支持把 60% 当作行业基准值引用。
+
 ### 5.3 🧩 这意味着什么？
 
 <strong>MoE（混合专家模型） 的 expert（专家）本质上是一种 computational division of labor（计算分工），而不是人类知识领域的映射。</strong> 每个 expert（专家）学到的是某种 token（词元）pattern（模式），而不是某个领域知识。
@@ -205,11 +207,11 @@ DeepSeek 的 MoE（混合专家模型） 技术路线一直在演进：
 
 **参考资料：**
 
-- [The Myth of Expert Specialization in MoEs: Why Routing Reflects Geometry, Not Necessarily Domain Expertise -- arXiv](https://arxiv.org/html/2604.09780v1) ⭐值得阅读
+- [The Myth of Expert Specialization in MoEs: Why Routing Reflects Geometry, Not Necessarily Domain Expertise -- arXiv](https://doi.org/10.48550/arXiv.2604.09780) ⭐值得阅读
 - [Mixture-of-Experts (MoE) LLMs -- Cameron R. Wolfe](https://cameronrwolfe.substack.com/p/moe-llms) ⭐值得阅读
 - [Explaining the Mixture-of-Experts (MoE) Architecture in Simple Terms -- Medium](https://medium.com/@mne/explaining-the-mixture-of-experts-moe-architecture-in-simple-terms-85de9d19ea73)
 - [Union-of-Experts: Experts in Mixture-of-Experts are Secretly Routers -- OpenReview](https://openreview.net/forum?id=Ksgiup7ZNZ)
-- [Advancing Expert Specialization for Better MoE -- NeurIPS](https://proceedings.neurips.cc/paper_files/paper/2025/file/4598de7d243d528e38eb0c5d8155fb52-Paper-Conference.pdf)
+- [Advancing Expert Specialization for Better MoE -- NeurIPS（会议论文集无 DOI，DOI 暂缺）](https://proceedings.neurips.cc/paper_files/paper/2025/file/4598de7d243d528e38eb0c5d8155fb52-Paper-Conference.pdf)
 - [不是所有MoE 模型都适合专家卸载！揭示MoE 模型路由一致性的秘密 -- BAAI](https://hub.baai.ac.cn/view/52231)
 
 ---
@@ -246,10 +248,10 @@ Role-Playing Prompt（角色扮演提示词）之所以有效，<strong>不是�
 
 **参考资料：**
 
-- [Role-Playing Agents Driven by Large Language Models -- arXiv](https://arxiv.org/html/2601.10122v1)
+- [Role-Playing Agents Driven by Large Language Models -- arXiv](https://doi.org/10.48550/arXiv.2601.10122)
 - [什么是角色扮演Prompt？为什么给AI设定身份能提升表现？-- 腾讯云](https://cloud.tencent.com/developer/article/2641045)
-- [Enhancing responses from large language models with role-playing prompts -- PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC12102839/)
-- [LLM 中的角色扮演和个性化：两种角色的调查 -- AlphaXiv](https://www.alphaxiv.org/zh/overview/2406.01171v1)
+- [Enhancing responses from large language models with role-playing prompts -- BMC Medical Informatics and Decision Making](https://doi.org/10.1186/s12911-025-03024-5)
+- [LLM 中的角色扮演和个性化：两种角色的调查 -- arXiv](https://doi.org/10.48550/arXiv.2406.01171)
 
 ---
 
@@ -295,7 +297,7 @@ Role-Playing Prompt（角色扮演提示词）之所以有效，<strong>不是�
 
 **参考资料：**
 
-- [ORPP: Self-Optimizing Role-playing Prompts to Enhance Language Models -- ACL](https://aclanthology.org/2025.emnlp-main.1453.pdf)
+- [ORPP: Self-Optimizing Role-playing Prompts to Enhance Language Models -- ACL（EMNLP 2025，DOI: 10.18653/v1/2025.emnlp-main.1453）](https://doi.org/10.18653/v1/2025.emnlp-main.1453)
 - [万字分享大模型角色扮演2025最新工作 -- 知乎](https://zhuanlan.zhihu.com/p/1933595417574080513)
 - [角色扮演大模型（RP-LLM）的深度技术剖析与演进 -- CSDN](https://adg.csdn.net/696f3593437a6b403369a3e2.html)
 
