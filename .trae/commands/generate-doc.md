@@ -2,7 +2,7 @@
 name: "文档生成"
 description: "文档生成的流程和要求"
 ---
-严格依据 **`.trae/rules/system-prompt.md`**（`项目根目录/.trae/rules/system-prompt.md`）、**`.trae/rules/联网搜索与参考链接规范.md`**（`项目根目录/.trae/rules/联网搜索与参考链接规范.md`）和 **标准文档文件夹**（`项目根目录/标准文档/`，即 `Knowledge/标准文档/`）下的标准文档生成一篇我所描述的文档 📄
+严格依据 **`.trae/rules/system-prompt.md`**（`项目根目录/.trae/rules/system-prompt.md`）、**`.trae/rules/联网搜索与参考链接规范.md`**（`项目根目录/.trae/rules/联网搜索与参考链接规范.md`）和 **样例文档**（`Transformer/04-缩放点积注意力代码实现.md`、`LLM-大模型技术专栏/LLM07-MoE 混合专家模型深度解析：从路由机制到专家专业化的迷思.md`、`LLM-大模型技术专栏/LLM22-Jev是什么：AI圈再造新概念？.md`）的写法生成一篇我所描述的文档 📄
 
 ## ✍️ Markdown 加粗与 Emoji 规范
 

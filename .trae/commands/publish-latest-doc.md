@@ -29,7 +29,6 @@ description: "全自动定位知识库中最新修改的文档，撰写吸引人
 find . -name "*.md" \
   -not -path "./.trae/*" \
   -not -path "./.git/*" \
-  -not -path "./标准文档/*" \
   -not -path "*/resources/*" \
   -not -name "README.md" \
   -not -name "*url链接目录*" \
@@ -40,7 +39,7 @@ find . -name "*.md" \
 
 - 🥇 取**修改时间最新**（mtime 最大）的一篇业务文档作为本次发布对象
 - 📋 输出前 5 名候选及时间，向用户报告最终选中的文档及理由
-- 🚫 排除项：`.trae/`、`标准文档/`、`resources/`、`README.md`、各类 `url链接目录`、临时草稿与 `.rendered.html`
+- 🚫 排除项：`.trae/`、`resources/`、`README.md`、各类 `url链接目录`、临时草稿与 `.rendered.html`
 
 ## 2️⃣ 解析标题与专栏
 

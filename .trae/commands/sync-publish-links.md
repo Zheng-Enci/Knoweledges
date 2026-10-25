@@ -24,7 +24,6 @@ description: "从掘金和 CSDN 获取最新发布文档的链接，仅收录审
 find . -name "*.md" \
   -not -path "./.trae/*" \
   -not -path "./.git/*" \
-  -not -path "./标准文档/*" \
   -not -path "*/resources/*" \
   -not -name "README.md" \
   -not -name "*url链接目录*" \
@@ -35,7 +34,7 @@ find . -name "*.md" \
 
 - 🥇 取 **mtime 最新**的一篇业务文档作为同步对象
 - 📋 展示前 5 名候选及时间，报告最终选中的文档及理由
-- 🚫 排除项：`.trae/`、`标准文档/`、`resources/`、`README.md`、各类 `url链接目录`、临时发布稿与 `.rendered.html`
+- 🚫 排除项：`.trae/`、`resources/`、`README.md`、各类 `url链接目录`、临时发布稿与 `.rendered.html`
 
 ## 2️⃣ 解析标题与专栏
 
