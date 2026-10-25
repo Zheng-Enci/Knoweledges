@@ -48,7 +48,11 @@ TypeSafe 把这类模型称为 **System One Model（系统一模型）**，官�
 | 平台原生支持 | Cloudflare、LangChain、LangFuse 几天内陆续跟进 |
 | 全面开放 | 爆火一周后（9 月下旬）移除 waitlist（候补名单），正式全面开放 |
 
-Vercel 这条尤其值得琢磨：一个基础设施平台，模型上线当天就被十分之一的付费团队接入，这待遇上一个属于 MCP（模型上下文协议） 协议的流行 😏。当然，**demo（演示） 狂欢和真实生产力之间隔着一整个 production（生产） 环境**——Chapter 4（第 4 章）、Chapter 5（第 5 章） 我会负责泼冷水 🧊。
+Vercel 这条尤其值得琢磨：一个基础设施平台，模型上线当天就被十分之一的付费团队接入，这待遇上一个属于 MCP（模型上下文协议） 协议的流行 😏。
+
+> 📐 **计数口径说明**：上表两个「项目数」不是同一层级的统计。`6 个克隆项目`统计的是**复刻 Jev 行为的 demo（演示）仓库**，`600 多个开源项目`统计的是**自称接入 Jev 的生态仓库**，前者大概率被后者包含，二者**不可相加**；`13%` 的分母是 Vercel AI Gateway 的付费团队总数，属单平台单日快照，不是全行业抽样。
+
+当然，**demo（演示） 狂欢和真实生产力之间隔着一整个 production（生产） 环境**——Chapter 4（第 4 章）、Chapter 5（第 5 章） 我会负责泼冷水 🧊。
 
 ### 1.2 🎭 幕后团队：亲手造出 RLHF（基于人类反馈的强化学习） 的人，回头给 RLHF（基于人类反馈的强化学习）「挑刺」
 
@@ -115,12 +119,12 @@ Jev 的「系统一」和传统 LLM（大语言模型） 的「System 1（系统
 
 **参考资料：**
 
-- [A Survey of Test-Time Compute: From Intuitive Inference to Deliberate Reasoning（推理） -- arXiv](https://arxiv.org/html/2501.02497) ⭐值得阅读
-- [Reasoning（推理） on a Spectrum: Aligning LLMs to System 1 and System 2 Thinking -- arXiv](https://arxiv.org/html/2502.12470)
+- [A Survey of Test-Time Compute: From Intuitive Inference to Deliberate Reasoning（推理） -- arXiv](https://doi.org/10.48550/arXiv.2501.02497) ⭐值得阅读
+- [Reasoning（推理） on a Spectrum: Aligning LLMs to System 1 and System 2 Thinking -- arXiv](https://doi.org/10.48550/arXiv.2502.12470)
 - [The 'System 2' LLM（大语言模型）: How Models Learn to Reason (o1, R1) -- alamrafiul.com](https://alamrafiul.com/posts/system2-llm-reasoning/)
 - [Just Like Your Brain, ChatGPT Solves Problems Better When It Slows Down -- Stanford GSB](https://www.gsb.stanford.edu/insights/just-your-brain-chatgpt-solves-problems-better-when-it-slows-down)
 - [How AI thinks: System 1 and System 2 in LLMs -- NeuralFlow](https://neuralflow.es/en/blog/how-ai-thinks-system-1-2/)
-- [Human-like intuitive behavior and reasoning（推理） biases emerged in large language models but disappeared in ChatGPT -- PMC](https://pmc.ncbi.nlm.nih.gov/articles/PMC10766525/)
+- [Human-like intuitive behavior and reasoning（推理） biases emerged in large language models but disappeared in ChatGPT -- Nature Computational Science](https://doi.org/10.1038/s43588-023-00527-x)
 - [Test-Time Compute：大模型推理的新范式 -- CSDN AI 编程社区](https://aicoding.csdn.net/6a686fa810ee7a33f29355f4.html)
 
 ---
@@ -165,7 +169,7 @@ Jev 不用 RLHF（基于人类反馈的强化学习） 训练，用的是 TypeSa
 
 换句话说，RLHF（基于人类反馈的强化学习） 教模型讨人喜欢，RLCD（校准决策强化学习） 教模型**欠债还钱**：报出来的每个概率都是一纸契约，事后要用观测结果对账 ⚖️。
 
-需要坦诚说明的是：**Jev 的完整训练配方没有公开，也尚未发布论文**。第三方技术作者根据官方描述复述的训练思路是——对采样出的概率分布打分，把网络往更高分的候选方向更新。可以对照的学术工作是 MIT CSAIL 的 **RLCR（Reinforcement Learning with Calibration Rewards，基于校准奖励的强化学习）**：用校准奖励训练模型输出置信度，在多个 benchmark（基准测试） 上把 calibration error（校准误差） 最多降低 90%——这说明「校准可以训练出来」在学术上有依据，但 Jev 的 RLCD（校准决策强化学习） 具体做得怎么样，目前只能听官方的 🤷。
+需要坦诚说明的是：**Jev 的完整训练配方没有公开，也尚未发布论文**。第三方技术作者根据官方描述复述的训练思路是——对采样出的概率分布打分，把网络往更高分的候选方向更新。可以对照的学术工作是 MIT CSAIL 的 **RLCR（Reinforcement Learning with Calibration Rewards，基于校准奖励的强化学习）**：用校准奖励训练模型输出置信度，在多个 benchmark（基准测试） 上把 calibration error（校准误差） 最多降低 90%。这个 90% 必须带口径读 📐：它是 RLCR 论文自有 benchmark（基准测试） 集合上的**最大降幅点估计**，论文未给出重复次数、方差与置信区间（confidence interval），既不是平均值，也不能外推成 Jev 的实测水平——它只证明「校准可以训练出来」在学术上有依据，Jev 的 RLCD（校准决策强化学习） 具体做得怎么样，目前只能听官方的 🤷。
 
 ### 3.5 🧪 最小可运行实现：把三类原语解析成结构化结果
 
@@ -236,6 +240,8 @@ TypeSafe 官方口径如下 📋：
 
 但同一场评测里藏着一个容易被标题党淹没的事实：**Jev 在四类工作流上的平均得分约 67.8%，而前沿模型在 68%-74% 区间**——也就是说，Jev 并没有更准，它的全部优势是**快和便宜**。更难得的是 TypeSafe 自己补了一句大实话：这些数字处于「预计实际收益的高端区间」，测试集还是自家模型能力团队做的，**更适合作为技术路线的早期参考** 🤝。创业公司主动给自家 benchmark（基准测试） 降调，这在 2026 年算是稀缺品质了。
 
+> 📐 **数字口径说明**：`193.6×` 与 `444.6×` 是 TypeSafe 自建 System One workflow（工作流） benchmark（基准测试） 上的**一次性点估计**，官方未公布重复次数、方差与置信区间（confidence interval），也没说明是均值还是最优值——它只对「该测试集 + 该基线配置」这一组合成立，换 workload（工作负载） 即失效；`67.8%` 与 `68%-74%` 出自**同一份评测内部**的对比，可直接相减，但不能与外部排行榜分数混用；`13%` 则是 Vercel AI Gateway 付费团队的单平台首日快照（见 1.1 节口径说明）。
+
 ### 4.2 🔍 「快 193 倍」的正确打开方式
 
 这个倍数的分母，是「让前沿 LLM（大语言模型） 逐 token（词元） 推理出同样的结构化判断」——包含长 prompt（提示词）、思维链 token（词元） 和一整秒级响应。打个比方 🚶：问「打车和自己走路哪个快」，如果目的地就在隔壁，走路当然完胜；**Jev 的整个赌注就是「Agent（智能体） 里的判断题，大部分目的地都在隔壁」**。它赌的不是模型能力，而是调用分布——高频、简单、类型化的判断占了 AI 调用量的大头。
@@ -252,6 +258,8 @@ TypeSafe 官方口径如下 📋：
 - **Ben Brady 的对比测试**：相对 Gemini，准确率 89.6% 的同时，平均延迟降 84%、成本降 88.5%。
 
 小结：**没有独立测试打脸官方叙事，但样本都偏窄**——多是单任务、单类型的判断，距离「全 workload（工作负载） 通用」还差得远。现阶段给它记一记「初步可信」的印象分，不过分 📝。
+
+> 📐 **证据独立性说明**：上面四组测试彼此**不可合并**。JEV-as-a-Judge 的数字同出一篇论文，是对 1000 次判决的延迟中位数与总费用统计，倍数可自行复算：\$0.390 ÷ \$0.044 ≈ 8.9（文中取整为「约 9 倍」）、\$12.182 ÷ \$0.044 ≈ 276.9（取整为「约 277 倍」）；DEV Community 与 Ben Brady 的测试任务、基线各不相同，只能与各自内部的对照组比较，跨组比较没有意义。四份来源均未交代重复次数与置信区间（confidence interval），所以「四组都支持」只能记为方向一致，不等于「四组独立复现」。
 
 ### 4.4 ⚖️ 一张表决定你的场景要不要上 Jev
 
@@ -271,8 +279,8 @@ TypeSafe 官方口径如下 📋：
 - [Jev 为什么突然火了?它想把 Agent（智能体） 里的大量 LLM（大语言模型） 调用干掉 -- 腾讯云开发者社区](https://cloud.tencent.com/developer/article/2748203)
 - [比 LLM（大语言模型） 快 193 倍、输出 token（词元） 免费：Jev 的"判断模型"路线靠谱吗? -- 人人都是产品经理](https://www.woshipm.com/ai/6467184.html)
 - [Jev全量开放：速度快193倍、成本低444倍，这个只做"选择题"的模型火了 -- 华尔街见闻](http://m.toutiao.com/group/7687822159389065770/)
-- [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure -- arXiv](https://arxiv.org/pdf/2609.26550) ⭐值得阅读
-- [Jev for Scientific Decisions: Evaluating Semantic Choices and Their Consequences -- arXiv](https://arxiv.org/pdf/2609.24965)
+- [JEV-as-a-Judge: Accept When Confident, Escalate When Unsure -- arXiv](https://doi.org/10.48550/arXiv.2609.26550) ⭐值得阅读
+- [Jev for Scientific Decisions: Evaluating Semantic Choices and Their Consequences -- arXiv](https://doi.org/10.48550/arXiv.2609.24965)
 - [I Benchmarked Jev on Agent（智能体） Tool-Call Risk. Calibration（校准） Held. -- DEV Community](https://dev.to/webofmike/i-benchmarked-jev-on-agent-tool-call-risk-calibration-held-49i3)
 - [Jev is an honest game changer. -- Ben Brady](https://benbrady.dev/blog/jev-is-an-honest-game-changer/)
 - [Jev vs LLM（大语言模型）: What Jev Is and When to Use It (Benchmarks（基准测试）) -- OpenRouter Blog](https://openrouter.ai/blog/tutorials/jev-vs-llm-when-to-use-each/)
@@ -281,7 +289,7 @@ TypeSafe 官方口径如下 📋：
 
 ## 5. ⚔️ 争议与冷思考：「不会幻觉」是真是假？
 
-Jev 刷屏的另一面，是 Hacker News 上两个讨论串里 400 多条评论的火力输出 🔥。这一章把社区的核心质疑摆开，也把乐观派的回应摆开——最后我自己站个队。
+Jev 刷屏的另一面，是 Hacker News 上两个讨论串合计 **456 条评论**的火力输出 🔥（该数字为两串相加的总数，原报道未拆分单串条数，也无法按「独立质疑」去重）。这一章把社区的核心质疑摆开，也把乐观派的回应摆开——最后我自己站个队。
 
 ### 5.1 🎭 「Zero Hallucinations」（零幻觉）的文字游戏
 
