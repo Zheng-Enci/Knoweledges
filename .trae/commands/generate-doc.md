@@ -2,7 +2,7 @@
 name: "文档生成"
 description: "文档生成的流程和要求"
 ---
-严格依据 **`.trae/rules/system-prompt.md`**（`项目根目录/.trae/rules/system-prompt.md`）、**`.trae/rules/联网搜索与参考链接规范.md`**（`项目根目录/.trae/rules/联网搜索与参考链接规范.md`）和 **样例文档**（`数据库技术/PostgreSQL 数据库技术详解.md`、`Java-SpringBoot框架技术/SpringBoot配置文件完全指南-从入门到精通.md`、`Python-基础技术/P6A-FastAPI项目结构完全指南-从零基础到企业级应用的Python Web开发利器.md`）的写法生成一篇我所描述的文档 📄
+严格依据 **`.trae/rules/system-prompt.md`**（`项目根目录/.trae/rules/system-prompt.md`）、**`.trae/rules/联网搜索与参考链接规范.md`**（`项目根目录/.trae/rules/联网搜索与参考链接规范.md`）和 **样例文档**（见 `.trae/rules/文档写作铁律.md` 的 T7）的写法生成一篇我所描述的文档 📄
 
 ## ✍️ Markdown 加粗与 Emoji 规范
 
