@@ -300,7 +300,11 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
    - 不把全文塞进描述：既撞上限，又触发 PM 模型回滚
    - 用 `browser_fill` 一次写完，禁止分段多次 `insertText`
 5. **自主声明**：点 `LABEL.semi-radio` 索引 1（内容为个人观点或见解）→ 再点弹窗内 `SPAN「确定」`
-6. **音乐**：图文页有「选择音乐」入口，图片上传前点不动；不配乐则跳过，不阻塞
+6. **背景音乐（强制，不可跳过）**：图片全部上传后，点「选择音乐 / 点击添加合适作品风格音乐」→ 面板选曲 → 确认，页面出现已选曲目名才算完成
+   - 图片上传前该入口点不动，属正常现象，先传图再点
+   - 未成功选到音乐**禁止点「发布」**：先查入口是否可见、面板是否加载，必要时重开页面重来，不得以「不阻塞」为由省略
+   - 选曲口径：先判断文档调性 → 知识科普 / 说理类优先「推荐 / 热门榜」里的纯器乐（Lo-Fi、Chill、轻音乐，BPM 80–90、无强人声）；避开伤感古风、歌词人声、燃系卡点
+   - **已发布作品无法补配乐**：网页端「编辑作品」页没有音乐模块，唯一路径是删除旧作品 → 重新按本节完整发布（会损失播放与互动数据，发布前务必确认已选曲）
 7. 确认 N 张图全部可见 → 点「发布」
    - 报 `Click target intercepted`（`.emi-portal` 残留层）时改 JS 点击：`Array.from(document.querySelectorAll('button')).filter(b => b.innerText.trim() === '发布').forEach(b => b.click())`
 8. 发布后从「作品管理」取链接；取不到时记录作品 ID 与发布时间，**不伪造 URL**
@@ -349,6 +353,10 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 21 | 抖音 | 描述框内容重复堆叠、清空后计数器仍卡 `1000 / 1000`、后续输入被上限拒绝 | 描述框是 ACE / `editor-kit`（`.zone-container.editor-kit-container[contenteditable=true]`）：`execCommand('delete')`、合成 `KeyboardEvent`（Ctrl+A / Ctrl+Z）、`browser_type({clear:true})` 都只改 DOM，不回写模型 | 顺序固定：① `browser_evaluate` 对 `.zone-container` 调 `.focus()`（`browser_click` 点 ref 后 `activeElement` 仍是 `BODY`，点击无法聚焦）② `browser_press_key('Control+a')` ③ `browser_press_key('Backspace')`（残留 1 个零宽字符属正常）④ 用 `browser_type({ref,text})` 一次写入（`browser_fill` 报成功但 `innerText` 不变，禁用）⑤ 以页面计数器叶子节点文本 `136 / 1000` 为唯一真值复核 | 2026-10-27 |
 | 22 | 全平台 | 命令行执行 `python`、`py`、`python3` 全部报 `Python was not found` | 系统未把 Python 加进 `PATH`，环境装在桌面 `CodeEnvironment` 目录 | 用全路径 `C:\Users\zheng\OneDrive\Desktop\CodeEnvironment\miniconda3\python.exe`（3.14.7 + Pillow 13.0.0）；配套 Playwright 在 `CodeEnvironment\ms-playwright` | 2026-10-27 |
 | 23 | 全平台 | `list_pages` 报 `The browser is already running for ...\.cache\chrome-devtools-mcp\chrome-profile`，随后该 MCP 全部浏览器调用失败 | chrome-devtools MCP 独占 profile，与本机已开 Chrome 抢锁 | 改用 `integrated_code_mode` 的 `Exec`：`await tools.browser_evaluate/navigate/click/press_key`，输出必须 `text(String(r.content[0].text))`（`text(r)` 只会打印 `[object Object]`） | 2026-10-27 |
+| 24 | 抖音 | 音乐入口容器 `div.container-JngpiB` / `div.container-right-uW7Pj1` 点不动，面板不弹 | React 的 `onClick` 挂在内层子节点，事件只向上冒泡、不向下传递；父容器自身无 handler | 用 `browser_evaluate` 点真正带 handler 的子节点：`document.querySelector('span.action-Q1y01k').click()`（同级 `svg`、`div.cover-container-u0vBJr` 亦可）；用 `Object.keys(node).filter(k=>/^__reactProps/.test(k))` 可确认 handler 归属 | 2026-10-27 |
+| 25 | 抖音 | 搜索结果点行只切换试听，不写入已选曲目，发布页仍显示「选择音乐」 | 行容器 `div.card-container-tmocjc` 只绑定试听；应用动作在行内 `button.apply-btn-LUPP0D`（文案「使用」，hover 才显示） | `browser_evaluate` 里先 `song-name` 匹配到目标曲目 → `closest('div.card-container-tmocjc')` → 点该行 `button.apply-btn-LUPP0D`；成功后发布页显示「曲名 + 时长 + 修改音乐」 | 2026-10-27 |
+| 26 | 抖音 | 已发布图文想补背景音乐，进「作品管理 → 编辑作品」（`enter_from=edit_item`）后整页搜不到「音乐」 | 编辑页只开放标题 / 描述 / 封面等字段，不含音乐模块（`document.body.innerText.indexOf('音乐') === -1`） | 补配乐只能**删除旧作品 → 重新按第 9.2 节完整发布**；重发前必须先选好音乐，删除不可逆且会丢播放互动数据 | 2026-10-27 |
+| 27 | 抖音 | 音乐面板已打开，但用 `browser_snapshot({selector:'div.container-JngpiB'})` 返回 0 个可交互节点 | 该容器只做布局，内部交互元素未暴露为可交互 AX 节点 | 不对面板做 snapshot；直接在 `browser_evaluate` 里按类名取元素操作（搜索框 `input[placeholder="搜索音乐"]`、应用按钮 `button.apply-btn-LUPP0D`） | 2026-10-27 |
 
 **变体适配固定检查**（每种变体粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
@@ -357,7 +365,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 母稿 | 无 front-matter、H1 已删、Markdown 语法完整 |
 | `-知乎` | 表格 / 代码块是否渲染成 HTML；话题 ≤5 个 |
 | `-小红书` | 标题实时计数、已纯文本化、`#话题` 放在正文末尾 |
-| `-抖音` | 标题 ≤20 字、描述 ≤200 字并已纯文本化、3–5 张 1080x1440 卡片图已上传 |
+| `-抖音` | 标题 ≤20 字、描述 ≤200 字并已纯文本化、3–5 张 1080x1440 卡片图已上传、**背景音乐已选中** |
 
 ## 1️⃣1️⃣ 发布后汇报
 
@@ -387,6 +395,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 - 🚫 不拿母稿顶替缺失变体，也不把变体发到掘金 / CSDN：一稿一平台，错发即返工
 - ✍️ 摘要必须按第 3️⃣-2 节**重新撰写或取自 front-matter**：不得留空、不得沿用平台自动提取结果、不得直接复制正文首段
 - 🔗 配套资源链接必须完成第 4️⃣-2 节预热：未在浏览器里点开验证、或验证为 404 / 空白的链接，禁止发布
+- 🎵 抖音图文**必须配背景音乐**：未选中曲目不得点「发布」，本条优先于「非阻塞项跳过」的通用做法
 - 🛑 **任一平台失败即停**：按「掘金 → CSDN → 知乎 → 小红书 → 抖音」顺序推进，某一步失败后不再发起后续平台，汇报已完成清单 + 失败步骤 + 页面提示
 - 🧠 平台问题必须沉淀：遇到新 `issue` 并解决后，**立即**更新第 🔟 节问题库；只汇报不记录视为本次任务未完成
 - ✅ 发布已被用户**长期授权**：本 command 执行期间无需逐次确认，直接发布直至成功
