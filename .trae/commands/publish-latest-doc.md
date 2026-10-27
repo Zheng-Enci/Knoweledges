@@ -274,25 +274,28 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 ## 9️⃣ 发布到抖音（`-抖音` 变体）
 
-> ⚠️ **2026-10 改版后的发布形态**：网页端只剩「发布视频」与「发布图文」两个入口，**没有纯文字作品**（文字模式仅在 App 端提供）。描述框虽然标着 1000 字上限，但编辑器是 ProseMirror（`editor-kit`），长文本写入会回滚、清空后模型不同步。因此抖音一律走「正文做图」：把纯文本正文拆成 3–5 张竖版卡片图，按**图文作品**发布，描述只留短摘要 + 话题。
+> ⚠️ **2026-10 改版后的发布形态**：网页端只剩「发布视频」与「发布图文」两个入口，**没有纯文字作品**（文字模式仅在 App 端提供）。描述框虽然标着 1000 字上限，但编辑器是 ProseMirror（`editor-kit`），长文本写入会回滚、清空后模型不同步。因此抖音一律走「正文做图」：把 `-抖音.md` 的 `P01…PN` 各页原样转成竖版卡片图，按**图文作品**发布，描述只留短摘要 + 话题。
+
+> 🔒 **发布时文字零改动**：卡片文字必须与 `-抖音.md` 对应页**逐字一致**，不增删改任何文字、不重写、不润色、不调顺序。允许的处理只有排版类——**加粗**关键句、**着色 / 高亮**关键数字、分页、断行、把表格转成图表版式。需要改文字就回文档改，不在发布环节改。
 
 ### 9.1 卡片图规格 📐
 
 | 项 | 要求 |
 |---|---|
 | 尺寸 | `1080x1440`（3:4），全部卡片同一尺寸，避免平台混排裁切 |
-| 张数 | 3–5 张；首图承担封面职责（标题 + 核心数字），末图给结论 |
+| 张数 | 等于文档分页数 N：`P01…PN` 一页一卡，**不得合并、拆分、增删或改序**；`P01` 兼封面，`PN` 给结论 |
 | 风格 | 深色底（`#0B0D12`）+ 浅字，数字与结论用高饱和强调色；标题 ≥64px、正文 ≥34px |
-| 信息量 | 每张只讲一个观点，正文 ≤6 行；关键数字单独着色 |
-| 落盘 | `Temp/publish/card1.png` … `cardN.png`，发布完成后随临时文件一起清理 |
+| 信息量 | 每张只讲一个观点，正文 ≤10 行；关键数字单独着色 |
+| 落盘 | `Temp/publish/card1.png` … `cardN.png`（cardN 与 `PN` 一一对应），发布完成后随临时文件一起清理 |
 
-**生成方式**：用本机 Python + Pillow 绘制（解释器路径见第 2️⃣-2 节），字体 `msyh.ttc` + `consola.ttf`；也可用 Playwright 截 HTML。脚本用完即删，不在项目目录留 `.py`。
+**生成方式**：用本机 Python + Pillow 绘制（解释器路径见第 2️⃣-2 节），字体 `msyh.ttc` + `consola.ttf`；也可用 Playwright 截 HTML。脚本用完即删，不在项目目录留 `.py`。⚠️ 脚本只做**排版**：文字从对应页原样读取，禁止在脚本里重写、精简或补写文案。
 
 ### 9.2 发布步骤 🚀
 
 1. 打开 `https://creator.douyin.com/` → 「发布作品」→ 选 **发布图文**（直达 `https://creator.douyin.com/creator-micro/content/post/image`）
    - 弹「你还有上次未发布的图文，是否继续编辑？」时选**继续编辑**复用草稿
-2. 上传 `card1..N.png`，**一次性全部传完**（首图为卡片 1）
+2. 按 `P01 → PN` 顺序上传 `card1..N.png`，**一次性全部传完**（`card1` 即 `P01`）
+   - 张数必须等于文档页数：少一页或多一页即视为内容改动，回到文档对齐后重传
    - 通道：本地静态服务（`Temp/publish/serve.ps1`，`127.0.0.1:8899`）→ 页面内 `fetch` 取二进制 → `new File([blob],'cardN.png',{type:'image/png'})` → `DataTransfer` + 对上传区派发 `dragenter/dragover/drop`
    - 校验：页面出现 N 张缩略图、`点击上传` 文案消失
 3. **标题**：用 front-matter `title`，**实测上限 20 字**（早期记录的 30 字已失效）；超出时按「结论 + 关键数字」压缩，数字一个不删
@@ -384,8 +387,8 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 16 | 抖音 | 点「发布」后 toast 长期停在「正在发布」，URL 不跳转，「内容管理」无新作品 | 控制台出现 `auth.zijieapi.com/ucenter_web/app/second_verification_web/...?verify_reason=gateway_biz_verify_with_face&verify_scene=creator`，即平台要求**人脸二次验证**，`create_v2` 请求被挂起不返回 | 自动发布不可行：草稿（标题 / 描述 / 封面 / 自主声明）已完整保留，调用 `browser_waiting_for_user_interaction` 交用户过人脸/短信；**实测用户验证通过后页面自动跳 `content/manage?enter_from=publish`，作品即发布成功**，无需重发；管理列表必须整页刷新才显示新作品与正确数量（刷新前是旧快照，易误判为「没发出去」） | 2026-10-27 |
 | 17 | 抖音 | 「自主声明」选项点不动，报 `pointer-events: none` | 选项由 `.semi-radio` 单选组渲染在 portal 里，`LABEL.semi-radio` 内的 `SPAN` 与 `INPUT` 均被 CSS 置 `pointer-events: none`，Playwright 点 label 同样被拦 | 用 `browser_evaluate` 对 `label.semi-radio` 内的 `input` 调 `.click()`（索引 1 =「内容为个人观点或见解」），弹窗「确定」随即由 `disabled` 变 `enabled`，再点该「确定」关闭 | 2026-10-27 |
 | 18 | 抖音 | `browser_click` 点「发布」报 `Click target intercepted`，Escape 关掉 `.emi-portal` 后仍拦截 | 音乐抽屉 `.emi-portal` 残留层让 Playwright 命中检测失败，ref 位置已失真 | 放弃 Playwright 点击，改 JS：`Array.from(document.querySelectorAll('button')).filter(b=>b.innerText.trim()==='发布').forEach(b=>b.click())` | 2026-10-27 |
-| 19 | 抖音 | 描述框超 1000 字上限，长文正文粘不进去 | 抖音图文描述上限 1000 字符（含话题与零宽字符） | **不再塞长文**：正文拆 3–5 张 1080x1440 卡片图，描述只写 ≤200 字摘要 + 话题（见第 9️⃣ 节）；清空描述只能用真实 `Control+A` + `Backspace`（`execCommand` / `Range` 只清 DOM 不清模型） | 2026-10-27 |
-| 20 | 抖音 | 网页创作中心找不到「发文字 / 文字作品」入口，只有「发布视频」「发布图文」 | 纯文字作品是 **App 端独有**能力（拍摄页「文字」模式），网页端不提供 | 长文一律转图片卡片：正文按观点拆 3–5 张深色卡片 → 按「发布图文」提交，首图兼作封面 | 2026-10-27 |
+| 19 | 抖音 | 描述框超 1000 字上限，长文正文粘不进去 | 抖音图文描述上限 1000 字符（含话题与零宽字符） | **不再塞长文**：正文按文档 `P01…PN` 一页一卡转成 1080x1440 卡片图（张数 = 页数，不可自行拆并），描述只写 ≤200 字摘要 + 话题（见第 9️⃣ 节）；清空描述只能用真实 `Control+A` + `Backspace`（`execCommand` / `Range` 只清 DOM 不清模型） | 2026-10-27 |
+| 20 | 抖音 | 网页创作中心找不到「发文字 / 文字作品」入口，只有「发布视频」「发布图文」 | 纯文字作品是 **App 端独有**能力（拍摄页「文字」模式），网页端不提供 | 长文一律转图片卡片：正文按 `P01…PN` 逐页转深色卡片（一页一卡，张数 = 页数）→ 按「发布图文」提交，`P01` 兼作封面 | 2026-10-27 |
 | 21 | 抖音 | 描述框内容重复堆叠、清空后计数器仍卡 `1000 / 1000`、后续输入被上限拒绝 | 描述框是 ACE / `editor-kit`（`.zone-container.editor-kit-container[contenteditable=true]`）：`execCommand('delete')`、合成 `KeyboardEvent`（Ctrl+A / Ctrl+Z）、`browser_type({clear:true})` 都只改 DOM，不回写模型 | 顺序固定：① `browser_evaluate` 对 `.zone-container` 调 `.focus()`（`browser_click` 点 ref 后 `activeElement` 仍是 `BODY`，点击无法聚焦）② `browser_press_key('Control+a')` ③ `browser_press_key('Backspace')`（残留 1 个零宽字符属正常）④ 用 `browser_type({ref,text})` 一次写入（`browser_fill` 报成功但 `innerText` 不变，禁用）⑤ 以页面计数器叶子节点文本 `136 / 1000` 为唯一真值复核 | 2026-10-27 |
 | 22 | 全平台 | 命令行执行 `python`、`py`、`python3` 全部报 `Python was not found` | 系统未把 Python 加进 `PATH`，环境装在桌面 `CodeEnvironment` 目录 | 用全路径 `C:\Users\zheng\OneDrive\Desktop\CodeEnvironment\miniconda3\python.exe`（3.14.7 + Pillow 13.0.0）；配套 Playwright 在 `CodeEnvironment\ms-playwright` | 2026-10-27 |
 | 23 | 全平台 | `list_pages` 报 `The browser is already running for ...\.cache\chrome-devtools-mcp\chrome-profile`，随后该 MCP 全部浏览器调用失败 | chrome-devtools MCP 独占 profile，与本机已开 Chrome 抢锁 | 改用 `integrated_code_mode` 的 `Exec`：`await tools.browser_evaluate/navigate/click/press_key`，输出必须 `text(String(r.content[0].text))`（`text(r)` 只会打印 `[object Object]`） | 2026-10-27 |
@@ -401,7 +404,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 母稿 | 无 front-matter、H1 已删、Markdown 语法完整 |
 | `-知乎` | 表格 / 代码块是否渲染成 HTML；话题 ≤5 个 |
 | `-小红书` | 标题实时计数、已纯文本化、`#话题` 放在正文末尾 |
-| `-抖音` | 标题 ≤20 字、描述 ≤200 字并已纯文本化、3–5 张 1080x1440 卡片图已上传、**背景音乐已选中** |
+| `-抖音` | 标题 ≤20 字、描述 ≤200 字并已纯文本化、卡片图张数 = 文档页数 N（`P01…PN` 一页一卡）且已上传、文字与文档逐字一致、**背景音乐已选中** |
 
 ## 1️⃣1️⃣ 发布后汇报
 
@@ -427,6 +430,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 ## ⚠️ 约束
 
 - 🚫 不修改原文档内容、不改文件名、不移动文件
+- 🔒 **发布环节不改正文，五个平台一体适用**：掘金、CSDN、知乎、小红书、抖音提交的**正文**必须与对应 `.md` 逐字一致；只允许排版类处理（加粗、着色 / 高亮、分页、断行、表格转图表、小红书与抖音的纯文本化）。要改文字就回文档改，改完再发。标题与摘要仍按第 3️⃣ 节处理——超限时只压缩、不新造信息
 - 🚫 不自动 `git push`
 - 🚫 不编造标签、分类或专栏名：一律来自正文、front-matter、历史文章或平台候选列表
 - 🚫 不拿母稿顶替缺失变体，也不把变体发到掘金 / CSDN：一稿一平台，错发即返工
