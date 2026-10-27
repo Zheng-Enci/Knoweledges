@@ -292,6 +292,17 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 6 | 小红书 | 底部「暂存离开」点不动：AX 树无该节点、Tab 序到不了、按元素中心坐标点击无响应 | 发布栏 `xhs-publish-btn` 是 closed shadow DOM，内部按钮脚本无法触达 | 内容留在编辑器里移交用户手点；禁点「发布」代替，禁刷新页面（刷新丢内容） | 2026-10-27 |
 | 7 | 抖音 | 点「扩展信息 → 选择音乐」后无任何弹层 | 图文作品未上传图片时，音乐入口不可用 | 先上传图片，再点「选择音乐 / 点击添加合适作品风格音乐」→ 弹面板选曲 | 2026-10-27 |
 | 8 | 抖音 | 点「暂存离开」后到「内容管理」翻不到草稿 | 抖音草稿不进内容管理列表（该页只有「作品」tab），只存在于发布页弹窗 | 重新进 `content/post/image`，在「你还有上次未发布的图文，是否继续编辑？」点「继续编辑」 | 2026-10-27 |
+| 9 | 全平台 | `browser_evaluate` 一律返回 `undefined`，无论脚本多简单 | 脚本里出现 `return` 关键字（含 `function(x){return ...}` 与箭头函数 block body），整个 evaluate 结果被吞 | 只写**单个表达式**：隐式返回箭头（`arr.filter(x => c).map(x => e)`）或赋值 `window.__x=function(el){...}`（无 return）；需要多语句用逗号表达式，仍不得含 `return` | 2026-10-27 |
+| 10 | 全平台 | `SyntaxError: Invalid regular expression: missing /` | 脚本里的 `/\n/g` 被解析成真实换行，正则失去结尾斜杠 | 禁止在 evaluate 里写 `\n` 正则，改用 `String.fromCharCode(10)` 配 `split/join` | 2026-10-27 |
+| 11 | 全平台 | 正文注入失败：远程剪贴板（`Set-Clipboard` + `Control+V`）只在本机生效 | 浏览器由扩展远程驱动，剪贴板不通 | 本地起静态服务（`serve.ps1`，`Access-Control-Allow-Origin: *`）→ 页面内 `fetch` 取纯文本写入全局变量 → `new DataTransfer()` + `new ClipboardEvent('paste',{clipboardData:dt,bubbles:true})` 派发到聚焦后的编辑器 | 2026-10-27 |
+| 12 | 全平台 | 封面图上传框是隐藏 file input，`upload_file` 与 click 均无响应 | 元素 `display:none` 或已游离 DOM，脚本取到的是被丢弃的实例 | 覆写 `HTMLInputElement.prototype.click` 捕获真实 input，再用 `DataTransfer` 合成 `File` 派发 `dragenter/dragover/drop` 到目标及祖先链；上传后以 `img.naturalWidth` 校验是否已进编辑器 | 2026-10-27 |
+| 13 | 全平台 | 单标签页报 `WebView is not ready yet (timeout after 5s)`，之后该 tab 全部操作失败 | 该 tab 的 renderer 已卡死，无法恢复 | `browser_tabs({action:'close',viewId})` 关掉 → `browser_tabs({action:'new'})` → 显式 `browser_navigate`（新建 tab 无 URL，直接 snapshot 会报 `No URL is loaded`）；工具名为 `browser_tabs`，**不存在** `browser_close_page` | 2026-10-27 |
+| 14 | 知乎 | 粘贴后加粗 / 表格 / 标题错位，或整段变纯文本 | 剪贴板类型给了 `text/plain`，编辑器不触发富文本转换 | 合成 paste 时 `DataTransfer` 里必须放 `text/html`（由 Markdown 转好的 HTML），再派发 `ClipboardEvent('paste')` | 2026-10-27 |
+| 15 | 知乎 | 话题面板找不到可点选项、`aria-expanded` 始终为 false | 面板受控状态未随输入刷新，open 状态缺失 | 话题为**非阻塞**项，最多 5 个；取不到就跳过话题直接发布，不因话题卡住 | 2026-10-27 |
+| 16 | 抖音 | 点「发布」后 toast 长期停在「正在发布」，URL 不跳转，「内容管理」无新作品 | 控制台出现 `auth.zijieapi.com/ucenter_web/app/second_verification_web/...?verify_reason=gateway_biz_verify_with_face&verify_scene=creator`，即平台要求**人脸二次验证**，`create_v2` 请求被挂起不返回 | 自动发布不可行：草稿（标题 / 描述 / 封面 / 自主声明）已完整保留，交用户人工过人脸后手点发布；不重复重试、不刷新发布页 | 2026-10-27 |
+| 17 | 抖音 | 「自主声明」选项点不动，报 `pointer-events: none` | 选项由 `.semi-radio` 单选组渲染在 portal 里，`span` 被禁用指针事件 | 点 `LABEL.semi-radio`（如索引 1 =「内容为个人观点或见解」），选完必须再点弹窗内 `SPAN「确定」` | 2026-10-27 |
+| 18 | 抖音 | `browser_click` 点「发布」报 `Click target intercepted`，Escape 关掉 `.emi-portal` 后仍拦截 | 音乐抽屉 `.emi-portal` 残留层让 Playwright 命中检测失败，ref 位置已失真 | 放弃 Playwright 点击，改 JS：`Array.from(document.querySelectorAll('button')).filter(b=>b.innerText.trim()==='发布').forEach(b=>b.click())` | 2026-10-27 |
+| 19 | 抖音 | 描述框超 1000 字上限，长文正文粘不进去 | 抖音图文描述上限 1000 字符（含话题与零宽字符） | 按「结论 + 关键数字」写 900–950 字精简稿发抖音，长文留在掘金 / 知乎；清空描述只能用真实 `Control+A` + `Backspace`（`execCommand` / `Range` 只清 DOM 不清模型） | 2026-10-27 |
 
 **变体适配固定检查**（每种变体粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
