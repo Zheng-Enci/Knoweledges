@@ -6,3 +6,8 @@
 - **CSDN**：[S10-蓝桥杯 17822 乐乐的积木塔](https://blog.csdn.net/2301_79239314/article/details/160509939)
 
 ---
+
+## S12-内存装不下怎么取Top100：外部排序与分布式Top-K的实测取舍
+
+- **掘金**：[内存装不下怎么取 Top 100：外部排序与分布式 Top-K 的实测取舍](https://juejin.cn/post/7700847997337567270)
+- **CSDN**：[内存装不下怎么取 Top 100：外部排序与分布式 Top-K 的实测取舍](https://blog.csdn.net/2301_79239314/article/details/169171222)
