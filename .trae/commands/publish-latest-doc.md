@@ -96,10 +96,23 @@ find . -name "*.md" \
 | 用途 | 尺寸 | 落盘路径 | 适用平台 |
 |---|---|---|---|
 | 横版 | `2560x1440`（16:9） | `Temp/<语义化主题>_2560x1440.png` | 掘金、CSDN、知乎 |
-| 竖版 3:4 | `1080x1440` | `Temp/<语义化主题>_1080x1440.png` | 小红书 |
-| 竖版 9:16 | `1080x1920` | `Temp/<语义化主题>_1080x1920.png` | 抖音 |
+| 竖版 3:4 | `1080x1440` | `Temp/<语义化主题>_1080x1440.png` | 小红书、抖音图文卡片 |
+| 竖版 9:16 | `1080x1920` | `Temp/<语义化主题>_1080x1920.png` | 抖音（仅视频作品；图文已改用 3:4，见第 9️⃣ 节） |
 
 **做法**：调用全局 `/生成图片` 指令（绝对路径 `C:\Users\zheng\.trae-cn\commands\生成图片.md`，不在本项目内）分别生成 3 张，默认不加水印；发布时用 `upload_file` 上传到各平台封面框。
+
+**🖥️ 本机 Python 环境（需要代码绘制图片时用）** 🔒：
+
+| 项 | 值 |
+|---|---|
+| 解释器 | `C:\Users\zheng\OneDrive\Desktop\CodeEnvironment\miniconda3\python.exe` |
+| 版本 | Python 3.14.7（Anaconda 打包版） |
+| 已装库 | Pillow 13.0.0 |
+| 字体 | `C:\Windows\Fonts\msyh.ttc`（微软雅黑）、`consola.ttf`（等宽） |
+| 调用方式 | **必须写全路径**：`python`、`py`、`python3` 都不在 `PATH` 上，直接调用会返回 `Python was not found` |
+| 相邻工具 | `CodeEnvironment\ms-playwright`（需要 HTML 截图时可用）、`CodeEnvironment\ffmpeg-*` |
+
+> ⚠️ 按 `Python命令行绘图规范.md`：一律用 `python -c` 内联执行，或在 `Temp/` 下写临时脚本、用完即删，**不得在项目目录留 `.py` 文件**。
 
 **吸引力公式（按优先级）** 🔥：
 
@@ -261,14 +274,43 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 ## 9️⃣ 发布到抖音（`-抖音` 变体）
 
-1. 打开 `https://creator.douyin.com/` → 「发布作品」→ 选择**图文**
-2. 上传图片 = **抖音竖版封面（9:16）**，作为首图
-3. **标题**：用 front-matter `title`（已按 30 字内写）；若超出，改用 front-matter `summary`
-4. **正文**：粘贴纯文本版；末尾追加 `#标签` 形式的话题，取自 front-matter `tags`
-5. **音乐** ⚠️：图文页确实有「选择音乐」，位置在**扩展信息**区（左侧标题 `.title-content-oaqcSp`，右侧动作 `.action-Q1y01k`，文案「选择音乐 / 点击添加合适作品风格音乐」）；但**图片未上传前点击不弹面板**，先传图再选；不需要配乐就跳过，不阻塞发布
-6. 按第 4 节确认图片可见 → 直接点「发布」
-7. 发布后从「作品管理」取作品链接；取不到时记录作品 ID 与发布时间，不伪造 URL
-8. **草稿** ⚠️：点「暂存离开」后跳 `content/upload?default-tab=3&enter_from=publish`；草稿**不在**「内容管理」列表里（该页只有「作品」一个 tab），只能下次进 `content/post/image` 时点弹窗「你还有上次未发布的图文，是否继续编辑？→ 继续编辑」恢复
+> ⚠️ **2026-10 改版后的发布形态**：网页端只剩「发布视频」与「发布图文」两个入口，**没有纯文字作品**（文字模式仅在 App 端提供）。描述框虽然标着 1000 字上限，但编辑器是 ProseMirror（`editor-kit`），长文本写入会回滚、清空后模型不同步。因此抖音一律走「正文做图」：把纯文本正文拆成 3–5 张竖版卡片图，按**图文作品**发布，描述只留短摘要 + 话题。
+
+### 9.1 卡片图规格 📐
+
+| 项 | 要求 |
+|---|---|
+| 尺寸 | `1080x1440`（3:4），全部卡片同一尺寸，避免平台混排裁切 |
+| 张数 | 3–5 张；首图承担封面职责（标题 + 核心数字），末图给结论 |
+| 风格 | 深色底（`#0B0D12`）+ 浅字，数字与结论用高饱和强调色；标题 ≥64px、正文 ≥34px |
+| 信息量 | 每张只讲一个观点，正文 ≤6 行；关键数字单独着色 |
+| 落盘 | `Temp/publish/card1.png` … `cardN.png`，发布完成后随临时文件一起清理 |
+
+**生成方式**：用本机 Python + Pillow 绘制（解释器路径见第 2️⃣-2 节），字体 `msyh.ttc` + `consola.ttf`；也可用 Playwright 截 HTML。脚本用完即删，不在项目目录留 `.py`。
+
+### 9.2 发布步骤 🚀
+
+1. 打开 `https://creator.douyin.com/` → 「发布作品」→ 选 **发布图文**（直达 `https://creator.douyin.com/creator-micro/content/post/image`）
+   - 弹「你还有上次未发布的图文，是否继续编辑？」时选**继续编辑**复用草稿
+2. 上传 `card1..N.png`，**一次性全部传完**（首图为卡片 1）
+   - 通道：本地静态服务（`Temp/publish/serve.ps1`，`127.0.0.1:8899`）→ 页面内 `fetch` 取二进制 → `new File([blob],'cardN.png',{type:'image/png'})` → `DataTransfer` + 对上传区派发 `dragenter/dragover/drop`
+   - 校验：页面出现 N 张缩略图、`点击上传` 文案消失
+3. **标题**：用 front-matter `title`，**实测上限 20 字**（早期记录的 30 字已失效）；超出时按「结论 + 关键数字」压缩，数字一个不删
+4. **描述**：≤200 字，写「一句话结论 + 一个关键数字 + 三个判断钩子」，末尾追加 `#标签` 话题（≤5 个）
+   - 不把全文塞进描述：既撞上限，又触发 PM 模型回滚
+   - 用 `browser_fill` 一次写完，禁止分段多次 `insertText`
+5. **自主声明**：点 `LABEL.semi-radio` 索引 1（内容为个人观点或见解）→ 再点弹窗内 `SPAN「确定」`
+6. **音乐**：图文页有「选择音乐」入口，图片上传前点不动；不配乐则跳过，不阻塞
+7. 确认 N 张图全部可见 → 点「发布」
+   - 报 `Click target intercepted`（`.emi-portal` 残留层）时改 JS 点击：`Array.from(document.querySelectorAll('button')).filter(b => b.innerText.trim() === '发布').forEach(b => b.click())`
+8. 发布后从「作品管理」取链接；取不到时记录作品 ID 与发布时间，**不伪造 URL**
+
+### 9.3 已知失败路径 🚫
+
+- **描述框被污染**（内容重复堆叠、计数器卡在 `1000 / 1000`）后不要原地抢救：`execCommand('delete')`、合成 `KeyboardEvent`（Ctrl+A / Ctrl+Z）、`browser_type({clear:true})` 都只改 DOM，PM 模型仍是旧文本 → 关掉该 tab、新建 tab 重开 `content/post/image`
+- **「暂存离开」** 后草稿不进「内容管理」列表（该页只有「作品」tab），只能从发布页弹窗「继续编辑」恢复
+- **点发布后长期停在「正在发布」** 且控制台出现 `gateway_biz_verify_with_face` → 平台要求人脸二次验证，转 `browser_waiting_for_user_interaction` 请用户过人脸，不重复重试
+
 
 ## 🔟 🧠 平台问题库（每次执行必读，解决后必更）
 
@@ -287,7 +329,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 1 | 掘金 / CSDN | 发出去的其实是抖音短文：标题 21 字、正文末尾带 `#话题` | 选文按 mtime 取最新 `.md`，`-抖音.md` 永远是最新的那个 | `find` 里加 4 条 `-not -name "*-平台名.md"` 排除；发布前校验变体 front-matter `source` 等于母稿完整文件名 | 2026-10-27 |
 | 2 | 掘金 / CSDN / 知乎 | 正文顶部多出 `platform:` `title:` `summary:` 等 YAML 行 | 变体首部 front-matter 没剥离就整篇粘贴 | 生成发布稿第 1 步先删 `---` 包裹的整段 YAML，母稿跳过本步 | 2026-10-27 |
 | 3 | 小红书 | 标题输入框实时计数变红、无法发布 | `-小红书.md` 的 `title` 44 字，超出输入框上限 | 按「结论 + 关键数字」压缩，数字一个不删，只删修饰词 | 2026-10-27 |
-| 4 | 抖音 | 摘要框超过 30 字上限，无法提交 | 变体摘要初稿 47 字 | 压到 30 字内，例如「同一段代码三种写法：改18/8/4行，读27/20/9行。」 | 2026-10-27 |
+| 4 | 抖音 | 标题输入框只能填 20 字，摘要/描述口径与早期记录对不上 | 平台改版：标题上限 **20 字**（不是 30 字），描述框上限 1000 字但不宜长文 | 标题按「结论 + 关键数字」压到 20 字内；描述改成 ≤200 字短摘要 + 话题，长文转图片卡片（见第 9️⃣ 节） | 2026-10-27 |
 | 5 | 小红书 | 图文发布页翻遍「内容设置 / 更多设置」都找不到音乐入口 | 小红书网页版图文发布不支持配乐，音乐只在 App 端提供 | 跳过音乐直接发布，不阻塞；需要配乐到 App 端补 | 2026-10-27 |
 | 6 | 小红书 | 底部「暂存离开」点不动：AX 树无该节点、Tab 序到不了、按元素中心坐标点击无响应 | 发布栏 `xhs-publish-btn` 是 closed shadow DOM，内部按钮脚本无法触达 | 内容留在编辑器里移交用户手点；禁点「发布」代替，禁刷新页面（刷新丢内容） | 2026-10-27 |
 | 7 | 抖音 | 点「扩展信息 → 选择音乐」后无任何弹层 | 图文作品未上传图片时，音乐入口不可用 | 先上传图片，再点「选择音乐 / 点击添加合适作品风格音乐」→ 弹面板选曲 | 2026-10-27 |
@@ -299,10 +341,14 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 13 | 全平台 | 单标签页报 `WebView is not ready yet (timeout after 5s)`，之后该 tab 全部操作失败 | 该 tab 的 renderer 已卡死，无法恢复 | `browser_tabs({action:'close',viewId})` 关掉 → `browser_tabs({action:'new'})` → 显式 `browser_navigate`（新建 tab 无 URL，直接 snapshot 会报 `No URL is loaded`）；工具名为 `browser_tabs`，**不存在** `browser_close_page` | 2026-10-27 |
 | 14 | 知乎 | 粘贴后加粗 / 表格 / 标题错位，或整段变纯文本 | 剪贴板类型给了 `text/plain`，编辑器不触发富文本转换 | 合成 paste 时 `DataTransfer` 里必须放 `text/html`（由 Markdown 转好的 HTML），再派发 `ClipboardEvent('paste')` | 2026-10-27 |
 | 15 | 知乎 | 话题面板找不到可点选项、`aria-expanded` 始终为 false | 面板受控状态未随输入刷新，open 状态缺失 | 话题为**非阻塞**项，最多 5 个；取不到就跳过话题直接发布，不因话题卡住 | 2026-10-27 |
-| 16 | 抖音 | 点「发布」后 toast 长期停在「正在发布」，URL 不跳转，「内容管理」无新作品 | 控制台出现 `auth.zijieapi.com/ucenter_web/app/second_verification_web/...?verify_reason=gateway_biz_verify_with_face&verify_scene=creator`，即平台要求**人脸二次验证**，`create_v2` 请求被挂起不返回 | 自动发布不可行：草稿（标题 / 描述 / 封面 / 自主声明）已完整保留，交用户人工过人脸后手点发布；不重复重试、不刷新发布页 | 2026-10-27 |
-| 17 | 抖音 | 「自主声明」选项点不动，报 `pointer-events: none` | 选项由 `.semi-radio` 单选组渲染在 portal 里，`span` 被禁用指针事件 | 点 `LABEL.semi-radio`（如索引 1 =「内容为个人观点或见解」），选完必须再点弹窗内 `SPAN「确定」` | 2026-10-27 |
+| 16 | 抖音 | 点「发布」后 toast 长期停在「正在发布」，URL 不跳转，「内容管理」无新作品 | 控制台出现 `auth.zijieapi.com/ucenter_web/app/second_verification_web/...?verify_reason=gateway_biz_verify_with_face&verify_scene=creator`，即平台要求**人脸二次验证**，`create_v2` 请求被挂起不返回 | 自动发布不可行：草稿（标题 / 描述 / 封面 / 自主声明）已完整保留，调用 `browser_waiting_for_user_interaction` 交用户过人脸/短信；**实测用户验证通过后页面自动跳 `content/manage?enter_from=publish`，作品即发布成功**，无需重发；管理列表必须整页刷新才显示新作品与正确数量（刷新前是旧快照，易误判为「没发出去」） | 2026-10-27 |
+| 17 | 抖音 | 「自主声明」选项点不动，报 `pointer-events: none` | 选项由 `.semi-radio` 单选组渲染在 portal 里，`LABEL.semi-radio` 内的 `SPAN` 与 `INPUT` 均被 CSS 置 `pointer-events: none`，Playwright 点 label 同样被拦 | 用 `browser_evaluate` 对 `label.semi-radio` 内的 `input` 调 `.click()`（索引 1 =「内容为个人观点或见解」），弹窗「确定」随即由 `disabled` 变 `enabled`，再点该「确定」关闭 | 2026-10-27 |
 | 18 | 抖音 | `browser_click` 点「发布」报 `Click target intercepted`，Escape 关掉 `.emi-portal` 后仍拦截 | 音乐抽屉 `.emi-portal` 残留层让 Playwright 命中检测失败，ref 位置已失真 | 放弃 Playwright 点击，改 JS：`Array.from(document.querySelectorAll('button')).filter(b=>b.innerText.trim()==='发布').forEach(b=>b.click())` | 2026-10-27 |
-| 19 | 抖音 | 描述框超 1000 字上限，长文正文粘不进去 | 抖音图文描述上限 1000 字符（含话题与零宽字符） | 按「结论 + 关键数字」写 900–950 字精简稿发抖音，长文留在掘金 / 知乎；清空描述只能用真实 `Control+A` + `Backspace`（`execCommand` / `Range` 只清 DOM 不清模型） | 2026-10-27 |
+| 19 | 抖音 | 描述框超 1000 字上限，长文正文粘不进去 | 抖音图文描述上限 1000 字符（含话题与零宽字符） | **不再塞长文**：正文拆 3–5 张 1080x1440 卡片图，描述只写 ≤200 字摘要 + 话题（见第 9️⃣ 节）；清空描述只能用真实 `Control+A` + `Backspace`（`execCommand` / `Range` 只清 DOM 不清模型） | 2026-10-27 |
+| 20 | 抖音 | 网页创作中心找不到「发文字 / 文字作品」入口，只有「发布视频」「发布图文」 | 纯文字作品是 **App 端独有**能力（拍摄页「文字」模式），网页端不提供 | 长文一律转图片卡片：正文按观点拆 3–5 张深色卡片 → 按「发布图文」提交，首图兼作封面 | 2026-10-27 |
+| 21 | 抖音 | 描述框内容重复堆叠、清空后计数器仍卡 `1000 / 1000`、后续输入被上限拒绝 | 描述框是 ACE / `editor-kit`（`.zone-container.editor-kit-container[contenteditable=true]`）：`execCommand('delete')`、合成 `KeyboardEvent`（Ctrl+A / Ctrl+Z）、`browser_type({clear:true})` 都只改 DOM，不回写模型 | 顺序固定：① `browser_evaluate` 对 `.zone-container` 调 `.focus()`（`browser_click` 点 ref 后 `activeElement` 仍是 `BODY`，点击无法聚焦）② `browser_press_key('Control+a')` ③ `browser_press_key('Backspace')`（残留 1 个零宽字符属正常）④ 用 `browser_type({ref,text})` 一次写入（`browser_fill` 报成功但 `innerText` 不变，禁用）⑤ 以页面计数器叶子节点文本 `136 / 1000` 为唯一真值复核 | 2026-10-27 |
+| 22 | 全平台 | 命令行执行 `python`、`py`、`python3` 全部报 `Python was not found` | 系统未把 Python 加进 `PATH`，环境装在桌面 `CodeEnvironment` 目录 | 用全路径 `C:\Users\zheng\OneDrive\Desktop\CodeEnvironment\miniconda3\python.exe`（3.14.7 + Pillow 13.0.0）；配套 Playwright 在 `CodeEnvironment\ms-playwright` | 2026-10-27 |
+| 23 | 全平台 | `list_pages` 报 `The browser is already running for ...\.cache\chrome-devtools-mcp\chrome-profile`，随后该 MCP 全部浏览器调用失败 | chrome-devtools MCP 独占 profile，与本机已开 Chrome 抢锁 | 改用 `integrated_code_mode` 的 `Exec`：`await tools.browser_evaluate/navigate/click/press_key`，输出必须 `text(String(r.content[0].text))`（`text(r)` 只会打印 `[object Object]`） | 2026-10-27 |
 
 **变体适配固定检查**（每种变体粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
@@ -311,7 +357,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 母稿 | 无 front-matter、H1 已删、Markdown 语法完整 |
 | `-知乎` | 表格 / 代码块是否渲染成 HTML；话题 ≤5 个 |
 | `-小红书` | 标题实时计数、已纯文本化、`#话题` 放在正文末尾 |
-| `-抖音` | 标题与摘要 ≤30 字、已纯文本化、9:16 首图已上传 |
+| `-抖音` | 标题 ≤20 字、描述 ≤200 字并已纯文本化、3–5 张 1080x1440 卡片图已上传 |
 
 ## 1️⃣1️⃣ 发布后汇报
 
