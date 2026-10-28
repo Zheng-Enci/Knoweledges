@@ -94,6 +94,8 @@ find . -name "*.md" \
 | 横版 | `2560x1440`（16:9） | `Temp/<语义化主题>_2560x1440.png` | 掘金、CSDN |
 | 竖版 3:4 | `1080x1440` | `Temp/<语义化主题>_1080x1440.png` | 抖音图文卡片（`P01` 兼封面，见第 7️⃣ 节） |
 
+> ⚠️ **横版是「缩略图工程」**：掘金 / CSDN 列表卡片里这张 16:9 图的实际展示宽度只有 **200–350 px**，字号按 `2560` 画布设计时很容易写成「只有原图看得清」，读者在信息流里看到的是一团糊。横版一切设计以「缩到 350 px 还读得出来」为唯一标准。
+
 **做法**：调用全局 `/生成图片` 指令（绝对路径 `C:\Users\zheng\.trae-cn\commands\生成图片.md`，不在本项目内）分别生成 2 张，默认不加水印；发布时用 `upload_file` 上传到各平台封面框。
 
 **🖥️ 本机 Python 环境（需要代码绘制图片时用）** 🔒：
@@ -115,7 +117,7 @@ find . -name "*.md" \
 2. **眼神引流**：主体视线指向标题文字或画面冲突点，读者的眼睛会跟着走。
 3. **高对比撞色**：主体与背景用互补色，优先 **黄+黑**（知识类最稳）、红+白；整体按「背景 80% 收敛、主体 20% 高饱和」分配。
 4. **给结果、藏方法（悬念）**：画面只呈现冲突的结果，不给出解法——例如「三种写法被硬塞进同一个入口导致连锁改动」，读者必须点进去才知道该怎么分层。
-5. **文字极简**：横版最多 5-7 个字，竖版最多 5 个字，粗黑体，字号不小于画布宽的 1/6，且不与文章标题重复。
+5. **文字要大，字少字大**：横版主标题 **5–7 个字、字号 ≥ 画布宽的 1/10**（`2560` 画布 → 实际 ≥ `256 px`）；副标题／数字 **字号 ≥ 画布宽的 1/18**（≥ `140 px`）；全图文字总量 ≤ 20 字。**字多就砍字，禁止靠缩小字号塞进去**。竖版最多 5 个字，字号 ≥ 画布宽的 1/8。粗黑体，且不与文章标题重复。
 6. **三元素上限**：主体 + 一个对比物 + 一行字，再多就糊成一团。
 
 **必须贴合文档** 🎯：
@@ -126,7 +128,8 @@ find . -name "*.md" \
 
 **落地检查** ✅：
 
-- 缩小到 300px 宽自查：主体、表情、那行字是否还看得清，看不清就重生成
+- **横版按 350 px 宽自查**（掘金 / CSDN 列表卡片的真实展示尺寸）：主标题折合字高 ≥ `35 px`、副标题 ≥ `19 px`，且不出现整段小字说明；看不清就**放大字号或砍字**后重出图，不得原样上架
+- **竖版缩到 300 px 宽自查**：主体、表情、那行字是否还看得清，看不清就重生成
 - 竖版额外检查：主体是否落在画布中央安全区，避免平台裁切
 - 封面图与正文图片互不影响：正文图仍按第 4 节处理
 
@@ -383,6 +386,8 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 25 | CSDN | 「发布文章」按钮点不动（`browser_click` 报不可见 / 命中失败） | 该按钮不在 `.modal__content` 内，且 `y≈909` 超出视口 | `document.getElementsByTagName('button')` 找 `textContent==='发布文章' && className.includes('btn-b-red')` 直接 `.click()`；跳转 `mp.csdn.net/mp_blog/creation/success/<id>` 即成功 | 2026-10-28 |
 | 26 | 抖音 | 卡片图注入 `input[type=file]` 后页面无反应 | 发布页有两个 file input：第 1 个是视频（`multiple=false`），第 2 个才是图片（`multiple=true`，accept 含 png/jpeg/webp/tif） | 取 `document.querySelectorAll('input[type=file]')[1]`，用 `fetch('http://127.0.0.1:8899/cardNN.png')` + `DataTransfer` 合成 `File` 一次赋给 `.files` 再派发 `change`；evaluate 返回 `undefined` 属正常，以 URL 跳到 `/content/post/image`、快照出现 N 组「查看 替换」为成功判据 | 2026-10-28 |
 | 27 | 抖音 | 音乐「使用」按钮类名失效（`button.apply-btn-LUPP0D` 已不存在），`browser_click` 点候选行报 `pointer-events: none` | 卡片结构改为 `div.card-wrapper-*`，应用按钮内层是 `span.semi-button-content`，未 hover 时 `y=0` | 在 `browser_evaluate` 里按文本定位 `div.card-wrapper-*` 行，再 `row.querySelectorAll('*')` 找 `textContent.trim()==='使用'` 的叶子节点 `.click()`；成功后发布页显示「曲名 + 时长 + 修改音乐」 | 2026-10-28 |
+| 28 | CSDN | 发布弹窗封面区已显示图片，发布后列表卡片与博客首页都没有封面 | 弹窗里显示的是 `data:image/png;base64` 本地预览，图片没上传到服务端；`vue-image-crop-upload` 裁切器必须再点一次「确认上传」才真正落库 | 唯一通过判据是出现 `https://i-blog.csdnimg.cn/direct/<hash>.png`：发布前读 `.preview-box.hasImg img` 的 `src`，以 `i-blog.csdnimg.cn` 开头才算完成，`base64` 一律视为未上传；发布后用 `mp.csdn.net/mp_blog/manage/article` 卡片 `.list-item-mp-left` 的 `background-image` 复核 | 2026-10-28 |
+| 29 | CSDN | 封面 file input 是 `display:none`，`browser_snapshot` 取不到 ref；给按钮 ref 调 `browser_upload_file` 报 `could not accept the file directly, and clicking it did not trigger a file chooser` | 隐藏元素的 AX 节点不进快照；裁切器「确认上传」是 `div.vicp-operate-btn`，无 button 语义，同样取不到 ref | ①`browser_evaluate` 把 `.cover-upload-box input.el-upload__input` 改成 `display:block;position:fixed;left:8px;top:8px;width:48px;height:48px;opacity:0.02` ②重新 snapshot 得到 `textbox` ref ③`browser_upload_file` 直传绝对路径（不走 `fetch`，避开 CORS）④给 `.vicp-operate-btn` 补 `role=button` + `aria-label` 再 snapshot 取 ref 并 click ⑤校验 `i-blog.csdnimg.cn` 直链 | 2026-10-28 |
 
 **变体适配固定检查**（粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
