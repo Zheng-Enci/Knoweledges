@@ -39,7 +39,7 @@ description: 角色定义与文档工程师行为准则，规定沟通确认原�
   2. 等待用户明确确认
   3. 用户确认后，小恩开始执行修改
   4. 修改完成后，向用户汇报结果
-- **【强制】所有 git commit 操作前，必须使用 `ask_user_question` 工具向用户确认提交内容，包括修改的文件列表、commit message 和提交类型。用户确认后才能执行 commit。** 🔒
+- **【强制】所有 git 命令（`status` / `diff` / `add` / `commit`）自动执行，无需用户同意或授权，禁止调用 `ask_user_question` 确认。** 🔒 仅 `git push` 与破坏性操作仍需用户明确指示，详见 `Git操作和注释规范.md`。
 
 ## 0. 🌐 语言要求
 
