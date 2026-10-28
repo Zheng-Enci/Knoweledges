@@ -1,15 +1,15 @@
 ---
 name: "发布最新文档"
-description: "全自动定位最新一篇文章组（母稿 + 知乎/小红书/抖音变体），撰写平台摘要、生成三种比例封面图，按平台分发到掘金、CSDN、知乎、小红书、抖音；专栏名取文件夹名；执行前先读平台问题库，新踩的坑解决后立即回写本文件；全程无需用户确认"
+description: "全自动定位最新一篇文章组（母稿 + 抖音变体），撰写平台摘要、生成封面图，按平台分发到掘金、CSDN、抖音；专栏名取文件夹名；执行前先读平台问题库，新踩的坑解决后立即回写本文件；全程无需用户确认"
 ---
 
 ## 📌 适用场景
 
-执行本 command 时，自动完成「找最新文章组 → 解析 4 个产出 → 生成 3 张封面 → 逐平台发布」全流程 🚀
-4 个产出由 `/文档生成` 固定生成：**母稿**（掘金 + CSDN）与 **3 个变体**（知乎 / 小红书 / 抖音），一个都不能少。
+执行本 command 时，自动完成「找最新文章组 → 解析 2 个产出 → 生成封面 → 逐平台发布」全流程 🚀
+2 个产出由 `/文档生成` 固定生成：**母稿**（掘金 + CSDN）与 **1 个变体**（抖音），一个都不能少。
 全程使用**内置浏览器**（browser / Chrome DevTools MCP）操作，不使用平台 API、不修改原文档 ✅
 
-**全自动授权** 🤖：从定位文章到点击发布，全部由 AI 自主决策并执行，**不询问用户、不等待确认**，最终目标是 5 个平台位全部发布成功。遇到不确定的信息，优先参考以下来源自行判断：
+**全自动授权** 🤖：从定位文章到点击发布，全部由 AI 自主决策并执行，**不询问用户、不等待确认**，最终目标是 3 个平台位全部发布成功。遇到不确定的信息，优先参考以下来源自行判断：
 
 1. 该账号**已发布的历史文章**（标题风格、标签、专栏归属、分类选择）
 2. 平台页面上的**推荐项与提示文案**（推荐标签、已有专栏列表、字数限制）
@@ -18,17 +18,15 @@ description: "全自动定位最新一篇文章组（母稿 + 知乎/小红书/�
 
 ## ✅ 前置条件
 
-0. **🧠 先读问题库**：通读第 🔟 节「平台问题库」，把命中本组变体的问题抄进临时 checklist；能先手规避的，不再试错一遍
+0. **🧠 先读问题库**：通读第 8️⃣ 节「平台问题库」，把命中本组变体的问题抄进临时 checklist；能先手规避的，不再试错一遍
 1. **🕐 获取当前时间**：执行 `date "+%Y-%m-%d %H:%M"`（Git Bash）
-2. **🌐 浏览器就绪**：依次确认 5 个站点已登录
+2. **🌐 浏览器就绪**：依次确认 3 个站点已登录
    - 掘金 `https://juejin.cn`
    - CSDN `https://www.csdn.net`
-   - 知乎 `https://www.zhihu.com`
-   - 小红书创作服务平台 `https://creator.xiaohongshu.com`
    - 抖音创作服务平台 `https://creator.douyin.com`
    - 未登录时才调用 `browser_waiting_for_user_interaction` 请用户扫码登录 🔐（登录属于唯一需要人工介入的环节）
    - 已登录则直接继续，不打扰用户
-3. **🧾 变体齐备**：3 个变体文件必须存在且 front-matter 完整；缺任一份按「任一失败即停」处理，不拿母稿顶替 🚫
+3. **🧾 变体齐备**：`-抖音.md` 必须存在且 front-matter 完整；缺失按「任一失败即停」处理，不拿母稿顶替 🚫
 
 ## 1️⃣ 定位最新文章组（Document Group）
 
@@ -51,17 +49,15 @@ find . -name "*.md" \
 ```
 
 - 🥇 取**母稿 mtime 最新**的一篇作为本轮发布对象，输出前 5 名候选及时间，报告最终选中项及理由
-- 🧩 由母稿路径推导整组 4 个文件，缺项直接标「未生成」：
+- 🧩 由母稿路径推导整组 2 个文件，缺项直接标「未生成」：
 
 | 产出 | 路径规则 | 发布平台 |
 |---|---|---|
 | 母稿 | 定位结果 | 掘金 + CSDN |
-| 变体 | `{母稿去扩展名}-知乎.md` | 知乎 |
-| 变体 | `{母稿去扩展名}-小红书.md` | 小红书 |
 | 变体 | `{母稿去扩展名}-抖音.md` | 抖音 |
 
 - 🚫 排除项：`.trae/`、`resources/`、`README.md`、各类 `url链接目录`、临时草稿与 `.rendered.html`
-- 🗂️ `*-腾讯云.md` 为历史遗留变体，已停止发布，保留在 `find` 排除列表里，防止被误当母稿选中
+- 🗂️ `*-知乎.md`、`*-小红书.md`、`*-腾讯云.md` 为历史遗留变体，已停止生成与发布，保留在 `find` 排除列表里，防止被误当母稿选中
 - ⚠️ **绝不允许**把变体文件当母稿发到掘金 / CSDN：变体按平台分发，母稿只走长文双平台
 
 ## 2️⃣ 解析标题、专栏与 front-matter
@@ -71,35 +67,34 @@ find . -name "*.md" \
 | **文章标题** | 文件名去扩展名 + 去编号前缀 | front-matter `title`（已按平台语法重写） |
 | **摘要** | 按 3️⃣-2 重写 | front-matter `summary`，仅按平台上限压缩 |
 | **标签** | 正文 + 文件夹名提取 | front-matter `tags` |
-| **专栏名** | 文档所在**文件夹名**（原样保留） | 同上（小红书 / 抖音无专栏，落成话题） |
+| **专栏名** | 文档所在**文件夹名**（原样保留） | 同上（抖音无专栏，落成话题） |
 
 - 🔢 编号前缀正则：`^[A-Za-z]{0,4}[0-9]+[A-Za-z0-9]{0,6}[-_ ]+`
 - 🧪 对照示例：
-  - `A04-AI时代什么样的程序员不会被淘汰-知乎.md` → 标题取 `title` 字段，文件名编号不进平台标题
+  - `A04-AI时代什么样的程序员不会被淘汰-抖音.md` → 标题取 `title` 字段，文件名编号不进平台标题
   - `J1C-IDE选择与使用-...` → `IDE选择与使用-...`
   - `09aaa-LayerNorm是什么？` → `LayerNorm是什么？`
   - `@Bean注解基础入门-...` → 无编号，保持不变
 - 🔗 **串台校验**：变体 front-matter 的 `source` 必须等于本组母稿完整文件名；不一致即视为串台，停止发布并在汇报里标注
-- 🏷️ 标签建议：掘金最多 3 个、CSDN 最多 5 个、知乎话题最多 5 个（均以页面提示剩余数量为准）
+- 🏷️ 标签建议：掘金最多 3 个、CSDN 最多 5 个（均以页面提示剩余数量为准）
 - 🎯 自主决策规则：
   - 掘金标签必须从输入框下方的**候选下拉项**中选择，输入后点击匹配项；匹配不到就换相近标签，不硬造
   - CSDN 允许 Enter 键入自定义标签，优先用正文里已写明的标签
   - 分类按正文技术栈选择（Java/Spring 类选「后端」，纯数据库选「后端」，前端框架选「前端」）
   - 专栏优先复用**已存在的同系列专栏**；确实不存在时才新建，名称取文件夹名
   - ✂️ 变体标题超出输入框实时计数上限时，按「**结论 + 关键数字**」压缩，语义不变；**不得新造数字**，母稿没有的数字一律不写
-- 🚫 抖音标题、摘要严格控制在 30 字内（front-matter 已按此写），小红书标题以页面实时计数为准
+- 🚫 抖音标题严格控制在 20 字内、摘要控制在 30 字内（front-matter 已按此写）
 
-## 2️⃣-2 🎨 生成封面图（三种比例）
+## 2️⃣-2 🎨 生成封面图（两种比例）
 
-刷信息流时用户只能看到三样东西：**标题、摘要、封面图**。三种比例各自独立生成，不能一张横图裁三个平台。
+刷信息流时用户只能看到三样东西：**标题、摘要、封面图**。两种比例各自独立生成，不能一张横图裁两个平台。
 
 | 用途 | 尺寸 | 落盘路径 | 适用平台 |
 |---|---|---|---|
-| 横版 | `2560x1440`（16:9） | `Temp/<语义化主题>_2560x1440.png` | 掘金、CSDN、知乎 |
-| 竖版 3:4 | `1080x1440` | `Temp/<语义化主题>_1080x1440.png` | 小红书、抖音图文卡片 |
-| 竖版 9:16 | `1080x1920` | `Temp/<语义化主题>_1080x1920.png` | 抖音（仅视频作品；图文已改用 3:4，见第 9️⃣ 节） |
+| 横版 | `2560x1440`（16:9） | `Temp/<语义化主题>_2560x1440.png` | 掘金、CSDN |
+| 竖版 3:4 | `1080x1440` | `Temp/<语义化主题>_1080x1440.png` | 抖音图文卡片（`P01` 兼封面，见第 7️⃣ 节） |
 
-**做法**：调用全局 `/生成图片` 指令（绝对路径 `C:\Users\zheng\.trae-cn\commands\生成图片.md`，不在本项目内）分别生成 3 张，默认不加水印；发布时用 `upload_file` 上传到各平台封面框。
+**做法**：调用全局 `/生成图片` 指令（绝对路径 `C:\Users\zheng\.trae-cn\commands\生成图片.md`，不在本项目内）分别生成 2 张，默认不加水印；发布时用 `upload_file` 上传到各平台封面框。
 
 **🖥️ 本机 Python 环境（需要代码绘制图片时用）** 🔒：
 
@@ -132,7 +127,7 @@ find . -name "*.md" \
 **落地检查** ✅：
 
 - 缩小到 300px 宽自查：主体、表情、那行字是否还看得清，看不清就重生成
-- 竖版两张额外检查：主体是否落在画布中央安全区，避免平台裁切
+- 竖版额外检查：主体是否落在画布中央安全区，避免平台裁切
 - 封面图与正文图片互不影响：正文图仍按第 4 节处理
 
 ## 3️⃣ 生成发布稿（不改原文档）
@@ -146,12 +141,12 @@ find . -name "*.md" \
    - `resources/P2L/photo/xx.png` → `https://raw.gitcode.com/ZhengEnCi/knoweledges/raw/master/Python-基础技术/resources/P2L/photo/xx.png`
    - 路径统一正斜杠 `/`，中文与空格做完整 URL 编码 ⚠️
 4. **🧾 其余内容原样保留**：不润色、不删改段落、不调整结构 🚫
-5. **📵 小红书 / 抖音额外做纯文本化**（这两个平台不渲染 Markdown）：
+5. **📵 抖音额外做纯文本化**（该平台不渲染 Markdown）：
    - 删掉 `**`、`##`、`>`、行内反引号，把标题降级成口语分段
    - 段间保留空行，避免挤成一坨
    - 话题统一写成 `#标签`，追加在正文末尾，取自 front-matter `tags`
    - 抖音标题取 front-matter `title`，正文直接用纯文本版
-6. **🧹 5 个平台位全部发布完成后删除临时发布稿**（中间产物不留存）
+6. **🧹 3 个平台位全部发布完成后删除临时发布稿**（中间产物不留存）
 
 ## 3️⃣-2 ✍️ 平台摘要撰写（必做，禁止用平台自动提取）
 
@@ -246,39 +241,13 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 7. 发布成功后 URL 形如 `https://blog.csdn.net/{user}/article/details/{articleId}`，以 `creation/success/{id}` 页面出现为准
 8. 发布后抽查：Mermaid 是否渲染为 SVG（正文不应残留 `erDiagram` 源码）、标签与专栏是否落库（查 `meta[name=keywords]`）、摘要是否是改写后的版本
 
-## 7️⃣ 发布到知乎（`-知乎` 变体）
-
-1. 打开 `https://zhuanlan.zhihu.com/write`
-2. 填**标题**（front-matter `title`）→ 正文区域粘贴发布稿（Markdown 粘贴后由编辑器转为富文本）
-3. 粘贴后抽查 3 处渲染：一级标题、加粗文本、表格；任一处错位就改用「Markdown 导入」入口重试一次
-4. **专栏按三分支处理** ⚠️：知乎专栏需要申请，不是每个号都能立刻拿到，因此**绝不因为专栏卡住发布**
-   - ① 已有同系列专栏 → 直接「收录至专栏」
-   - ② 有「创建专栏 / 申请专栏」入口 → 提交申请，名称取文件夹名；**提交后不等审核**，先按 ③ 走
-   - ③ 无入口、或申请提交后仍在审核 → **跳过专栏，正文照常发布**，汇报里标注「无专栏」，等审核结果出来后再回来「投稿到该专栏」补收录
-5. 添加**话题**（最多 5 个，优先用 front-matter `tags`）
-6. 有封面上传入口就传**横版封面图**；无入口则跳过，不阻塞发布
-7. 摘要按第 3️⃣-2 节用 front-matter `summary` 填入（若面板无摘要框则跳过）
-8. 发布后从「创作中心 → 文章管理」取 URL，形如 `https://zhuanlan.zhihu.com/p/{id}`
-
-## 8️⃣ 发布到小红书（`-小红书` 变体）
-
-1. 打开 `https://creator.xiaohongshu.com/publish/publish?source=official` → 选择**图文**发布
-2. 上传首图 = **小红书竖版封面（3:4）**；正文无图时这一张就是笔记封面，不得留空
-3. **标题**：用 front-matter `title`；若超出输入框实时计数上限，按「结论 + 关键数字」压缩，不得删掉数字
-4. **正文**：粘贴第 3️⃣ 节第 5 步处理过的**纯文本版**（已去 front-matter、去 Markdown 标记）
-5. **话题**：把 front-matter `tags` 写成 `#标签` 形式追加在正文末尾
-6. **音乐** ⚠️：网页版图文发布页**没有「选择音乐」入口**（设置区只有「内容设置」与「更多设置」两组，逐项为合集 / 原创声明 / 内容类型声明 / 组件 / 地点 / 群聊 / 引用笔记 / 投票 / 路线 / 文件 / 活动 / 允许正文复制 / 公开可见 / 定时发布），不要为找音乐反复翻面板；需要配乐到 App 端补
-7. 按第 4 节确认图片可见 → 直接点「发布」
-8. 发布后从「笔记管理」复制笔记链接；链接无法直接取时记录笔记 ID 与发布时间，不伪造 URL
-9. **草稿兜底** ⚠️：需要留草稿时点底部「暂存离开」，但它落在 `xhs-publish-btn` 的 closed shadow DOM 内，脚本点不到（AX 树无节点、Tab 序不可达、按元素中心坐标点击亦无响应）；此时**内容留在编辑器里移交用户手点**，不得用「发布」代替，也不得刷新页面，刷新即丢内容
-
-## 9️⃣ 发布到抖音（`-抖音` 变体）
+## 7️⃣ 发布到抖音（`-抖音` 变体）
 
 > ⚠️ **2026-10 改版后的发布形态**：网页端只剩「发布视频」与「发布图文」两个入口，**没有纯文字作品**（文字模式仅在 App 端提供）。描述框虽然标着 1000 字上限，但编辑器是 ProseMirror（`editor-kit`），长文本写入会回滚、清空后模型不同步。因此抖音一律走「正文做图」：把 `-抖音.md` 的 `P01…PN` 各页原样转成竖版卡片图，按**图文作品**发布，描述只留短摘要 + 话题。
 
 > 🔒 **发布时文字零改动**：卡片文字必须与 `-抖音.md` 对应页**逐字一致**，不增删改任何文字、不重写、不润色、不调顺序。允许的处理只有排版类——**加粗**关键句、**着色 / 高亮**关键数字、分页、断行、把表格转成图表版式。需要改文字就回文档改，不在发布环节改。
 
-### 9.1 卡片图规格 📐
+### 7.1 卡片图规格 📐
 
 | 项 | 要求 |
 |---|---|
@@ -290,7 +259,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 **生成方式**：用本机 Python + Pillow 绘制（解释器路径见第 2️⃣-2 节），字体 `msyh.ttc` + `consola.ttf`；也可用 Playwright 截 HTML。脚本用完即删，不在项目目录留 `.py`。⚠️ 脚本只做**排版**：文字从对应页原样读取，禁止在脚本里重写、精简或补写文案。
 
-### 9.1.1 封面专项自检 ✅（`P01` 兼封面，逐条打勾）
+### 7.1.1 封面专项自检 ✅（`P01` 兼封面，逐条打勾）
 
 抖音 feed 里封面只以约 **200px 宽**出现，`P01` 的设计目标是「让人停下来」，不是「把这一页的信息排完」。设计目标是**钩子**，不是**目录**。
 
@@ -303,9 +272,9 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 5 | 对比可量化 | 两个数字不能只并排：必须用砖块 / 进度条 / 面积差把倍数关系画出来（18 vs 4 要一眼看出是 4 倍多） | 补可视化元素 |
 | 6 | 双方案择优 | 每次至少出 **2 个构图不同**的封面方案，按 1–5 打分取高分者，另一方案不发布 | — |
 
-**铁律** 🔒：任一条 ❌ 不得进入 9.2 第 2 步上传。`P01` 与其余卡片同一尺寸同一风格，但自检口径按本表执行；本表只约束抖音，小红书竖版封面仍走第 2️⃣-2 节。
+**铁律** 🔒：任一条 ❌ 不得进入 7.2 第 2 步上传。`P01` 与其余卡片同一尺寸同一风格，但自检口径按本表执行。
 
-### 9.2 发布步骤 🚀
+### 7.2 发布步骤 🚀
 
 1. 打开 `https://creator.douyin.com/` → 「发布作品」→ 选 **发布图文**（直达 `https://creator.douyin.com/creator-micro/content/post/image`）
    - 弹「你还有上次未发布的图文，是否继续编辑？」时选**继续编辑**复用草稿
@@ -324,15 +293,15 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 6. **背景音乐（强制，不可跳过）**：图片全部上传后，点「选择音乐 / 点击添加合适作品风格音乐」→ 面板选曲 → 确认，页面出现已选曲目名才算完成
    - 图片上传前该入口点不动，属正常现象，先传图再点
    - 未成功选到音乐**禁止点「发布」**：先查入口是否可见、面板是否加载，必要时重开页面重来，不得以「不阻塞」为由省略
-   - 选曲规则见 **9.3 背景音乐选曲规范**：判定文档调性 → 按映射表定风格 → 从推荐 / 热门榜取纯器乐
+   - 选曲规则见 **7.3 背景音乐选曲规范**：判定文档调性 → 按映射表定风格 → 从推荐 / 热门榜取纯器乐
    - **已发布作品无法补配乐**：网页端「编辑作品」页没有音乐模块，唯一路径是删除旧作品 → 重新按本节完整发布（会损失播放与互动数据，发布前务必确认已选曲）
 7. 确认 N 张图全部可见 → 点「发布」
    - 报 `Click target intercepted`（`.emi-portal` 残留层）时改 JS 点击：`Array.from(document.querySelectorAll('button')).filter(b => b.innerText.trim() === '发布').forEach(b => b.click())`
 8. 发布后从「作品管理」取链接；取不到时记录作品 ID 与发布时间，**不伪造 URL**
 
-### 9.3 背景音乐选曲规范 🎵
+### 7.3 背景音乐选曲规范 🎵
 
-抖音图文**强制配乐**：没有 BGM 的作品完播与推荐都吃亏，且发布后无法补（见问题库第 26 条）。选曲不是凭感觉，按下面五步走。
+抖音图文**强制配乐**：没有 BGM 的作品完播与推荐都吃亏，且发布后无法补（见问题库第 21 条）。选曲不是凭感觉，按下面五步走。
 
 **第一步 · 判断文档调性**：看标题与正文的「表达目的」，不是看所属技术领域。
 
@@ -353,7 +322,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 - **时长 ≥ 作品时长**，不足 60 秒的曲目直接跳过（图文轮播 5 张通常要 1 分钟左右）
 - **优先使用人数高的曲目**：推荐 / 热门榜前列，平台分发更稳；冷门曲目可能触发版权或静音
 
-**第四步 · 操作路径**（细节与踩坑见问题库第 24、25、27 条）：
+**第四步 · 操作路径**（细节与踩坑见问题库第 19、20、22 条）：
 
 1. 图片全部上传后，点入口真身 `span.action-Q1y01k`（父容器 `div.container-JngpiB` 点不动）
 2. 面板分类：推荐 / 热门榜 / 收藏 / 飙升榜 / 原创榜 / 卡点 / 纯音乐 / 旅行 / DJ / 搞笑 / 流行 / 伤感
@@ -366,14 +335,14 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 **已发布作品无法补配乐**：网页端「编辑作品」页没有音乐模块，只能删除后重发。
 
-### 9.4 已知失败路径 🚫
+### 7.4 已知失败路径 🚫
 
 - **描述框被污染**（内容重复堆叠、计数器卡在 `1000 / 1000`）后不要原地抢救：`execCommand('delete')`、合成 `KeyboardEvent`（Ctrl+A / Ctrl+Z）、`browser_type({clear:true})` 都只改 DOM，PM 模型仍是旧文本 → 关掉该 tab、新建 tab 重开 `content/post/image`
 - **「暂存离开」** 后草稿不进「内容管理」列表（该页只有「作品」tab），只能从发布页弹窗「继续编辑」恢复
 - **点发布后长期停在「正在发布」** 且控制台出现 `gateway_biz_verify_with_face` → 平台要求人脸二次验证，转 `browser_waiting_for_user_interaction` 请用户过人脸，不重复重试
 
 
-## 🔟 🧠 平台问题库（每次执行必读，解决后必更）
+## 8️⃣ 🧠 平台问题库（每次执行必读，解决后必更）
 
 平台改版、输入框上限变化、变体格式差异，每次发布都会撞上新的 `issue`。靠记忆没用，写进本文件，下一次 `execute` 就能先手处理，而不是重新 `troubleshoot` 一遍。
 
@@ -388,74 +357,65 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | # | 平台 | 症状（哪一步报什么） | 原因 | 处理办法 | 更新日期 |
 |---|---|---|---|---|---|
 | 1 | 掘金 / CSDN | 发出去的其实是抖音短文：标题 21 字、正文末尾带 `#话题` | 选文按 mtime 取最新 `.md`，`-抖音.md` 永远是最新的那个 | `find` 里加 4 条 `-not -name "*-平台名.md"` 排除；发布前校验变体 front-matter `source` 等于母稿完整文件名 | 2026-10-27 |
-| 2 | 掘金 / CSDN / 知乎 | 正文顶部多出 `platform:` `title:` `summary:` 等 YAML 行 | 变体首部 front-matter 没剥离就整篇粘贴 | 生成发布稿第 1 步先删 `---` 包裹的整段 YAML，母稿跳过本步 | 2026-10-27 |
-| 3 | 小红书 | 标题输入框实时计数变红、无法发布 | `-小红书.md` 的 `title` 44 字，超出输入框上限 | 按「结论 + 关键数字」压缩，数字一个不删，只删修饰词 | 2026-10-27 |
-| 4 | 抖音 | 标题输入框只能填 20 字，摘要/描述口径与早期记录对不上 | 平台改版：标题上限 **20 字**（不是 30 字），描述框上限 1000 字但不宜长文 | 标题按「结论 + 关键数字」压到 20 字内；描述改成 ≤200 字短摘要 + 话题，长文转图片卡片（见第 9️⃣ 节） | 2026-10-27 |
-| 5 | 小红书 | 图文发布页翻遍「内容设置 / 更多设置」都找不到音乐入口 | 小红书网页版图文发布不支持配乐，音乐只在 App 端提供 | 跳过音乐直接发布，不阻塞；需要配乐到 App 端补 | 2026-10-27 |
-| 6 | 小红书 | 底部「暂存离开」点不动：AX 树无该节点、Tab 序到不了、按元素中心坐标点击无响应 | 发布栏 `xhs-publish-btn` 是 closed shadow DOM，内部按钮脚本无法触达 | 内容留在编辑器里移交用户手点；禁点「发布」代替，禁刷新页面（刷新丢内容） | 2026-10-27 |
-| 7 | 抖音 | 点「扩展信息 → 选择音乐」后无任何弹层 | 图文作品未上传图片时，音乐入口不可用 | 先上传图片，再点「选择音乐 / 点击添加合适作品风格音乐」→ 弹面板选曲 | 2026-10-27 |
-| 8 | 抖音 | 点「暂存离开」后到「内容管理」翻不到草稿 | 抖音草稿不进内容管理列表（该页只有「作品」tab），只存在于发布页弹窗 | 重新进 `content/post/image`，在「你还有上次未发布的图文，是否继续编辑？」点「继续编辑」 | 2026-10-27 |
-| 9 | 全平台 | `browser_evaluate` 一律返回 `undefined`，无论脚本多简单 | 脚本里出现 `return` 关键字（含 `function(x){return ...}` 与箭头函数 block body），整个 evaluate 结果被吞 | 只写**单个表达式**：隐式返回箭头（`arr.filter(x => c).map(x => e)`）或赋值 `window.__x=function(el){...}`（无 return）；需要多语句用逗号表达式，仍不得含 `return` | 2026-10-27 |
-| 10 | 全平台 | `SyntaxError: Invalid regular expression: missing /` | 脚本里的 `/\n/g` 被解析成真实换行，正则失去结尾斜杠 | 禁止在 evaluate 里写 `\n` 正则，改用 `String.fromCharCode(10)` 配 `split/join` | 2026-10-27 |
-| 11 | 全平台 | 正文注入失败：远程剪贴板（`Set-Clipboard` + `Control+V`）只在本机生效 | 浏览器由扩展远程驱动，剪贴板不通 | 本地起静态服务（`serve.ps1`，`Access-Control-Allow-Origin: *`）→ 页面内 `fetch` 取纯文本写入全局变量 → `new DataTransfer()` + `new ClipboardEvent('paste',{clipboardData:dt,bubbles:true})` 派发到聚焦后的编辑器 | 2026-10-27 |
-| 12 | 全平台 | 封面图上传框是隐藏 file input，`upload_file` 与 click 均无响应 | 元素 `display:none` 或已游离 DOM，脚本取到的是被丢弃的实例 | 覆写 `HTMLInputElement.prototype.click` 捕获真实 input，再用 `DataTransfer` 合成 `File` 派发 `dragenter/dragover/drop` 到目标及祖先链；上传后以 `img.naturalWidth` 校验是否已进编辑器 | 2026-10-27 |
-| 13 | 全平台 | 单标签页报 `WebView is not ready yet (timeout after 5s)`，之后该 tab 全部操作失败 | 该 tab 的 renderer 已卡死，无法恢复 | `browser_tabs({action:'close',viewId})` 关掉 → `browser_tabs({action:'new'})` → 显式 `browser_navigate`（新建 tab 无 URL，直接 snapshot 会报 `No URL is loaded`）；工具名为 `browser_tabs`，**不存在** `browser_close_page` | 2026-10-27 |
-| 14 | 知乎 | 粘贴后加粗 / 表格 / 标题错位，或整段变纯文本 | 剪贴板类型给了 `text/plain`，编辑器不触发富文本转换 | 合成 paste 时 `DataTransfer` 里必须放 `text/html`（由 Markdown 转好的 HTML），再派发 `ClipboardEvent('paste')` | 2026-10-27 |
-| 15 | 知乎 | 话题面板找不到可点选项、`aria-expanded` 始终为 false | 面板受控状态未随输入刷新，open 状态缺失 | 话题为**非阻塞**项，最多 5 个；取不到就跳过话题直接发布，不因话题卡住 | 2026-10-27 |
-| 16 | 抖音 | 点「发布」后 toast 长期停在「正在发布」，URL 不跳转，「内容管理」无新作品 | 控制台出现 `auth.zijieapi.com/ucenter_web/app/second_verification_web/...?verify_reason=gateway_biz_verify_with_face&verify_scene=creator`，即平台要求**人脸二次验证**，`create_v2` 请求被挂起不返回 | 自动发布不可行：草稿（标题 / 描述 / 封面 / 自主声明）已完整保留，调用 `browser_waiting_for_user_interaction` 交用户过人脸/短信；**实测用户验证通过后页面自动跳 `content/manage?enter_from=publish`，作品即发布成功**，无需重发；管理列表必须整页刷新才显示新作品与正确数量（刷新前是旧快照，易误判为「没发出去」） | 2026-10-27 |
-| 17 | 抖音 | 「自主声明」选项点不动，报 `pointer-events: none` | 选项由 `.semi-radio` 单选组渲染在 portal 里，`LABEL.semi-radio` 内的 `SPAN` 与 `INPUT` 均被 CSS 置 `pointer-events: none`，Playwright 点 label 同样被拦 | 用 `browser_evaluate` 对 `label.semi-radio` 内的 `input` 调 `.click()`（索引 1 =「内容为个人观点或见解」），弹窗「确定」随即由 `disabled` 变 `enabled`，再点该「确定」关闭 | 2026-10-27 |
-| 18 | 抖音 | `browser_click` 点「发布」报 `Click target intercepted`，Escape 关掉 `.emi-portal` 后仍拦截 | 音乐抽屉 `.emi-portal` 残留层让 Playwright 命中检测失败，ref 位置已失真 | 放弃 Playwright 点击，改 JS：`Array.from(document.querySelectorAll('button')).filter(b=>b.innerText.trim()==='发布').forEach(b=>b.click())` | 2026-10-27 |
-| 19 | 抖音 | 描述框超 1000 字上限，长文正文粘不进去 | 抖音图文描述上限 1000 字符（含话题与零宽字符） | **不再塞长文**：正文按文档 `P01…PN` 一页一卡转成 1080x1440 卡片图（张数 = 页数，不可自行拆并），描述只写 ≤200 字摘要 + 话题（见第 9️⃣ 节）；清空描述只能用真实 `Control+A` + `Backspace`（`execCommand` / `Range` 只清 DOM 不清模型） | 2026-10-27 |
-| 20 | 抖音 | 网页创作中心找不到「发文字 / 文字作品」入口，只有「发布视频」「发布图文」 | 纯文字作品是 **App 端独有**能力（拍摄页「文字」模式），网页端不提供 | 长文一律转图片卡片：正文按 `P01…PN` 逐页转深色卡片（一页一卡，张数 = 页数）→ 按「发布图文」提交，`P01` 兼作封面 | 2026-10-27 |
-| 21 | 抖音 | 描述框内容重复堆叠、清空后计数器仍卡 `1000 / 1000`、后续输入被上限拒绝 | 描述框是 ACE / `editor-kit`（`.zone-container.editor-kit-container[contenteditable=true]`）：`execCommand('delete')`、合成 `KeyboardEvent`（Ctrl+A / Ctrl+Z）、`browser_type({clear:true})` 都只改 DOM，不回写模型 | 顺序固定：① `browser_evaluate` 对 `.zone-container` 调 `.focus()`（`browser_click` 点 ref 后 `activeElement` 仍是 `BODY`，点击无法聚焦）② `browser_press_key('Control+a')` ③ `browser_press_key('Backspace')`（残留 1 个零宽字符属正常）④ 用 `browser_type({ref,text})` 一次写入（`browser_fill` 报成功但 `innerText` 不变，禁用）⑤ 以页面计数器叶子节点文本 `136 / 1000` 为唯一真值复核 | 2026-10-27 |
-| 22 | 全平台 | 命令行执行 `python`、`py`、`python3` 全部报 `Python was not found` | 系统未把 Python 加进 `PATH`，环境装在桌面 `CodeEnvironment` 目录 | 用全路径 `C:\Users\zheng\OneDrive\Desktop\CodeEnvironment\miniconda3\python.exe`（3.14.7 + Pillow 13.0.0）；配套 Playwright 在 `CodeEnvironment\ms-playwright` | 2026-10-27 |
-| 23 | 全平台 | `list_pages` 报 `The browser is already running for ...\.cache\chrome-devtools-mcp\chrome-profile`，随后该 MCP 全部浏览器调用失败 | chrome-devtools MCP 独占 profile，与本机已开 Chrome 抢锁 | 改用 `integrated_code_mode` 的 `Exec`：`await tools.browser_evaluate/navigate/click/press_key`，输出必须 `text(String(r.content[0].text))`（`text(r)` 只会打印 `[object Object]`） | 2026-10-27 |
-| 24 | 抖音 | 音乐入口容器 `div.container-JngpiB` / `div.container-right-uW7Pj1` 点不动，面板不弹 | React 的 `onClick` 挂在内层子节点，事件只向上冒泡、不向下传递；父容器自身无 handler | 用 `browser_evaluate` 点真正带 handler 的子节点：`document.querySelector('span.action-Q1y01k').click()`（同级 `svg`、`div.cover-container-u0vBJr` 亦可）；用 `Object.keys(node).filter(k=>/^__reactProps/.test(k))` 可确认 handler 归属 | 2026-10-27 |
-| 25 | 抖音 | 搜索结果点行只切换试听，不写入已选曲目，发布页仍显示「选择音乐」 | 行容器 `div.card-container-tmocjc` 只绑定试听；应用动作在行内 `button.apply-btn-LUPP0D`（文案「使用」，hover 才显示） | `browser_evaluate` 里先 `song-name` 匹配到目标曲目 → `closest('div.card-container-tmocjc')` → 点该行 `button.apply-btn-LUPP0D`；成功后发布页显示「曲名 + 时长 + 修改音乐」 | 2026-10-27 |
-| 26 | 抖音 | 已发布图文想补背景音乐，进「作品管理 → 编辑作品」（`enter_from=edit_item`）后整页搜不到「音乐」 | 编辑页只开放标题 / 描述 / 封面等字段，不含音乐模块（`document.body.innerText.indexOf('音乐') === -1`） | 补配乐只能**删除旧作品 → 重新按第 9.2 节完整发布**；重发前必须先选好音乐，删除不可逆且会丢播放互动数据 | 2026-10-27 |
-| 27 | 抖音 | 音乐面板已打开，但用 `browser_snapshot({selector:'div.container-JngpiB'})` 返回 0 个可交互节点 | 该容器只做布局，内部交互元素未暴露为可交互 AX 节点 | 不对面板做 snapshot；直接在 `browser_evaluate` 里按类名取元素操作（搜索框 `input[placeholder="搜索音乐"]`、应用按钮 `button.apply-btn-LUPP0D`） | 2026-10-27 |
+| 2 | 掘金 / CSDN | 正文顶部多出 `platform:` `title:` `summary:` 等 YAML 行 | 变体首部 front-matter 没剥离就整篇粘贴 | 生成发布稿第 1 步先删 `---` 包裹的整段 YAML，母稿跳过本步 | 2026-10-27 |
+| 3 | 抖音 | 标题输入框只能填 20 字，摘要/描述口径与早期记录对不上 | 平台改版：标题上限 **20 字**（不是 30 字），描述框上限 1000 字但不宜长文 | 标题按「结论 + 关键数字」压到 20 字内；描述改成 ≤200 字短摘要 + 话题，长文转图片卡片（见第 7️⃣ 节） | 2026-10-27 |
+| 4 | 抖音 | 点「扩展信息 → 选择音乐」后无任何弹层 | 图文作品未上传图片时，音乐入口不可用 | 先上传图片，再点「选择音乐 / 点击添加合适作品风格音乐」→ 弹面板选曲 | 2026-10-27 |
+| 5 | 抖音 | 点「暂存离开」后到「内容管理」翻不到草稿 | 抖音草稿不进内容管理列表（该页只有「作品」tab），只存在于发布页弹窗 | 重新进 `content/post/image`，在「你还有上次未发布的图文，是否继续编辑？」点「继续编辑」 | 2026-10-27 |
+| 6 | 全平台 | `browser_evaluate` 一律返回 `undefined`，无论脚本多简单 | 脚本里出现 `return` 关键字（含 `function(x){return ...}` 与箭头函数 block body），整个 evaluate 结果被吞 | 只写**单个表达式**：隐式返回箭头（`arr.filter(x => c).map(x => e)`）或赋值 `window.__x=function(el){...}`（无 return）；需要多语句用逗号表达式，仍不得含 `return` | 2026-10-27 |
+| 7 | 全平台 | `SyntaxError: Invalid regular expression: missing /` | 脚本里的 `/\n/g` 被解析成真实换行，正则失去结尾斜杠 | 禁止在 evaluate 里写 `\n` 正则，改用 `String.fromCharCode(10)` 配 `split/join` | 2026-10-27 |
+| 8 | 全平台 | 正文注入失败：远程剪贴板（`Set-Clipboard` + `Control+V`）只在本机生效 | 浏览器由扩展远程驱动，剪贴板不通 | 本地起静态服务（`serve.ps1`，`Access-Control-Allow-Origin: *`）→ 页面内 `fetch` 取纯文本写入全局变量 → `new DataTransfer()` + `new ClipboardEvent('paste',{clipboardData:dt,bubbles:true})` 派发到聚焦后的编辑器 | 2026-10-27 |
+| 9 | 全平台 | 封面图上传框是隐藏 file input，`upload_file` 与 click 均无响应 | 元素 `display:none` 或已游离 DOM，脚本取到的是被丢弃的实例 | 覆写 `HTMLInputElement.prototype.click` 捕获真实 input，再用 `DataTransfer` 合成 `File` 派发 `dragenter/dragover/drop` 到目标及祖先链；上传后以 `img.naturalWidth` 校验是否已进编辑器 | 2026-10-27 |
+| 10 | 全平台 | 单标签页报 `WebView is not ready yet (timeout after 5s)`，之后该 tab 全部操作失败 | 该 tab 的 renderer 已卡死，无法恢复 | `browser_tabs({action:'close',viewId})` 关掉 → `browser_tabs({action:'new'})` → 显式 `browser_navigate`（新建 tab 无 URL，直接 snapshot 会报 `No URL is loaded`）；工具名为 `browser_tabs`，**不存在** `browser_close_page` | 2026-10-27 |
+| 11 | 抖音 | 点「发布」后 toast 长期停在「正在发布」，URL 不跳转，「内容管理」无新作品 | 控制台出现 `auth.zijieapi.com/ucenter_web/app/second_verification_web/...?verify_reason=gateway_biz_verify_with_face&verify_scene=creator`，即平台要求**人脸二次验证**，`create_v2` 请求被挂起不返回 | 自动发布不可行：草稿（标题 / 描述 / 封面 / 自主声明）已完整保留，调用 `browser_waiting_for_user_interaction` 交用户过人脸/短信；**实测用户验证通过后页面自动跳 `content/manage?enter_from=publish`，作品即发布成功**，无需重发；管理列表必须整页刷新才显示新作品与正确数量（刷新前是旧快照，易误判为「没发出去」） | 2026-10-27 |
+| 12 | 抖音 | 「自主声明」选项点不动，报 `pointer-events: none` | 选项由 `.semi-radio` 单选组渲染在 portal 里，`LABEL.semi-radio` 内的 `SPAN` 与 `INPUT` 均被 CSS 置 `pointer-events: none`，Playwright 点 label 同样被拦 | 用 `browser_evaluate` 对 `label.semi-radio` 内的 `input` 调 `.click()`（索引 1 =「内容为个人观点或见解」），弹窗「确定」随即由 `disabled` 变 `enabled`，再点该「确定」关闭 | 2026-10-27 |
+| 13 | 抖音 | `browser_click` 点「发布」报 `Click target intercepted`，Escape 关掉 `.emi-portal` 后仍拦截 | 音乐抽屉 `.emi-portal` 残留层让 Playwright 命中检测失败，ref 位置已失真 | 放弃 Playwright 点击，改 JS：`Array.from(document.querySelectorAll('button')).filter(b=>b.innerText.trim()==='发布').forEach(b=>b.click())` | 2026-10-27 |
+| 14 | 抖音 | 描述框超 1000 字上限，长文正文粘不进去 | 抖音图文描述上限 1000 字符（含话题与零宽字符） | **不再塞长文**：正文按文档 `P01…PN` 一页一卡转成 1080x1440 卡片图（张数 = 页数，不可自行拆并），描述只写 ≤200 字摘要 + 话题（见第 7️⃣ 节）；清空描述只能用真实 `Control+A` + `Backspace`（`execCommand` / `Range` 只清 DOM 不清模型） | 2026-10-27 |
+| 15 | 抖音 | 网页创作中心找不到「发文字 / 文字作品」入口，只有「发布视频」「发布图文」 | 纯文字作品是 **App 端独有**能力（拍摄页「文字」模式），网页端不提供 | 长文一律转图片卡片：正文按 `P01…PN` 逐页转深色卡片（一页一卡，张数 = 页数）→ 按「发布图文」提交，`P01` 兼作封面 | 2026-10-27 |
+| 16 | 抖音 | 描述框内容重复堆叠、清空后计数器仍卡 `1000 / 1000`、后续输入被上限拒绝 | 描述框是 ACE / `editor-kit`（`.zone-container.editor-kit-container[contenteditable=true]`）：`execCommand('delete')`、合成 `KeyboardEvent`（Ctrl+A / Ctrl+Z）、`browser_type({clear:true})` 都只改 DOM，不回写模型 | 顺序固定：① `browser_evaluate` 对 `.zone-container` 调 `.focus()`（`browser_click` 点 ref 后 `activeElement` 仍是 `BODY`，点击无法聚焦）② `browser_press_key('Control+a')` ③ `browser_press_key('Backspace')`（残留 1 个零宽字符属正常）④ 用 `browser_type({ref,text})` 一次写入（`browser_fill` 报成功但 `innerText` 不变，禁用）⑤ 以页面计数器叶子节点文本 `136 / 1000` 为唯一真值复核 | 2026-10-27 |
+| 17 | 全平台 | 命令行执行 `python`、`py`、`python3` 全部报 `Python was not found` | 系统未把 Python 加进 `PATH`，环境装在桌面 `CodeEnvironment` 目录 | 用全路径 `C:\Users\zheng\OneDrive\Desktop\CodeEnvironment\miniconda3\python.exe`（3.14.7 + Pillow 13.0.0）；配套 Playwright 在 `CodeEnvironment\ms-playwright` | 2026-10-27 |
+| 18 | 全平台 | `list_pages` 报 `The browser is already running for ...\.cache\chrome-devtools-mcp\chrome-profile`，随后该 MCP 全部浏览器调用失败 | chrome-devtools MCP 独占 profile，与本机已开 Chrome 抢锁 | 改用 `integrated_code_mode` 的 `Exec`：`await tools.browser_evaluate/navigate/click/press_key`，输出必须 `text(String(r.content[0].text))`（`text(r)` 只会打印 `[object Object]`） | 2026-10-27 |
+| 19 | 抖音 | 音乐入口容器 `div.container-JngpiB` / `div.container-right-uW7Pj1` 点不动，面板不弹 | React 的 `onClick` 挂在内层子节点，事件只向上冒泡、不向下传递；父容器自身无 handler | 用 `browser_evaluate` 点真正带 handler 的子节点：`document.querySelector('span.action-Q1y01k').click()`（同级 `svg`、`div.cover-container-u0vBJr` 亦可）；用 `Object.keys(node).filter(k=>/^__reactProps/.test(k))` 可确认 handler 归属 | 2026-10-27 |
+| 20 | 抖音 | 搜索结果点行只切换试听，不写入已选曲目，发布页仍显示「选择音乐」 | 行容器 `div.card-container-tmocjc` 只绑定试听；应用动作在行内 `button.apply-btn-LUPP0D`（文案「使用」，hover 才显示） | `browser_evaluate` 里先 `song-name` 匹配到目标曲目 → `closest('div.card-container-tmocjc')` → 点该行 `button.apply-btn-LUPP0D`；成功后发布页显示「曲名 + 时长 + 修改音乐」 | 2026-10-27 |
+| 21 | 抖音 | 已发布图文想补背景音乐，进「作品管理 → 编辑作品」（`enter_from=edit_item`）后整页搜不到「音乐」 | 编辑页只开放标题 / 描述 / 封面等字段，不含音乐模块（`document.body.innerText.indexOf('音乐') === -1`） | 补配乐只能**删除旧作品 → 重新按第 7.2 节完整发布**；重发前必须先选好音乐，删除不可逆且会丢播放互动数据 | 2026-10-27 |
+| 22 | 抖音 | 音乐面板已打开，但用 `browser_snapshot({selector:'div.container-JngpiB'})` 返回 0 个可交互节点 | 该容器只做布局，内部交互元素未暴露为可交互 AX 节点 | 不对面板做 snapshot；直接在 `browser_evaluate` 里按类名取元素操作（搜索框 `input[placeholder="搜索音乐"]`、应用按钮 `button.apply-btn-LUPP0D`） | 2026-10-27 |
 
-**变体适配固定检查**（每种变体粘贴前先过一遍，命中问题库的记录直接按解法处理）：
+**变体适配固定检查**（粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
 | 变体 | 粘贴前必查 |
 |---|---|
 | 母稿 | 无 front-matter、H1 已删、Markdown 语法完整 |
-| `-知乎` | 表格 / 代码块是否渲染成 HTML；话题 ≤5 个 |
-| `-小红书` | 标题实时计数、已纯文本化、`#话题` 放在正文末尾 |
 | `-抖音` | 标题 ≤20 字、描述 ≤200 字并已纯文本化、卡片图张数 = 文档页数 N（`P01…PN` 一页一卡）且已上传、文字与文档逐字一致、**背景音乐已选中** |
 
-## 1️⃣1️⃣ 发布后汇报
+## 9️⃣ 发布后汇报
 
-以表格输出结果（5 行固定，缺项写「未生成 / 已跳过」）：
+以表格输出结果（3 行固定，缺项写「未生成 / 已跳过」）：
 
 | 平台 | 文章标题 | 专栏 / 话题 | 状态 | 链接 |
 |------|----------|-------------|------|------|
 | 掘金 | {母稿去编号标题} | {文件夹名或实际复用专栏} | 已发布 / 审核中 / 失败 | {URL} |
 | CSDN | {母稿去编号标题} | {文件夹名或实际复用专栏} | 已发布 / 失败 | {URL} |
-| 知乎 | {front-matter title} | {专栏名} | 已发布 / 审核中 / 失败 | {URL} |
-| 小红书 | {front-matter title} | {话题标签} | 已发布 / 失败 | {URL} |
 | 抖音 | {front-matter title} | {话题标签} | 已发布 / 失败 | {URL} |
 
 - ❌ 任一平台失败时，说明失败步骤与页面提示，**不重复盲目重试**；只允许换一条路径（换选择器、换入口）再试一次，仍失败则按「任一失败即停」终止后续平台并如实上报
 - 🔁 平台已存在同名文章时，**不重复创建**，报告已有链接，并按「更新」处理（编辑原文后重新发布）
 - 📝 汇报时注明实际使用的分类、标签、专栏，以及任何与文件夹名不一致的偏差
-- ✍️ 汇报时附上 5 个平台位实际提交的摘要全文，便于核对是否为改写版本（变体来自 front-matter `summary`，母稿为手写双版本）
+- ✍️ 汇报时附上 3 个平台位实际提交的摘要全文，便于核对是否为改写版本（变体来自 front-matter `summary`，母稿为手写双版本）
 - 🔗 汇报时附「配套资源链接校验结果」清单：每条 URL → 预热后状态（可访问 / 已换 blob 链接），未涉及资源时写「无」
-- 🧩 汇报时附「文章组清单」：4 个文件是否齐备、`source` 是否与母稿一致
-- 🧠 汇报时附「问题库更新」：本次新增 / 更新了第 🔟 节哪几条（无新增写「无」）
+- 🧩 汇报时附「文章组清单」：2 个文件是否齐备、`source` 是否与母稿一致
+- 🧠 汇报时附「问题库更新」：本次新增 / 更新了第 8️⃣ 节哪几条（无新增写「无」）
 - 🎵 抖音汇报注明所选背景音乐「曲名 + 时长 + 风格方向」（如 `Leisurely Afternoon / 01:00 / 轻音乐纯器乐`），未选中不得进入发布
 
 ## ⚠️ 约束
 
 - 🚫 不修改原文档内容、不改文件名、不移动文件
-- 🔒 **发布环节不改正文，五个平台一体适用**：掘金、CSDN、知乎、小红书、抖音提交的**正文**必须与对应 `.md` 逐字一致；只允许排版类处理（加粗、着色 / 高亮、分页、断行、表格转图表、小红书与抖音的纯文本化）。要改文字就回文档改，改完再发。标题与摘要仍按第 3️⃣ 节处理——超限时只压缩、不新造信息
+- 🔒 **发布环节不改正文，三个平台一体适用**：掘金、CSDN、抖音提交的**正文**必须与对应 `.md` 逐字一致；只允许排版类处理（加粗、着色 / 高亮、分页、断行、表格转图表、抖音的纯文本化）。要改文字就回文档改，改完再发。标题与摘要仍按第 3️⃣ 节处理——超限时只压缩、不新造信息
 - 🚫 不自动 `git push`
 - 🚫 不编造标签、分类或专栏名：一律来自正文、front-matter、历史文章或平台候选列表
 - 🚫 不拿母稿顶替缺失变体，也不把变体发到掘金 / CSDN：一稿一平台，错发即返工
 - ✍️ 摘要必须按第 3️⃣-2 节**重新撰写或取自 front-matter**：不得留空、不得沿用平台自动提取结果、不得直接复制正文首段
 - 🔗 配套资源链接必须完成第 4️⃣-2 节预热：未在浏览器里点开验证、或验证为 404 / 空白的链接，禁止发布
 - 🎵 抖音图文**必须配背景音乐**：未选中曲目不得点「发布」，本条优先于「非阻塞项跳过」的通用做法
-- 🛑 **任一平台失败即停**：按「掘金 → CSDN → 知乎 → 小红书 → 抖音」顺序推进，某一步失败后不再发起后续平台，汇报已完成清单 + 失败步骤 + 页面提示
-- 🧠 平台问题必须沉淀：遇到新 `issue` 并解决后，**立即**更新第 🔟 节问题库；只汇报不记录视为本次任务未完成
+- 🛑 **任一平台失败即停**：按「掘金 → CSDN → 抖音」顺序推进，某一步失败后不再发起后续平台，汇报已完成清单 + 失败步骤 + 页面提示
+- 🧠 平台问题必须沉淀：遇到新 `issue` 并解决后，**立即**更新第 8️⃣ 节问题库；只汇报不记录视为本次任务未完成
 - ✅ 发布已被用户**长期授权**：本 command 执行期间无需逐次确认，直接发布直至成功
 - 🔐 唯一需要用户介入的情况：平台未登录（扫码/输密码）
