@@ -29,6 +29,8 @@
 | **LLM24-多 Agent 系统如何复用 KV 缓存-前缀对齐比缓存开关更重要** | CSDN博客 | [多 Agent 系统如何复用 KV 缓存-前缀对齐比缓存开关更重要 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/168750614) | 2026-10-22 |
 | **LLM25-MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比** | 掘金社区 | [MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比 -- 掘金](https://juejin.cn/post/7699836911887745074) | 2026-10-24 |
 | **LLM25-MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比** | CSDN博客 | [MCP与Function Calling怎么选：大模型工具调用三种方式的面试级对比 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/168971266) | 2026-10-24 |
+| **LLM26-vLLM是什么：PagedAttention 让大模型推理快 2-4 倍，还能撑起更长思维链** | 掘金社区 | [vLLM是什么：PagedAttention 让大模型推理快 2-4 倍，还能撑起更长思维链 -- 掘金](https://juejin.cn/post/7701556701283156018) | 2026-10-28 |
+| **LLM26-vLLM是什么：PagedAttention 让大模型推理快 2-4 倍，还能撑起更长思维链** | CSDN博客 | [vLLM是什么：PagedAttention 让大模型推理快 2-4 倍，还能撑起更长思维链 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/169363542) | 2026-10-28 |
 ---
 
 ## 专栏简介
