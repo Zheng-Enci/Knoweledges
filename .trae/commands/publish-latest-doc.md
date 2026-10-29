@@ -254,7 +254,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 | 项 | 要求 |
 |---|---|
-| 尺寸 | `1080x1440`（3:4），全部卡片同一尺寸，避免平台混排裁切 |
+| 尺寸 | **`1080x1440`（3:4 竖版）**，全部卡片同一尺寸，避免平台混排裁切 |
 | 张数 | 等于文档分页数 N：`P01…PN` 一页一卡，**不得合并、拆分、增删或改序**；`P01` 兼封面，`PN` 给结论 |
 | 风格 | 深色底（`#0B0D12`）+ 浅字，数字与结论用高饱和强调色；标题 ≥64px、正文 ≥34px |
 | 信息量 | 每张只讲一个观点，正文 ≤10 行；关键数字单独着色 |
@@ -262,11 +262,12 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 #### 7.1.0 卡内排版细则（垂直分布与字距）📐
 
-**① 垂直分布（Vertical Layout）**：内容块不能整体贴在图上缘，参考「重心偏下」的排版：
+**① 垂直分布（Vertical Layout）**：内容块**垂直居中**，上下留白均衡，既不上顶也不下坠：
 
-- **内容上边距**：将整组内容（标题 + 正文 + 数字）的**上边距设为画布高度的 `12%–15%`**（`1080x1440` → 上留 130–216px），不要从 `y=0` 顶格画
-- **垂直居中偏下**：内容块应整体落在画布**垂直中轴线稍偏下**（建议内容总高占画布高度 `55%–65%`，中心点约在 `y=55%–60%`），上留白略大于下留白，视觉重心下沉更稳
-- **留白区（Padding）**：上、左、右 padding 均 ≥ `120px`，底部 padding ≥ `160px`；要避免卡片底部贴边被平台裁切
+- **垂直居中**：整组内容（标题 + 正文 + 数字）的中心点落在画布**垂直中轴线附近**（建议中心 `y=48%–50%`，即内容总高占画布 `50%–60%` 时居中放置），**上下留白尽量相等**
+- **上下对称留白**：内容上方留白与下方留白之差 ≤ 画布高度 `3%`（约 `40px`，以 `1080x1440` 计）；不做「重心偏下」，那会让内容堆到卡片下半部、上半部空旷
+- **内容上边距**：不要从 `y=0` 顶格画；顶部留白至少 `画布 12%`，若内容较矮（总高不足画布 `50%`）则自动增大上下边距把内容撑到居中，底部不贴边
+- **留白区（Padding）**：左、右 padding 均 ≥ `120px`，底部 padding ≥ `160px`；要避免卡片底部贴边被平台裁切
 
 **② 字距与行距（Letter & Line Spacing）**：大字与相邻字挤在一起，是因为字号大但行高/字距没同步放大 🔧
 
@@ -278,7 +279,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 **③ 一行放不下的处理**：大字（尤其标题 / 核心数字）超过画布可用宽度 `90%` 时，**按词断行、增大行高**，不靠缩小字号硬塞；断行后每行仍满足字距规则 ✅
 
-**生成方式**：用本机 Python + Pillow 绘制（解释器路径见第 2️⃣-2 节），字体 `msyh.ttc` + `consola.ttf`；也可用 Playwright 截 HTML。脚本用完即删，不在项目目录留 `.py`。⚠️ 脚本只做**排版**：文字从对应页原样读取，禁止在脚本里重写、精简或补写文案。**排版必须落地 7.1.0 细则**：竖版内容重心偏下、字号与行距字距成比例、高亮色块与相邻文字留足间距、画完校验 `bbox` 无重叠。
+**生成方式**：用本机 Python + Pillow 绘制（解释器路径见第 2️⃣-2 节），字体 `msyh.ttc` + `consola.ttf`；也可用 Playwright 截 HTML。脚本用完即删，不在项目目录留 `.py`。⚠️ 脚本只做**排版**：文字从对应页原样读取，禁止在脚本里重写、精简或补写文案。**排版必须落地 7.1.0 细则**：内容垂直居中、上下留白均衡、字号与行距字距成比例、高亮色块与相邻文字留足间距、画完校验 `bbox` 无重叠。
 
 ### 7.1.1 封面专项自检 ✅（`P01` 兼封面，逐条打勾）
 
@@ -406,6 +407,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 27 | 抖音 | 音乐「使用」按钮类名失效（`button.apply-btn-LUPP0D` 已不存在），`browser_click` 点候选行报 `pointer-events: none` | 卡片结构改为 `div.card-wrapper-*`，应用按钮内层是 `span.semi-button-content`，未 hover 时 `y=0` | 在 `browser_evaluate` 里按文本定位 `div.card-wrapper-*` 行，再 `row.querySelectorAll('*')` 找 `textContent.trim()==='使用'` 的叶子节点 `.click()`；成功后发布页显示「曲名 + 时长 + 修改音乐」 | 2026-10-28 |
 | 28 | CSDN | 发布弹窗封面区已显示图片，发布后列表卡片与博客首页都没有封面 | 弹窗里显示的是 `data:image/png;base64` 本地预览，图片没上传到服务端；`vue-image-crop-upload` 裁切器必须再点一次「确认上传」才真正落库 | 唯一通过判据是出现 `https://i-blog.csdnimg.cn/direct/<hash>.png`：发布前读 `.preview-box.hasImg img` 的 `src`，以 `i-blog.csdnimg.cn` 开头才算完成，`base64` 一律视为未上传；发布后用 `mp.csdn.net/mp_blog/manage/article` 卡片 `.list-item-mp-left` 的 `background-image` 复核 | 2026-10-28 |
 | 29 | CSDN | 封面 file input 是 `display:none`，`browser_snapshot` 取不到 ref；给按钮 ref 调 `browser_upload_file` 报 `could not accept the file directly, and clicking it did not trigger a file chooser` | 隐藏元素的 AX 节点不进快照；裁切器「确认上传」是 `div.vicp-operate-btn`，无 button 语义，同样取不到 ref | ①`browser_evaluate` 把 `.cover-upload-box input.el-upload__input` 改成 `display:block;position:fixed;left:8px;top:8px;width:48px;height:48px;opacity:0.02` ②重新 snapshot 得到 `textbox` ref ③`browser_upload_file` 直传绝对路径（不走 `fetch`，避开 CORS）④给 `.vicp-operate-btn` 补 `role=button` + `aria-label` 再 snapshot 取 ref 并 click ⑤校验 `i-blog.csdnimg.cn` 直链 | 2026-10-28 |
+| 30 | CSDN | 发布后审核提示「违规-不符合定位」，文章标题显示「【无标题】」，后台「审核中/未通过」里有该文 | 发布时标题框 `input.article-bar__title` 被填成了占位符「【无标题】」（CSDN 在标题为空时自动填充并当作实际标题提交，命中《CSDN 社区内容创作规范》7.3.6 文章无标题），导致审核判「不符合定位」 | ①发布前先读 `input.article-bar__title` 的 `value`，若为「【无标题】」或为空则用原生 value setter 填入真实标题 + 派发 `input`/`change` 事件 ②发布成功后到 `mp.csdn.net/mp_blog/manage/article` 复核状态，应从「审核未通过」变为「待审核」 ③标题按「5~100 字」落位，不依赖平台自动提取 | 2026-10-29 |
 
 **变体适配固定检查**（粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
