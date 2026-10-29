@@ -411,6 +411,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 30 | CSDN | 发布后审核提示「违规-不符合定位」，文章标题显示「【无标题】」，后台「审核中/未通过」里有该文 | 发布时标题框 `input.article-bar__title` 被填成了占位符「【无标题】」（CSDN 在标题为空时自动填充并当作实际标题提交，命中《CSDN 社区内容创作规范》7.3.6 文章无标题），导致审核判「不符合定位」 | ①发布前先读 `input.article-bar__title` 的 `value`，若为「【无标题】」或为空则用原生 value setter 填入真实标题 + 派发 `input`/`change` 事件 ②发布成功后到 `mp.csdn.net/mp_blog/manage/article` 复核状态，应从「审核未通过」变为「待审核」 ③标题按「5~100 字」落位，不依赖平台自动提取 | 2026-10-29 |
 | 31 | 掘金 | 「创作者中心 → 文章管理」旧路由 `/creator/content`、`/creator/content/article` 直接 404 或跳回首页，找不到已发文章列表 | 掘金创作者中心改版，文章列表路由已迁移 | 读取已发文章 / 审核状态一律用 `https://juejin.cn/creator/content/article/essays?status=all`；用 `browser_evaluate` 过滤 `a` 标签 `textContent` 含目标标题即可取到 `/post/{id}` 链接 | 2026-10-29 |
 | 32 | 抖音 | 发布成功后想在作品管理拿公开分享链接，列表卡片里没有可直接复制的 URL | 抖音图文作品公开链接与分享文案由作品详情页生成 | 在内容管理点作品标题进入 work-detail 页，取页面 URL 中的 `note/{id}` 段，拼接 `https://www.douyin.com/note/{id}` 即公开链接；`navigate_page` 该链接并校验 `document.body.innerText` 含标题可确认有效 | 2026-10-29 |
+| 33 | 全平台 | `upload_file` 与 `evaluate_script` 的 `sourcePath` 一律报 `not within any of the configured workspace roots`，项目内路径全被 MCP 拦截 | chrome-devtools MCP 的 workspace roots 是硬编码白名单 + 部分项目目录，项目路径不在名单内；但 `os.tmpdir()`（`C:\Users\zheng\AppData\Local\Temp`）**始终是允许的 root** | 所有要上传的封面/卡片图先复制到 `C:\Users\zheng\AppData\Local\Temp\`，再 `upload_file` 该绝对路径；`evaluate_script` 的脚本用 `function` 参数内联，或改走 `data:`/`fetch` 方案，不依赖文件系统 | 2026-10-29 |
 
 **变体适配固定检查**（粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
