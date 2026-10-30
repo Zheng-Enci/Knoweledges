@@ -441,6 +441,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 32 | 抖音 | 发布成功后想在作品管理拿公开分享链接，列表卡片里没有可直接复制的 URL | 抖音图文作品公开链接与分享文案由作品详情页生成 | 在内容管理点作品标题进入 work-detail 页，取页面 URL 中的 `note/{id}` 段，拼接 `https://www.douyin.com/note/{id}` 即公开链接；`navigate_page` 该链接并校验 `document.body.innerText` 含标题可确认有效 | 2026-10-29 |
 | 33 | 全平台 | `upload_file` 与 `evaluate_script` 的 `sourcePath` 一律报 `not within any of the configured workspace roots`，项目内路径全被 MCP 拦截 | chrome-devtools MCP 的 workspace roots 是硬编码白名单 + 部分项目目录，项目路径不在名单内；但 `os.tmpdir()`（`C:\Users\zheng\AppData\Local\Temp`）**始终是允许的 root** | 所有要上传的封面/卡片图先复制到 `C:\Users\zheng\AppData\Local\Temp\`，再 `upload_file` 该绝对路径；`evaluate_script` 的脚本用 `function` 参数内联，或改走 `data:`/`fetch` 方案，不依赖文件系统 | 2026-10-29 |
 | 34 | CSDN | 进 `editor.csdn.net/md/` 就反复触发图形验证码（拖拽滑块 / 操作过于频繁），浏览器通道反复验证不过 | chrome-devtools MCP 用**隔离 profile**（无登录 cookie），CSDN 对未登录 editor 必触发风控 | **立即切换到本机已登录的 TRAE Browser Control（chrome 插件）通道**：`browser_tabs` 列本机 tab（参数 `{action:'list'}`）→ `browser_navigate` 打开编辑器 → 直接复用已登录 cookie 发布；**不要在同一通道反复重试** | 2026-10-30 |
+| 35 | 掘金 | 文章管理列表发现**同日同标题重复文章**，误删/漏删 canonical 风险 | 「确定并发布」被多次点击，导致在已发布 canonical 之外又创建了一篇重复文章 | 用 `a[href*="/post/{canonical_id}"]` 精确定位行；重复行定位用标题 + 发布时段双重匹配（`a.link[href*=\"/post/\"]` → `div.essay-list` → `span.title` + `div.byte-dropdown > i.more-icon`）→ 点 `more-icon` 开 `byte-dropdown` 菜单 → 点 `li.byte-dropdown-item` 文本「删除」→ `byte-modal-confirm` 弹窗点「确认」；删前复核 `href` 不为 canonical | 2026-10-30 |
 
 **变体适配固定检查**（粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
