@@ -26,6 +26,7 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
    - 抖音创作服务平台 `https://creator.douyin.com`
    - 未登录时才调用 `browser_waiting_for_user_interaction` 请用户扫码登录 🔐（登录属于唯一需要人工介入的环节）
    - 已登录则直接继续，不打扰用户
+   - ⚠️ **CSDN 浏览器通道**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控，**必须改用本机已登录的 TRAE Browser Control（chrome 插件）通道**操作（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等）⚠️
 3. **🧾 变体齐备**：`-抖音.md` 必须存在且 front-matter 完整；缺失按「任一失败即停」处理，不拿母稿顶替 🚫
 
 ## 1️⃣ 定位最新文章组（Document Group）
@@ -233,6 +234,8 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 ## 6️⃣ 发布到 CSDN（母稿）
 
+> ⚠️ **浏览器切换策略**：先用当前浏览器通道打开编辑器。若出现**图形验证码 / 风控提示**（典型：进编辑器即要拖拽验证、或提示「操作过于频繁」），判定当前通道不可用（常见于 chrome-devtools MCP 隔离 profile），**立即切换到本机已登录的 TRAE Browser Control（chrome 插件）通道**：用 `browser_tabs` 列出本机浏览器 tab，`browser_navigate` 打开 `https://editor.csdn.net/md/`，并直接复用已登录 cookie 继续发布。**不要在同一通道反复重试**，换通道后一次到位。
+
 1. 打开 `https://editor.csdn.net/md/`
 2. 填入**文章标题**（已去编号）、**正文**（Markdown 模式粘贴）
    - 正文区域是 `pre.editor__inner`（contenteditable），聚焦后 `Control+V` 粘贴
@@ -412,6 +415,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 31 | 掘金 | 「创作者中心 → 文章管理」旧路由 `/creator/content`、`/creator/content/article` 直接 404 或跳回首页，找不到已发文章列表 | 掘金创作者中心改版，文章列表路由已迁移 | 读取已发文章 / 审核状态一律用 `https://juejin.cn/creator/content/article/essays?status=all`；用 `browser_evaluate` 过滤 `a` 标签 `textContent` 含目标标题即可取到 `/post/{id}` 链接 | 2026-10-29 |
 | 32 | 抖音 | 发布成功后想在作品管理拿公开分享链接，列表卡片里没有可直接复制的 URL | 抖音图文作品公开链接与分享文案由作品详情页生成 | 在内容管理点作品标题进入 work-detail 页，取页面 URL 中的 `note/{id}` 段，拼接 `https://www.douyin.com/note/{id}` 即公开链接；`navigate_page` 该链接并校验 `document.body.innerText` 含标题可确认有效 | 2026-10-29 |
 | 33 | 全平台 | `upload_file` 与 `evaluate_script` 的 `sourcePath` 一律报 `not within any of the configured workspace roots`，项目内路径全被 MCP 拦截 | chrome-devtools MCP 的 workspace roots 是硬编码白名单 + 部分项目目录，项目路径不在名单内；但 `os.tmpdir()`（`C:\Users\zheng\AppData\Local\Temp`）**始终是允许的 root** | 所有要上传的封面/卡片图先复制到 `C:\Users\zheng\AppData\Local\Temp\`，再 `upload_file` 该绝对路径；`evaluate_script` 的脚本用 `function` 参数内联，或改走 `data:`/`fetch` 方案，不依赖文件系统 | 2026-10-29 |
+| 34 | CSDN | 进 `editor.csdn.net/md/` 就反复触发图形验证码（拖拽滑块 / 操作过于频繁），浏览器通道反复验证不过 | chrome-devtools MCP 用**隔离 profile**（无登录 cookie），CSDN 对未登录 editor 必触发风控 | **立即切换到本机已登录的 TRAE Browser Control（chrome 插件）通道**：`browser_tabs` 列本机 tab（参数 `{action:'list'}`）→ `browser_navigate` 打开编辑器 → 直接复用已登录 cookie 发布；**不要在同一通道反复重试** | 2026-10-30 |
 
 **变体适配固定检查**（粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
