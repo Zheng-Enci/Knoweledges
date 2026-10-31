@@ -7,7 +7,8 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
 
 执行本 command 时，自动完成「找最新文章组 → 解析 2 个产出 → 生成封面 → 逐平台发布」全流程 🚀
 2 个产出由 `/文档生成` 固定生成：**母稿**（掘金 + CSDN）与 **1 个变体**（抖音），一个都不能少。
-全程使用**内置浏览器**（browser / Chrome DevTools MCP）操作，不使用平台 API、不修改原文档 ✅
+全程使用**内置浏览器**（TRAE Browser Control / chrome 插件通道）操作，不使用平台 API、不修改原文档 ✅
+⚠️ **CSDN 发布必须使用内置浏览器通道**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见问题库第 34 条），因此 CSDN 一律走本机已登录的 TRAE Browser Control（chrome 插件）通道，**禁止使用 chrome-devtools MCP** ✅
 
 **全自动授权** 🤖：从定位文章到点击发布，全部由 AI 自主决策并执行，**不询问用户、不等待确认**，最终目标是 3 个平台位全部发布成功。遇到不确定的信息，优先参考以下来源自行判断：
 
@@ -26,7 +27,7 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
    - 抖音创作服务平台 `https://creator.douyin.com`
    - 未登录时才调用 `browser_waiting_for_user_interaction` 请用户扫码登录 🔐（登录属于唯一需要人工介入的环节）
    - 已登录则直接继续，不打扰用户
-   - ⚠️ **CSDN 浏览器通道**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控，**必须改用本机已登录的 TRAE Browser Control（chrome 插件）通道**操作（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等）⚠️
+   - ⚠️ **CSDN 浏览器通道（强制）**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控，**必须使用本机已登录的 TRAE Browser Control（chrome 插件）通道**操作（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等），**不得使用 chrome-devtools MCP** ✅
 2.1. **⏩ 提速：清理残留 tab**（发布前必做，实测可省大量等待）
    - 用 `list_pages` 列出当前浏览器所有 tab，**关闭与本任务无关的全部 tab**（历史发布残留的抖音/掘金/CSDN 页），只保留目标站点，避免多页互抢渲染与 token
    - 关闭用 `browser_tabs({action:'close', viewId})`（工具名是 `browser_tabs`，**不存在** `browser_close_page`）
@@ -252,7 +253,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 ## 6️⃣ 发布到 CSDN（母稿）
 
-> ⚠️ **浏览器切换策略**：先用当前浏览器通道打开编辑器。若出现**图形验证码 / 风控提示**（典型：进编辑器即要拖拽验证、或提示「操作过于频繁」），判定当前通道不可用（常见于 chrome-devtools MCP 隔离 profile），**立即切换到本机已登录的 TRAE Browser Control（chrome 插件）通道**：用 `browser_tabs` 列出本机浏览器 tab，`browser_navigate` 打开 `https://editor.csdn.net/md/`，并直接复用已登录 cookie 继续发布。**不要在同一通道反复重试**，换通道后一次到位。
+> ⚠️ **浏览器通道（强制，勿用 chrome-devtools MCP）**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）必触发**图形验证码 / 风控**（进编辑器即拖拽验证、或提示「操作过于频繁」）。因此 CSDN **必须直接用本机已登录的 TRAE Browser Control（chrome 插件）通道**：用 `browser_tabs` 列出本机浏览器 tab，`browser_navigate` 打开 `https://editor.csdn.net/md/`，复用已登录 cookie 继续发布。**不要用 chrome-devtools MCP 打开编辑器**，更**不要在同一通道反复重试**，一条通道一次到位。
 
 1. 打开 `https://editor.csdn.net/md/`
 2. 填入**文章标题**（已去编号）、**正文**（Markdown 模式粘贴）
