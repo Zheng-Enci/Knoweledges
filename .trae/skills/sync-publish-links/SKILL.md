@@ -29,6 +29,7 @@ description: 同步最近24小时内修改过的业务文档到各专栏 URL 目
 ## 关键铁律（不可省略）
 
 - 🔒 **只用内置浏览器**，不调用平台 API。
+- ⚠️ **CSDN 必须走 TRAE Browser Control（chrome 插件）通道（强制）**：CSDN 内容管理后台（`mp.csdn.net`）对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见发布指令问题库第 34 条），因此 CSDN 一律走本机**已登录的 TRAE Browser Control（chrome 插件）通道**（`browser_tabs` / `browser_navigate` / `browser_evaluate` 等），**禁止使用 chrome-devtools MCP**。掘金无此限制，两种通道任一可用。
 - 🚫 **审核未通过一律不写**：掘金未过审不写；CSDN 仅「已发布」算通过；`/spost/` 链接不得写。
 - 🚫 **不编造**：链接、状态、专栏名一律以实际抓取为准，取不到记录 ID 与时间，不伪造 URL。
 - 🔒 **仅追加不改原文**：只往目录追加新行，不动原文档内容。
