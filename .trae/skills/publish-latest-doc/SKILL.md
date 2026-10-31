@@ -11,16 +11,17 @@ description: 全自动定位知识库最新一篇文章组（母稿 + 抖音变�
 
 ## 目标
 
-把知识库「最新一篇文章组」（母稿 + 抖音变体）分发到 **掘金 + CSDN + 抖音** 三个平台位，全部发布成功。**CSDN 不跳过，必须发布**。
+把知识库「最新一篇文章组」（母稿 + 抖音变体）分发到用户在第 0️⃣ 步所选平台位，全部发布成功。**所选平台中 CSDN 不跳过、必须发布**（未选平台不发布）。
 
 > ⚠️ **CSDN 必须使用内置浏览器通道**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见问题库第 34 条），因此 CSDN 一律走本机已登录的 TRAE Browser Control（chrome 插件）通道（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等），**禁止使用 chrome-devtools MCP**。
 
 ## 前置条件检查（先读 command 文件）
 
-1. **先读问题库**：通读 command 文件第 8️⃣ 节「平台问题库」，把命中本组变体的问题抄进临时 checklist。
-2. **获取当前时间**：`date "+%Y-%m-%d %H:%M"`。
-3. **浏览器就绪**：依次确认 3 个站点已登录——掘金 `https://juejin.cn`、CSDN `https://www.csdn.net`、抖音 `https://creator.douyin.com`；未登录才调用 `browser_waiting_for_user_interaction` 请用户扫码。⚠️ CSDN 必须使用本机已登录的 TRAE Browser Control（chrome 插件）通道，禁止 chrome-devtools MCP。
-4. **变体齐备**：`-抖音.md` 存在且 front-matter 完整。
+1. **⚠️ 先多选发布平台（唯一用户确认）**：用 `AskUserQuestion`（`multiSelect: true`）询问本次发布到「掘金 / CSDN / 抖音」，默认全选；未选中平台后续登录、生成封面、发布、汇报全部跳过。
+2. **读问题库**：通读 command 文件第 8️⃣ 节「平台问题库」，把命中本组变体的问题抄进临时 checklist。
+3. **获取当前时间**：`date "+%Y-%m-%d %H:%M"`。
+4. **浏览器就绪**：按所选平台依次确认对应站点已登录——掘金 `https://juejin.cn`、CSDN `https://www.csdn.net`、抖音 `https://creator.douyin.com`；未登录才调用 `browser_waiting_for_user_interaction` 请用户扫码。⚠️ CSDN 必须使用本机已登录的 TRAE Browser Control（chrome 插件）通道，禁止 chrome-devtools MCP。
+5. **变体齐备**：`-抖音.md` 存在且 front-matter 完整（选了抖音才校验）。
 
 ## 执行主流程
 
