@@ -44,21 +44,39 @@ def load_font(size):
     return ImageFont.truetype(FONT_PATH, size)
 
 
+# 数字/百分比/区间视为「原子 token」:如 99.2%、9%–18%、bf16、INT8 里的数字段
+# 目的:断行时不把完整数字拆到两行(修复 99.2% 被拆成 9 / 9.2%)
+NUM_TOKEN = re.compile(r'[0-9]+(?:\.[0-9]+)?%?(?:\s*[–—-]\s*[0-9]+(?:\.[0-9]+)?%?)?')
+
+
+def tokenize(text):
+    """把文本切成 token 列表:数字/百分比/区间保持整体,其余按单字符"""
+    tokens, pos = [], 0
+    for m in NUM_TOKEN.finditer(text):
+        for ch in text[pos:m.start()]:   # 数字前的普通字符逐个入列
+            tokens.append(ch)
+        tokens.append(m.group())          # 数字整体作为原子 token
+        pos = m.end()
+    for ch in text[pos:]:
+        tokens.append(ch)
+    return tokens
+
+
 def wrap_text(draw, text, font, max_w):
-    """按词/字符断行,返回行列表,每行宽 ≤ max_w"""
+    """按 token 断行,数字/百分号/区间不被拆开,返回行列表,每行宽 ≤ max_w"""
     lines, cur = [], ''
-    for ch in text:
-        if ch == '\n':
+    for tok in tokenize(text):
+        if tok == '\n':                    # 显式换行符直接断行
             lines.append(cur)
             cur = ''
             continue
-        test = cur + ch
-        if draw.textbbox((0, 0), test, font=font)[2] <= max_w:
+        test = cur + tok
+        if test and draw.textbbox((0, 0), test, font=font)[2] <= max_w:
             cur = test
         else:
             if cur:
                 lines.append(cur)
-            cur = ch
+            cur = tok                      # 单个 token 超宽时强制成行,避免死循环
     if cur:
         lines.append(cur)
     return lines
@@ -165,7 +183,9 @@ def draw_card(page_no, title, bullets, out_path):
         # 每条 bullet 前加序号 + 绿色竖线,建立层级
         seq = seq_chars[idx] if idx < len(seq_chars) else f'{idx+1}.'
         d.text((x, y), seq, font=f_body, fill=GREEN)
-        bx = x + 42
+        # 动态测量序号实际渲染宽度,正文起点 = 序号右缘 + 安全间距,避免序号压字(字号自适应变大时 ① 会变宽)
+        seq_w = d.textbbox((0, 0), seq, font=f_body)[2]
+        bx = x + seq_w + 16
         # 逐行绘制:先整行浅字打底,再对数字段覆盖亮黄,保证数字/结论突出
         wrapped = wrap_text(d, orig, f_body, SAFE_RIGHT_X - bx)
         for ln in wrapped:
