@@ -56,6 +56,7 @@ find . -name "*.md" \
 ```
 
 - 🥇 取**母稿 mtime 最新**的一篇作为本轮发布对象，输出前 5 名候选及时间，报告最终选中项及理由
+- 🎯 **「最新且未发布」判据（强制）**：`find` 只按 mtime 倒序，**不判断是否已发布**。因此拿到 mtime 前 5 名后，必须再叠加一层「未发布」过滤——逐篇检查对应专栏的 `00-*链接目录.md`，若该篇标题已在链接目录出现（掘金 / CSDN / 抖音任一平台记录），即视为**已发布**，跳过并在汇报里标注「已发布，跳过」。取**mtime 最新且尚未发布**的一篇作为本轮对象；若前 5 名全部已发布，顺延扩大搜索范围到前 10 名再判，直到选出未发布的为止。⚠️ 过滤依据是**标题**匹配链接目录，不是文件序号大小。
 - 🧩 由母稿路径推导整组 2 个文件，缺项直接标「未生成」：
 
 | 产出 | 路径规则 | 发布平台 |
@@ -482,6 +483,8 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 35 | 掘金 | 文章管理列表发现**同日同标题重复文章**，误删/漏删 canonical 风险 | 「确定并发布」被多次点击，导致在已发布 canonical 之外又创建了一篇重复文章 | 用 `a[href*="/post/{canonical_id}"]` 精确定位行；重复行定位用标题 + 发布时段双重匹配（`a.link[href*=\"/post/\"]` → `div.essay-list` → `span.title` + `div.byte-dropdown > i.more-icon`）→ 点 `more-icon` 开 `byte-dropdown` 菜单 → 点 `li.byte-dropdown-item` 文本「删除」→ `byte-modal-confirm` 弹窗点「确认」；删前复核 `href` 不为 canonical | 2026-10-30 |
 | 36 | 抖音 | 发布成功后钩子评论**注入不进去**：`type_text` 键入为空、`document.execCommand('insertText')` 返回 `{ok:false}`、直接 `Control+V` 粘贴失败 | ①评论区是 DraftEditor（`.public-DraftEditor-content`，contenteditable），编辑器模型与 DOM 不同步，脚本注入不触发模型；②存在**多个**编辑器实例，其中隐藏的评论编辑器 `width=0` 会被误聚焦；③`Enter` 键在评论框是换行不是发送，且会清空编辑框 | 顺序固定：① `Set-Clipboard` 写入评论文案到本机剪贴板 → ②点「抢首评」/评论图标打开评论弹层 → ③在多个 `.public-DraftEditor-content` 里筛出**可见**实例（`offsetParent !== null && getBoundingClientRect().width > 0`）→ `.focus()` → ④真实 `Control+V` 粘贴 → ⑤点发送按钮（`.commentInput-right-ct` 内第 3 个 span，class `wchsYBpK`）：先取该 span 可见区域 `elementFromPoint(x,y)` 命中的 path 元素，再派发 `mousedown/mouseup/click` 事件序列（直接 `.click()` 返回 rect 0，无法触发发送）；⑥提交后校验评论区出现该评论且带作者标识。**更简路径（2026-10-31 实测，type_text 可行）**：公开页点 `.comment-input-inner-container` 内占位 `span.RXtfhfhu`（「留下你的精彩评论吧」）→ React 动态渲染出 `contenteditable.notranslate.public-DraftEditor-content` 并获得焦点（snapshot 中 combobox focused）→ 直接用 chrome-devtools `type_text` 输入全文（含真实换行）→ 发送按钮自动出现，点击后评论区出现该评论即成功（`评论(N)`，带作者标识 ENCI） | 2026-10-31 |
 | 37 | 全平台 | 封面脚本生成的图主标题 / 副标题被**右缘硬裁**，画面右侧文字残缺，整体「好丑 + 布局怪」 | 生成脚本用了**固定 x 坐标 + 固定字号**放文字，从不测量文字实际宽度：如主标题 300px × 6 字 ≈ 1800px 直接放固定起点 x=1150，一路推到 2950px，远超 2560 画布宽被右边裁掉；左侧圆环画到 620px 宽把文字挤到只剩小空间，副标题 150px × 10 字同样溢出 | 封面脚本**必须先测文字宽度再定字号与起点**：①用 `fit_font(text, max_w, start_size, max_size)` 按 `textlength`/`textbbox` 递归缩放字号直到宽度 ≤ `max_w`；哪怕设 `max_size=300`，测宽超限也要降字号回退（步长 4px）；②起点 `x` 由「左侧主视觉右缘 + 安全间距」算出 `right_x`，并反算 `right_max_w = 画布宽 - right_x - 右侧安全边距`，一切文字落在此区间；③落地为 `Temp/_gen_h_cover.py` 后再跑一次确认无溢出，再 `upload_file`。**禁止写死 `(x,y)` 和固定 `size`** | 2026-10-31 |
+| 38 | 掘金 | 发布面板「添加标签」输入框填 `大模型` / `人工智能` / `Java` 均**无候选下拉浮层**，标签无法固化为 chip；而「收录至专栏」输入框填 `LLM` 却能正常弹出候选 | 掘金标签组件的候选依赖**远程标签搜索接口**，在自动环境（TRAE 内置浏览器）下该接口不返回候选数据（或该标签组件对输入有额外校验）；专栏/话题组件的候选接口正常 | **标签若非必填可直接跳过**：清空输入框后点「确定并发布」通常可放行（掘金标签非必填）。若必须带标签：①先确认「收录至专栏」与「创作话题」是否已选（这俩候选正常，优先补齐）；②标签只能从候选选，候选不出来就不硬造，宁可无标签发布；③发布后到 `juejin.cn/creator/content/article/essays?status=all` 复核文章详情，必要时用「编辑」补标签 | 2026-10-31 |
+| 39 | 掘金 | 发布面板弹出后，面板内元素坐标全为**负值 / 视口 0x0**，`browser_click` 报 `Click target intercepted`，标签/封面按钮点不动 | 编辑器正文区被滚动（`scrollY≈800`），发布弹窗内控件坐标相对视口计算，页面滚动后元素落在视口外；且 `window.innerWidth/innerHeight` 在 execute 环境读到 `0x0` | ①先 `window.scrollTo(0,0)` 把页面拉回顶部，弹窗控件坐标即恢复正常（实测 modal 回到 `x≈544, y≈15`）；②点击偏移的控件前，用 `browser_evaluate` 对目标元素调 `.focus()` / `.scrollIntoView({block:'center'})` 再操作；③`browser_click` 被拦截时改用 `browser_evaluate` 对元素 `.click()`（问题库 #13） | 2026-10-31 |
 
 **变体适配固定检查**（粘贴前先过一遍，命中问题库的记录直接按解法处理）：
 
