@@ -54,6 +54,7 @@ description: 全自动定位知识库最新一篇文章组（母稿 + 抖音变�
 - 🛑 **任一平台失败即停**：按「掘金 → CSDN → 抖音」顺序，失败后不再发起后续平台，如实上报。
 - 🧠 **问题必须回写**：遇到新 issue 并解决后立即更新 command 第 8️⃣ 节问题库；只汇报不记录视为未完成。
 - ⚠️ **MCP workspace roots 限制**（问题库第 33 条）：要上传的封面/卡片图先复制到 `C:\Users\zheng\AppData\Local\Temp\`，再 `upload_file` 该绝对路径；`evaluate_script` 脚本用 `function` 参数内联。
+- 📁 **抖音图文产物归档（强制）**：生成的抖音卡片图与脚本**必须归档**到对应专栏 `resources/{文档编号}/douyin/photo|code/`（见 `.trae/rules/文档外部资源存放规范.md` 第 📱 节）；只存 `Temp/` 不归档视为未完成，发布完成后临时文件清理但归档产物保留。
 
 ## 交付汇报
 
