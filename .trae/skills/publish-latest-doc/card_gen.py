@@ -44,18 +44,23 @@ def load_font(size):
     return ImageFont.truetype(FONT_PATH, size)
 
 
-# 数字/百分比/区间视为「原子 token」:如 99.2%、9%–18%、bf16、INT8 里的数字段
-# 目的:断行时不把完整数字拆到两行(修复 99.2% 被拆成 9 / 9.2%)
-NUM_TOKEN = re.compile(r'[0-9]+(?:\.[0-9]+)?%?(?:\s*[–—-]\s*[0-9]+(?:\.[0-9]+)?%?)?')
+# 数字/百分比/区间 + 英文单词/英文串视为「原子 token」
+# 目的:断行时既不让完整数字拆开(99.2% 拆成 9 / 9.2%),也不让英文单词被拆开
+# (修复 LangGraph 被拆成 st/ate、workflow 被拆成 w/orkflow)
+ATOM_TOKEN = re.compile(
+    r'[A-Za-z][A-Za-z0-9_\-]*'      # 英文单词(含数字/下划线/连字符),如 workflow、LangGraph、AutoGen、ReAct
+    r'|[0-9]+(?:\.[0-9]+)?%?'       # 数字/百分比,如 99.2%、95%
+    r'(?:\s*[–—-]\s*[0-9]+(?:\.[0-9]+)?%?)?'  # 区间,如 9%–18%
+)
 
 
 def tokenize(text):
-    """把文本切成 token 列表:数字/百分比/区间保持整体,其余按单字符"""
+    """把文本切成 token 列表:英文单词与数字/百分比/区间保持整体,其余按单字符"""
     tokens, pos = [], 0
-    for m in NUM_TOKEN.finditer(text):
-        for ch in text[pos:m.start()]:   # 数字前的普通字符逐个入列
+    for m in ATOM_TOKEN.finditer(text):
+        for ch in text[pos:m.start()]:   # 原子 token 前的普通字符逐个入列
             tokens.append(ch)
-        tokens.append(m.group())          # 数字整体作为原子 token
+        tokens.append(m.group())          # 英文单词/数字整体作为原子 token
         pos = m.end()
     for ch in text[pos:]:
         tokens.append(ch)
@@ -118,12 +123,14 @@ def draw_card(page_no, title, bullets, out_path):
     img = Image.new('RGB', (W, H), BG)
     d = ImageDraw.Draw(img)
 
-    # 1) 确定字号:正文字号从 44 起,按内容量自适应撑满画布 55%-75%
+    # 1) 确定字号:正文字号从 44 起,按内容量自适应,范围 34-72
+    #    单页 150-400 字时可能偏多:若撑满 55% 但把字号压到可读线(34px)仍超 75%,允许上限放宽
     body_size = 44
     title_size = 64
-    # 计算内容总高,若不足 55% 则放大字号
     gap = 36  # 段落间隔
-    for _ in range(8):  # 最多试 8 档字号
+    MIN_BODY, MAX_BODY = 34, 72   # 正文字号可读下限 34(铁律),上限 72(容纳 400 字)
+    MIN_TITLE, MAX_TITLE = 48, 80
+    for _ in range(12):  # 最多试 12 档字号
         f_title = load_font(title_size)
         f_body = load_font(body_size)
         # 标题行(若标题非空且非"封面")
@@ -139,15 +146,19 @@ def draw_card(page_no, title, bullets, out_path):
         body_h = len(body_lines) * int(body_size * 1.6) + (len(bullets) - 1) * gap
         total_h = title_h + body_h + (gap if title_h else 0)
         # 目标:总高占画布 55%-75%
-        if total_h < H * 0.55 and body_size < 64:
+        if total_h < H * 0.55 and body_size < MAX_BODY:
             body_size += 4
-            title_size += 6
+            title_size += 5
             continue
-        elif total_h > H * 0.75 and body_size > 30:
+        elif total_h > H * 0.75 and body_size > MIN_BODY:
             body_size -= 4
-            title_size -= 4
+            title_size = max(title_size - 4, MIN_TITLE)  # 标题也压,但不得低于可读下限
             continue
         break
+
+    # 内容特别多(400 字)时,若已压到可读下限仍超 75%,记录警告但不强行变小(保持可读性优先)
+    if body_size <= MIN_BODY and total_h > H * 0.75:
+        print(f'⚠️ 页 {page_no} 内容较多,字号已到可读下限 {MIN_BODY}px,仍稍超密度上限,保持可读优先')
 
     f_title = load_font(title_size)
     f_body = load_font(body_size)
