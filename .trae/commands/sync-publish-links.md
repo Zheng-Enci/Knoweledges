@@ -9,6 +9,8 @@ description: "筛选当前时间往前推 24 小时内修改过的业务文档�
 
 全程使用**内置浏览器**（browser / Chrome DevTools MCP）读取平台页面，不使用平台 API、不修改原文档 ✅
 
+> ⚠️ **CSDN 必须使用内置浏览器通道（强制）**：CSDN 内容管理后台（`mp.csdn.net`）对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见发布指令问题库第 34 条），因此 CSDN 一律走本机**已登录的 TRAE Browser Control（chrome 插件）通道**（`browser_tabs` / `browser_navigate` / `browser_evaluate` 等），**禁止使用 chrome-devtools MCP**。掘金无此限制，可用两种通道任一。
+
 ## ✅ 前置条件
 
 1. **🕐 获取当前时间**：执行 `date "+%Y-%m-%d %H:%M"`（Git Bash），写入目录时取日期部分 `YYYY-MM-DD`
