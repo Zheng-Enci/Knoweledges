@@ -11,11 +11,13 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
 
 | 平台 | 必须使用通道 | 禁止通道 | 原因 |
 |------|--------------|----------|------|
-| **CSDN** | TRAE Browser Control（chrome 插件）通道（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file`） | chrome-devtools MCP | 未登录的隔离 profile 会触发图形验证码/风控（问题库第 34 条） |
-| **抖音** | chrome-devtools MCP（`chrome-devtools_*` 系列工具） | TRAE Browser Control（chrome 插件）通道 | 图文卡片上传 / 选曲 / 注入依赖 evaluate_script 与隔离 profile；走 chrome 插件通道易致登录位与按键不一致 |
-| **掘金** | chrome-devtools MCP（`chrome-devtools_*` 系列工具） | TRAE Browser Control（chrome 插件）通道 | 同抖音；注入正文 / 封面上传依赖 evaluate_script 通道 |
+| **CSDN** | **TRAE 内置沙盒浏览器**（= TRAE Browser Control / chrome 插件通道，`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file`） | chrome-devtools MCP | 未登录的隔离 profile 会触发图形验证码/风控（问题库第 34 条） |
+| **抖音** | chrome-devtools MCP（`chrome-devtools_*` 系列工具） | TRAE 内置沙盒浏览器（chrome 插件通道） | 图文卡片上传 / 选曲 / 注入依赖 evaluate_script 与隔离 profile；走 chrome 插件通道易致登录位与按键不一致 |
+| **掘金** | chrome-devtools MCP（`chrome-devtools_*` 系列工具） | TRAE 内置沙盒浏览器（chrome 插件通道） | 同抖音；注入正文 / 封面上传依赖 evaluate_script 通道 |
 
-> ⚠️ **通道互斥铁律（强制）**：CSDN 与「抖音/掘金」是**两套互斥通道**，一轮发布里必须在打通 CSDN 时切到 chrome 插件通道、处理抖音/掘金时切到 chrome-devtools MCP；**绝不允许用错通道**，尤其不得用 chrome-devtools MCP 去发 CSDN、也不得用 chrome 插件通道去发抖音/掘金，否则会触发风控或注入失效。
+> 🏷️ **通道术语对照**：用户口中的「**TRAE 内置沙盒浏览器**」= command 里的 **TRAE Browser Control / chrome 插件通道**（`browser_tabs` 系列）。它与 chrome-devtools MCP（另一个隔离 profile 的调试通道）是**两套互斥通道**。CSDN 走前者，抖音 / 掘金走后者。
+
+> ⚠️ **通道互斥铁律（强制）**：CSDN 与「抖音/掘金」是**两套互斥通道**，一轮发布里必须在打通 CSDN 时切到 **TRAE 内置沙盒浏览器（chrome 插件通道）**、处理抖音/掘金时切到 chrome-devtools MCP；**绝不允许用错通道**，尤其不得用 chrome-devtools MCP 去发 CSDN、也不得用 chrome 插件通道去发抖音/掘金，否则会触发风控或注入失效。
 
 **全自动授权** 🤖：从定位文章到点击发布，除**第 0️⃣ 步平台多选**外，其余全部由 AI 自主决策并执行，**不询问用户、不等待确认**。遇到不确定的信息，优先参考以下来源自行判断：
 
@@ -33,7 +35,7 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
 | 选项 | 对应平台 | 通道 | 后续涉及步骤 |
 |------|----------|------|--------------|
 | 掘金 | `juejin.cn` | chrome-devtools MCP | 第 5️⃣ 节 + 摘要（3️⃣-2）+ 横版封面 |
-| CSDN | `csdn.net` | **内置浏览器通道（chrome 插件）** | 第 6️⃣ 节 + 摘要（3️⃣-2）+ 横版封面（**必须内置浏览器通道**） |
+| CSDN | `csdn.net` | **TRAE 内置沙盒浏览器（chrome 插件通道）** | 第 6️⃣ 节 + 摘要（3️⃣-2）+ 横版封面（**必须内置浏览器通道**） |
 | 抖音 | `creator.douyin.com` | chrome-devtools MCP | 第 7️⃣ 节 + 竖版卡片图（`P01` 兼封面）+ BGM |
 
 - 💡 默认可**全选**（即默认 3 个全发），用户可自行取消；选择结果决定本轮**登录哪些站点、生成哪些封面、走哪些发布步骤、汇报哪几行**。
@@ -50,7 +52,7 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
    - 抖音创作服务平台 `https://creator.douyin.com`（选了抖音才确认；用 **chrome-devtools MCP** 通道）
    - 未登录时才调用 `browser_waiting_for_user_interaction` 请用户扫码登录 🔐（登录属于唯一需要人工介入的环节）
    - 已登录则直接继续，不打扰用户
-   - ⚠️ **CSDN 浏览器通道（强制）**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控，**必须使用本机已登录的 TRAE Browser Control（chrome 插件）通道**操作（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等），**不得使用 chrome-devtools MCP** ✅
+   - ⚠️ **CSDN 浏览器通道（强制）**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控，**必须使用 TRAE 内置沙盒浏览器（本机已登录的 TRAE Browser Control / chrome 插件通道）**操作（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等），**不得使用 chrome-devtools MCP** ✅
    - ⚠️ **抖音 / 掘金浏览器通道（强制，与 CSDN 相反）**：抖音图文卡片上传、选曲、正文注入与掘金正文/封面上传均依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` / `chrome-devtools_click` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**，否则注入失效或登录位不一致 ✅
 2.1. **⏩ 提速：清理残留 tab**（发布前必做，实测可省大量等待）
    - 用 `list_pages` 列出当前浏览器所有 tab，**关闭与本任务无关的全部 tab**（历史发布残留的抖音/掘金/CSDN 页），只保留目标站点，避免多页互抢渲染与 token
@@ -281,7 +283,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 ## 6️⃣ 发布到 CSDN（母稿）
 
-> ⚠️ **浏览器通道（强制，勿用 chrome-devtools MCP）**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）必触发**图形验证码 / 风控**（进编辑器即拖拽验证、或提示「操作过于频繁」）。因此 CSDN **必须直接用本机已登录的 TRAE Browser Control（chrome 插件）通道**：用 `browser_tabs` 列出本机浏览器 tab，`browser_navigate` 打开 `https://editor.csdn.net/md/`，复用已登录 cookie 继续发布。**不要用 chrome-devtools MCP 打开编辑器**，更**不要在同一通道反复重试**，一条通道一次到位。
+> ⚠️ **浏览器通道（强制，勿用 chrome-devtools MCP）**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）必触发**图形验证码 / 风控**（进编辑器即拖拽验证、或提示「操作过于频繁」）。因此 CSDN **必须直接用 TRAE 内置沙盒浏览器（本机已登录的 TRAE Browser Control / chrome 插件通道）**：用 `browser_tabs` 列出本机浏览器 tab，`browser_navigate` 打开 `https://editor.csdn.net/md/`，复用已登录 cookie 继续发布。**不要用 chrome-devtools MCP 打开编辑器**，更**不要在同一通道反复重试**，一条通道一次到位。
 
 1. 打开 `https://editor.csdn.net/md/`
 2. 填入**文章标题**（已去编号）、**正文**（Markdown 模式粘贴）

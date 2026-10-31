@@ -29,7 +29,7 @@ description: 同步最近24小时内修改过的业务文档到各专栏 URL 目
 ## 关键铁律（不可省略）
 
 - 🔒 **只用内置浏览器**，不调用平台 API。
-- ⚠️ **CSDN 必须走 TRAE Browser Control（chrome 插件）通道（强制）**：CSDN 内容管理后台（`mp.csdn.net`）对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见发布指令问题库第 34 条），因此 CSDN 一律走本机**已登录的 TRAE Browser Control（chrome 插件）通道**（`browser_tabs` / `browser_navigate` / `browser_evaluate` 等），**禁止使用 chrome-devtools MCP**。
+- ⚠️ **CSDN 必须走 TRAE 内置沙盒浏览器（强制）**：CSDN 内容管理后台（`mp.csdn.net`）对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见发布指令问题库第 34 条），因此 CSDN 一律走本机**已登录的 TRAE Browser Control（chrome 插件）通道**（`browser_tabs` / `browser_navigate` / `browser_evaluate` 等），**禁止使用 chrome-devtools MCP**。
 - ⚠️ **掘金必须使用 chrome-devtools MCP 通道（与 CSDN 相反）**：掘金内容管理页的读取与注入依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**。**两套通道互斥，同一轮严禁混用**。
 - 🚫 **审核未通过一律不写**：掘金未过审不写；CSDN 仅「已发布」算通过；`/spost/` 链接不得写。
 - 🚫 **不编造**：链接、状态、专栏名一律以实际抓取为准，取不到记录 ID 与时间，不伪造 URL。

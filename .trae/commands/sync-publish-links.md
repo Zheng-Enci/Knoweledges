@@ -9,7 +9,7 @@ description: "筛选当前时间往前推 24 小时内修改过的业务文档�
 
 全程使用**内置浏览器**（browser / Chrome DevTools MCP）读取平台页面，不使用平台 API、不修改原文档 ✅
 
-> ⚠️ **CSDN 必须使用内置浏览器通道（强制）**：CSDN 内容管理后台（`mp.csdn.net`）对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见发布指令问题库第 34 条），因此 CSDN 一律走本机**已登录的 TRAE Browser Control（chrome 插件）通道**（`browser_tabs` / `browser_navigate` / `browser_evaluate` 等），**禁止使用 chrome-devtools MCP**。
+> ⚠️ **CSDN 必须使用 TRAE 内置沙盒浏览器（强制）**：CSDN 内容管理后台（`mp.csdn.net`）对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见发布指令问题库第 34 条），因此 CSDN 一律走本机**已登录的 TRAE Browser Control（chrome 插件）通道**（`browser_tabs` / `browser_navigate` / `browser_evaluate` 等），**禁止使用 chrome-devtools MCP**。
 
 > ⚠️ **掘金必须使用 chrome-devtools MCP 通道（与 CSDN 相反）**：掘金内容管理页的页面读取与注入依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**。**两套通道互斥，同一轮严禁混用**。
 

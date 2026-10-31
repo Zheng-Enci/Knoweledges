@@ -13,7 +13,7 @@ description: 全自动定位知识库最新一篇文章组（母稿 + 抖音变�
 
 把知识库「最新一篇文章组」（母稿 + 抖音变体）分发到用户在第 0️⃣ 步所选平台位，全部发布成功。**所选平台中 CSDN 不跳过、必须发布**（未选平台不发布）。
 
-> ⚠️ **CSDN 必须使用内置浏览器通道**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见问题库第 34 条），因此 CSDN 一律走本机已登录的 TRAE Browser Control（chrome 插件）通道（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等），**禁止使用 chrome-devtools MCP**。
+> ⚠️ **CSDN 必须使用 TRAE 内置沙盒浏览器**（= TRAE Browser Control / chrome 插件通道，`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file`）：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见问题库第 34 条），因此 CSDN 一律走本机已登录的 TRAE Browser Control 通道，**禁止使用 chrome-devtools MCP**。
 
 > ⚠️ **抖音 / 掘金必须使用 chrome-devtools MCP 通道（与 CSDN 相反）**：二者图文卡片上传、选曲与正文/封面注入依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` / `chrome-devtools_click` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**，否则注入失效或登录位不一致。**两套通道互斥，同一轮发布严禁混用**。
 
@@ -22,7 +22,7 @@ description: 全自动定位知识库最新一篇文章组（母稿 + 抖音变�
 1. **⚠️ 先多选发布平台（唯一用户确认）**：用 `AskUserQuestion`（`multiSelect: true`）询问本次发布到「掘金 / CSDN / 抖音」，默认全选；未选中平台后续登录、生成封面、发布、汇报全部跳过。
 2. **读问题库**：通读 command 文件第 8️⃣ 节「平台问题库」，把命中本组变体的问题抄进临时 checklist。
 3. **获取当前时间**：`date "+%Y-%m-%d %H:%M"`。
-4. **浏览器就绪（通道按平台互斥）**：按所选平台依次确认对应站点已登录——掘金 `https://juejin.cn`（用 **chrome-devtools MCP**）、CSDN `https://www.csdn.net`（用 **chrome 插件通道**）、抖音 `https://creator.douyin.com`（用 **chrome-devtools MCP**）；未登录才调用 `browser_waiting_for_user_interaction` 请用户扫码。⚠️ 通道互斥：**CSDN 只走 chrome 插件通道**，**抖音/掘金只走 chrome-devtools MCP**，两套通道严禁混用。
+4. **浏览器就绪（通道按平台互斥）**：按所选平台依次确认对应站点已登录——掘金 `https://juejin.cn`（用 **chrome-devtools MCP**）、CSDN `https://www.csdn.net`（用 **TRAE 内置沙盒浏览器**（chrome 插件通道））、抖音 `https://creator.douyin.com`（用 **chrome-devtools MCP**）；未登录才调用 `browser_waiting_for_user_interaction` 请用户扫码。⚠️ 通道互斥：**CSDN 只走 TRAE 内置沙盒浏览器（chrome 插件）**，**抖音/掘金只走 chrome-devtools MCP**，两套通道严禁混用。
 5. **变体齐备**：`-抖音.md` 存在且 front-matter 完整（选了抖音才校验）。
 
 ## 执行主流程
