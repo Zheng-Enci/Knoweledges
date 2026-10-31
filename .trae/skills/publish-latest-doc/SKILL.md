@@ -55,6 +55,7 @@ description: 全自动定位知识库最新一篇文章组（母稿 + 抖音变�
 - 🧠 **问题必须回写**：遇到新 issue 并解决后立即更新 command 第 8️⃣ 节问题库；只汇报不记录视为未完成。
 - ⚠️ **MCP workspace roots 限制**（问题库第 33 条）：要上传的封面/卡片图先复制到 `C:\Users\zheng\AppData\Local\Temp\`，再 `upload_file` 该绝对路径；`evaluate_script` 脚本用 `function` 参数内联。
 - 📁 **抖音图文产物落位（强制）**：生成的抖音卡片图与脚本**从生成那刻起就直接写入**对应专栏 `resources/{文档编号}/douyin/photo|code/`（见 `.trae/rules/文档外部资源存放规范.md` 第 📱 节），**不经过 `Temp/` 中转**；发布时从该处读取上传。存到 `Temp/` 即视为未完成，发布后 `Temp/` 临时中间产物清理，`resources/{文档编号}/douyin/` 产物原位保留。
+- 🚫 **卡片生成三坑（问题库 40/41/42，必先规避）**：①**落位一步到位**——`card_gen.py` 输出目录直接指向 `resources/{文档编号}/douyin/photo/`，脚本复制到 `code/`，生成完成后核对两者字节数一致；②**防旧图串图**——生成前**先清空 serve 根目录**全部 `card*.png`，再 `fetch` 注入当前文章新图，上传前用字节数对照（如 `card1=94737`），不能只看文件名；③**动态测序号宽**——卡片正文起点禁止写死 `bx = x + 42`，改用 `seq_w = d.textbbox((0,0), seq, font=f_body)[2]`，`bx = x + seq_w + 16`（序号右缘 + 16px 安全间距）。
 
 ## 交付汇报
 
