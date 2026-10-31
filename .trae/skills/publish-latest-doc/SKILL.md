@@ -15,12 +15,14 @@ description: 全自动定位知识库最新一篇文章组（母稿 + 抖音变�
 
 > ⚠️ **CSDN 必须使用内置浏览器通道**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见问题库第 34 条），因此 CSDN 一律走本机已登录的 TRAE Browser Control（chrome 插件）通道（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等），**禁止使用 chrome-devtools MCP**。
 
+> ⚠️ **抖音 / 掘金必须使用 chrome-devtools MCP 通道（与 CSDN 相反）**：二者图文卡片上传、选曲与正文/封面注入依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` / `chrome-devtools_click` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**，否则注入失效或登录位不一致。**两套通道互斥，同一轮发布严禁混用**。
+
 ## 前置条件检查（先读 command 文件）
 
 1. **⚠️ 先多选发布平台（唯一用户确认）**：用 `AskUserQuestion`（`multiSelect: true`）询问本次发布到「掘金 / CSDN / 抖音」，默认全选；未选中平台后续登录、生成封面、发布、汇报全部跳过。
 2. **读问题库**：通读 command 文件第 8️⃣ 节「平台问题库」，把命中本组变体的问题抄进临时 checklist。
 3. **获取当前时间**：`date "+%Y-%m-%d %H:%M"`。
-4. **浏览器就绪**：按所选平台依次确认对应站点已登录——掘金 `https://juejin.cn`、CSDN `https://www.csdn.net`、抖音 `https://creator.douyin.com`；未登录才调用 `browser_waiting_for_user_interaction` 请用户扫码。⚠️ CSDN 必须使用本机已登录的 TRAE Browser Control（chrome 插件）通道，禁止 chrome-devtools MCP。
+4. **浏览器就绪（通道按平台互斥）**：按所选平台依次确认对应站点已登录——掘金 `https://juejin.cn`（用 **chrome-devtools MCP**）、CSDN `https://www.csdn.net`（用 **chrome 插件通道**）、抖音 `https://creator.douyin.com`（用 **chrome-devtools MCP**）；未登录才调用 `browser_waiting_for_user_interaction` 请用户扫码。⚠️ 通道互斥：**CSDN 只走 chrome 插件通道**，**抖音/掘金只走 chrome-devtools MCP**，两套通道严禁混用。
 5. **变体齐备**：`-抖音.md` 存在且 front-matter 完整（选了抖音才校验）。
 
 ## 执行主流程
@@ -31,9 +33,9 @@ description: 全自动定位知识库最新一篇文章组（母稿 + 抖音变�
 - **④ 生成发布稿**：按第 3️⃣ 节，剥离 front-matter、去首个 H1、本地图片转 GitCode Raw URL；抖音额外做纯文本化。
 - **⑤ 平台摘要**：按第 3️⃣-2 节，掘金 ≤100 字、变体用 front-matter `summary` 压缩。
 - **⑥ 图片/资源预热**：按第 4️⃣ 节与 4️⃣-2 节，验证 GitCode 图片与配套资源 Raw URL 可访问。
-- **⑦ 发布掘金**（母稿）：按第 5️⃣ 节。
+- **⑦ 发布掘金**（母稿）：按第 5️⃣ 节，**用 chrome-devtools MCP 通道**。
 - **⑧ 发布 CSDN**（母稿）：按第 6️⃣ 节，**必须使用内置浏览器通道**（TRAE Browser Control / chrome 插件通道），禁止 chrome-devtools MCP。
-- **⑨ 发布抖音**（变体）：按第 7️⃣ 节，正文一页一卡转 **3:4 `1080x1440`** 卡片图，标题 ≤20 字、描述 ≤200 字 + 话题、**必须选背景音乐**；卡片遵守 7.1.0 卡内排版与右侧安全区。
+- **⑨ 发布抖音**（变体）：按第 7️⃣ 节，**用 chrome-devtools MCP 通道**，正文一页一卡转 **3:4 `1080x1440`** 卡片图，标题 ≤20 字、描述 ≤200 字 + 话题、**必须选背景音乐**；卡片遵守 7.1.0 卡内排版与右侧安全区。
 - **⑩ 发布后置顶评论**：按 7.2.1 节，用作者账号在作品下**置顶一条钩子评论**（补新角度 + A/B 选项 + 一句引导），作为第二道钩子；24 小时内回复新评论。
 - **⑪ 发布后汇报 + 更新问题库 + git**：按第 9️⃣ 节表格汇报；新踩的坑立即写入问题库；所有 git add/commit 自动执行，禁止 push。
 

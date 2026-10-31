@@ -7,8 +7,15 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
 
 执行本 command 时，自动完成「找最新文章组 → 解析 2 个产出 → 生成封面 → 逐平台发布」全流程 🚀
 2 个产出由 `/文档生成` 固定生成：**母稿**（掘金 + CSDN）与 **1 个变体**（抖音），一个都不能少。
-全程使用**内置浏览器**（TRAE Browser Control / chrome 插件通道）操作，不使用平台 API、不修改原文档 ✅
-⚠️ **CSDN 发布必须使用内置浏览器通道**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控（见问题库第 34 条），因此 CSDN 一律走本机已登录的 TRAE Browser Control（chrome 插件）通道，**禁止使用 chrome-devtools MCP** ✅
+全程使用浏览器操作，不使用平台 API、不修改原文档 ✅。**浏览器通道按平台互斥**，严禁混用（见下）：
+
+| 平台 | 必须使用通道 | 禁止通道 | 原因 |
+|------|--------------|----------|------|
+| **CSDN** | TRAE Browser Control（chrome 插件）通道（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file`） | chrome-devtools MCP | 未登录的隔离 profile 会触发图形验证码/风控（问题库第 34 条） |
+| **抖音** | chrome-devtools MCP（`chrome-devtools_*` 系列工具） | TRAE Browser Control（chrome 插件）通道 | 图文卡片上传 / 选曲 / 注入依赖 evaluate_script 与隔离 profile；走 chrome 插件通道易致登录位与按键不一致 |
+| **掘金** | chrome-devtools MCP（`chrome-devtools_*` 系列工具） | TRAE Browser Control（chrome 插件）通道 | 同抖音；注入正文 / 封面上传依赖 evaluate_script 通道 |
+
+> ⚠️ **通道互斥铁律（强制）**：CSDN 与「抖音/掘金」是**两套互斥通道**，一轮发布里必须在打通 CSDN 时切到 chrome 插件通道、处理抖音/掘金时切到 chrome-devtools MCP；**绝不允许用错通道**，尤其不得用 chrome-devtools MCP 去发 CSDN、也不得用 chrome 插件通道去发抖音/掘金，否则会触发风控或注入失效。
 
 **全自动授权** 🤖：从定位文章到点击发布，除**第 0️⃣ 步平台多选**外，其余全部由 AI 自主决策并执行，**不询问用户、不等待确认**。遇到不确定的信息，优先参考以下来源自行判断：
 
@@ -23,11 +30,11 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
 
 > 🔔 **本 command 唯一需要用户确认的环节**：开始发布前，用 `AskUserQuestion`（`multiSelect: true`）询问用户**本次要发布到哪些平台**，选项固定为：
 
-| 选项 | 对应平台 | 后续涉及步骤 |
-|------|----------|--------------|
-| 掘金 | `juejin.cn` | 第 5️⃣ 节 + 摘要（3️⃣-2）+ 横版封面 |
-| CSDN | `csdn.net` | 第 6️⃣ 节 + 摘要（3️⃣-2）+ 横版封面（**必须内置浏览器通道**） |
-| 抖音 | `creator.douyin.com` | 第 7️⃣ 节 + 竖版卡片图（`P01` 兼封面）+ BGM |
+| 选项 | 对应平台 | 通道 | 后续涉及步骤 |
+|------|----------|------|--------------|
+| 掘金 | `juejin.cn` | chrome-devtools MCP | 第 5️⃣ 节 + 摘要（3️⃣-2）+ 横版封面 |
+| CSDN | `csdn.net` | **内置浏览器通道（chrome 插件）** | 第 6️⃣ 节 + 摘要（3️⃣-2）+ 横版封面（**必须内置浏览器通道**） |
+| 抖音 | `creator.douyin.com` | chrome-devtools MCP | 第 7️⃣ 节 + 竖版卡片图（`P01` 兼封面）+ BGM |
 
 - 💡 默认可**全选**（即默认 3 个全发），用户可自行取消；选择结果决定本轮**登录哪些站点、生成哪些封面、走哪些发布步骤、汇报哪几行**。
 - 🔗 **平台联动**：未选中的平台在后续步骤中直接**跳过**（不登录、不生成对应封面、不发布、汇报里标注「未选」）。选中「掘金/CSDN」就只生成对应横版封面并走母稿，选中「抖音」才生成竖版卡片 + 选 BGM。
@@ -37,13 +44,14 @@ description: "全自动定位最新一篇文章组（母稿 + 抖音变体），
 
 0. **🧠 先读问题库**：通读第 8️⃣ 节「平台问题库」，把命中本组变体的问题抄进临时 checklist；能先手规避的，不再试错一遍
 1. **🕐 获取当前时间**：执行 `date "+%Y-%m-%d %H:%M"`（Git Bash）
-2. **🌐 浏览器就绪**：按第 0️⃣ 步所选平台，逐个确认对应站点已登录
-   - 掘金 `https://juejin.cn`（选了掘金才确认）
-   - CSDN `https://www.csdn.net`（选了 CSDN 才确认）
-   - 抖音创作服务平台 `https://creator.douyin.com`（选了抖音才确认）
+2. **🌐 浏览器就绪（通道按平台互斥）**：按第 0️⃣ 步所选平台，逐个确认对应站点已登录，且**用对通道**
+   - 掘金 `https://juejin.cn`（选了掘金才确认；用 **chrome-devtools MCP** 通道）
+   - CSDN `https://www.csdn.net`（选了 CSDN 才确认；用 **chrome 插件通道**）
+   - 抖音创作服务平台 `https://creator.douyin.com`（选了抖音才确认；用 **chrome-devtools MCP** 通道）
    - 未登录时才调用 `browser_waiting_for_user_interaction` 请用户扫码登录 🔐（登录属于唯一需要人工介入的环节）
    - 已登录则直接继续，不打扰用户
    - ⚠️ **CSDN 浏览器通道（强制）**：CSDN 编辑器对**未登录的隔离 profile**（chrome-devtools MCP）会触发图形验证码/风控，**必须使用本机已登录的 TRAE Browser Control（chrome 插件）通道**操作（`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_upload_file` 等），**不得使用 chrome-devtools MCP** ✅
+   - ⚠️ **抖音 / 掘金浏览器通道（强制，与 CSDN 相反）**：抖音图文卡片上传、选曲、正文注入与掘金正文/封面上传均依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` / `chrome-devtools_click` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**，否则注入失效或登录位不一致 ✅
 2.1. **⏩ 提速：清理残留 tab**（发布前必做，实测可省大量等待）
    - 用 `list_pages` 列出当前浏览器所有 tab，**关闭与本任务无关的全部 tab**（历史发布残留的抖音/掘金/CSDN 页），只保留目标站点，避免多页互抢渲染与 token
    - 关闭用 `browser_tabs({action:'close', viewId})`（工具名是 `browser_tabs`，**不存在** `browser_close_page`）
@@ -258,6 +266,8 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 
 ## 5️⃣ 发布到掘金（母稿）
 
+> ⚠️ **通道：chrome-devtools MCP（强制，与 CSDN 相反）**：掘金正文/封面注入依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` / `chrome-devtools_click` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**。
+
 1. 打开 `https://juejin.cn/editor/drafts/new?v=2`
 2. 填入**文章标题**（已去编号）、**正文**（Markdown 模式粘贴）
    - 正文优先用系统剪贴板注入：`Set-Clipboard` 写入发布稿 → 聚焦 `.CodeMirror` → `Control+V`
@@ -287,6 +297,8 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 ## 7️⃣ 发布到抖音（`-抖音` 变体）
 
 > 🧩 **占位符说明**：`<专栏根目录>` = 该文档所在父文件夹（如 `LLM-大模型技术专栏`）；`<文档编号>` = 文档文件名前缀编号（如 `LLM32`），与文档所在 `resources/{文档编号}/` 目录一致。抖音图文产物（脚本 + 卡片图）**从生成那刻起就写入** `resources/{文档编号}/douyin/{code|photo}/`，不经 `Temp/` 中转。
+
+> ⚠️ **通道：chrome-devtools MCP（强制，与 CSDN 相反）**：抖音图文卡片上传、选曲与正文注入依赖 `evaluate_script` 与隔离 profile，**必须使用 chrome-devtools MCP 通道**（`chrome-devtools_navigate_page` / `chrome-devtools_evaluate_script` / `chrome-devtools_click` 等），**禁止使用 TRAE Browser Control（chrome 插件）通道**，否则注入失效或登录位不一致。
 
 > ⚠️ **2026-10 改版后的发布形态**：网页端只剩「发布视频」与「发布图文」两个入口，**没有纯文字作品**（文字模式仅在 App 端提供）。描述框虽然标着 1000 字上限，但编辑器是 ProseMirror（`editor-kit`），长文本写入会回滚、清空后模型不同步。因此抖音一律走「正文做图」：把 `-抖音.md` 的 `P01…PN` 各页原样转成竖版卡片图，按**图文作品**发布，描述只留短摘要 + 话题。
 
