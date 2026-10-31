@@ -24,3 +24,8 @@
 
 - [CSDN - AI Agent工具调用防护层怎么写](https://blog.csdn.net/2301_79239314/article/details/169069115)
 - [掘金 - AI Agent工具调用防护层怎么写](https://juejin.cn/post/7700194552505892891)
+
+## AI08-Agent如何进行工具调用
+
+- [掘金 - Agent 如何进行工具调用：从一次 Function Calling 到生产级工具编排的完整链路](https://juejin.cn/post/7702408998457409562)
+- [抖音 - Agent 调工具，其实模型根本不会动手](https://www.douyin.com/note/7702747050923871526)
