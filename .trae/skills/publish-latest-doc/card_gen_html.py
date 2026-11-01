@@ -75,6 +75,17 @@ body {
   border-left: 8px solid @GREEN@;
   word-break: break-word;
 }
+.cover-title {
+  color: @GREEN@;
+  font-weight: 800;
+  font-size: @COVER_TITLE_SIZE@px;
+  line-height: 1.3;
+  letter-spacing: 1px;
+  margin-bottom: @COVER_TITLE_MB@px;
+  padding-left: 24px;
+  border-left: 12px solid @GREEN@;
+  word-break: break-word;
+}
 .body { display: flex; flex-direction: column; gap: @BODY_GAP@px; }
 .item { display: flex; align-items: flex-start; line-height: 1.6; font-size: @BODY_SIZE@px; }
 .idx {
@@ -181,16 +192,27 @@ def parse_pages(md_path):
 
 def build_html(page_no, title, bullets, is_cover):
     """把单页数据渲染成一段完整 HTML"""
-    # 正文:每条 bullet 一行,前带序号 + 绿色;标题页(i==0 封面或首个非封面页)给标题
+    # 封面页(is_cover)单独版式:第一条 bullet 提升为封面大标题,其余为列表
     title_block = ''
-    if title and not is_cover and '封面' not in title:
-        title_block = f'<div class="title">{_escape(title)}</div>'
     items = []
-    for idx, b in enumerate(bullets, start=1):
-        # 序号
-        seq = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][idx - 1] if idx <= 10 else f'{idx}.'
-        txt_html = _add_highlight(_emoji_wrap(_escape(b)))
-        items.append(f'<div class="item"><div class="idx">{seq}</div><div class="txt">{txt_html}</div></div>')
+    if is_cover and bullets:
+        # 首条 = 封面大标题;用大字号 .cover-title,去序号
+        cover_title = _add_highlight(_emoji_wrap(_escape(bullets[0])))
+        title_block = f'<div class="cover-title">{cover_title}</div>'
+        # 其余条目作为列表,保留序号但更紧凑
+        rest = bullets[1:]
+        for idx, b in enumerate(rest, start=2):
+            seq = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][idx - 1] if idx <= 10 else f'{idx}.'
+            txt_html = _add_highlight(_emoji_wrap(_escape(b)))
+            items.append(f'<div class="item"><div class="idx">{seq}</div><div class="txt">{txt_html}</div></div>')
+    else:
+        # 正文页:给非封面且有标题的页补一个标题块
+        if title and not is_cover and '封面' not in title:
+            title_block = f'<div class="title">{_escape(title)}</div>'
+        for idx, b in enumerate(bullets, start=1):
+            seq = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][idx - 1] if idx <= 10 else f'{idx}.'
+            txt_html = _add_highlight(_emoji_wrap(_escape(b)))
+            items.append(f'<div class="item"><div class="idx">{seq}</div><div class="txt">{txt_html}</div></div>')
     html = TEMPLATE
     html = html.replace('@TITLE_BLOCK@', title_block)
     html = html.replace('@BULLETS@', '\n'.join(items))
@@ -204,7 +226,9 @@ def build_html(page_no, title, bullets, is_cover):
     html = html.replace('@PAD_TOP@', str(int(H * 0.06)))
     html = html.replace('@BODY_SIZE@', '44')
     html = html.replace('@TITLE_SIZE@', '58')
+    html = html.replace('@COVER_TITLE_SIZE@', '78')   # 封面大标题更大
     html = html.replace('@TITLE_MB@', '40')
+    html = html.replace('@COVER_TITLE_MB@', '56')     # 封面大标题下留白更大
     html = html.replace('@BODY_GAP@', '36')
     html = html.replace('@IDX_W@', '60')
     return html
