@@ -55,9 +55,7 @@ SNN 里最基础的计算单元是**脉冲神经元**。它不像 ANN 神经元�
 
 最经典、用得最多的模型是 **LIF（Leaky Integrate-and-Fire，泄漏积分发放）神经元**。它用一个「电阻-电容（RC）」类比来描述膜电位：
 
-```latex
-\tau_m \frac{dV(t)}{dt} = -(V(t) - E_L) + R_m I(t)
-```
+$$\tau_m \frac{dV(t)}{dt} = -(V(t) - E_L) + R_m I(t)$$
 
 - $V(t)$：膜电位（membrane potential），神经元的「水位」；
 - $\tau_m = R_m C_m$：膜时间常数，决定「水位」涨得多快；
