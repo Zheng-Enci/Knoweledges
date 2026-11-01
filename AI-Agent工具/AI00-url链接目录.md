@@ -30,3 +30,7 @@
 - [CSDN - Agent 如何进行工具调用：从一次 Function Calling 到生产级工具编排的完整链路](https://blog.csdn.net/2301_79239314/article/details/169650071)
 - [掘金 - Agent 如何进行工具调用：从一次 Function Calling 到生产级工具编排的完整链路](https://juejin.cn/post/7702408998457409562)
 - [抖音 - Agent 调工具，其实模型根本不会动手](https://www.douyin.com/note/7702747050923871526)
+
+## AI09-Agent架构怎么选
+
+- [掘金 - Agent 架构怎么选：从单 Agent 到多 Agent 编排的选型决策指南](https://juejin.cn/post/7702483654677364774)
