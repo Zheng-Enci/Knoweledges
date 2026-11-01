@@ -317,12 +317,12 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 内容密度 | **卡片主体必须填满画布约 `60%–75%`**：正文 + 标题的总高占画布高度 `≥ 55%`，避免「文字只堆上半截、下半片大片留黑」；若渲染完发现主体不足 `55%`，按 7.1.0 ①「内容不足则自动增大字号 / 行距 / 边距把内容撑满」，或按 ① 增大上下边距使内容整体居中且上下对称 |
 | 落盘 | **自生成起就直接写入 `resources/{文档编号}/douyin/photo/P01.png` … `PN.png`**（`PN` 与页序一一对应，一页一卡），**不经过 `Temp/` 中转**；卡片生成脚本（文档独立定制脚本时）同样**一开始就直接写入 `resources/{文档编号}/douyin/code/`**。见 `.trae/rules/文档外部资源存放规范.md` 第 📱 节——脚本与图从生成那刻就落在对应位置，发布时从该处读取上传；发布后只清理 `Temp/` 里的临时中间产物（如 `serve.ps1`、自检图），`resources/{文档编号}/douyin/` 产物原位保留 |
 
-> 🚀 **一键生成卡片脚本（推荐，首选）**：用 `.trae/skills/publish-latest-doc/card_gen.py` 读取 `-抖音.md` 的 `P01…PN`，自动把 7.1.0 全部排版铁律编码进脚本（垂直居中、右侧 15% 安全区、内容撑满 55–75%、`textbbox` 防重叠、文案不出屏 92%/8% 内缩框、色板统一、`P01` 封面自检），一次生成全部卡片。
+> 🚀 **一键生成卡片脚本（推荐，首选）**：用 `.trae/skills/publish-latest-doc/card_gen_html.py` 读取 `-抖音.md` 的 `P01…PN`，自动把 7.1.0 全部排版铁律编码进脚本（垂直居中、右侧 15% 安全区、内容撑满 55–75%、文案不出屏 92%/8% 内缩框、色板统一、`P01` 封面自检、emoji 原生对齐），一次生成全部卡片。该脚本用 **HTML/CSS + 系统 Chrome 截图**，emoji 由浏览器原生对齐（含 `Segoe UI Emoji`），比 PIL 手绘更精准。
 > ```bash
 > C:\Users\zheng\OneDrive\Desktop\CodeEnvironment\miniconda3\python.exe \
->   .trae/skills/publish-latest-doc/card_gen.py "<xxx-抖音.md>" "<专栏根目录>/resources/<文档编号>/douyin/photo"
+>   .trae/skills/publish-latest-doc/card_gen_html.py "<xxx-抖音.md>" "<专栏根目录>/resources/<文档编号>/douyin/photo"
 > ```
-> 生成后**逐卡抽查**（尤其 `P01`）：文字是否原样、画面是否出现「封面」二字、右侧是否被互动按钮遮挡。脚本只做**排版**，不改写文字；需改文字回文档改。
+> 生成后**逐卡抽查**（尤其 `P01`）：文字是否原样、画面是否出现「封面」二字、右侧是否被互动按钮遮挡。脚本只做**排版**，不改写文字；需改文字回文档改。依赖 `playwright`（复用系统 Chrome，无需下载 chromium 内核）。
 
 #### 7.1.0 卡内排版细则（垂直分布与字距）📐
 
