@@ -31,6 +31,15 @@ FG = (240, 240, 240)              # 浅字
 GREEN = (34, 197, 94)             # 强调绿 #22C55E
 YELLOW = (255, 212, 0)            # 亮黄 #FFD400(仅数字/色块点缀)
 FONT_PATH = r'C:\Windows\Fonts\msyh.ttc'
+# 彩色 emoji 字体(Windows Segoe UI Emoji),用于渲染 🎉😀⚡✅ 等符号
+EMOJI_FONT_PATH = r'C:\Windows\Fonts\seguiemj.ttf'
+# 匹配 emoji / 特殊符号区段(含 emoji 修饰符、ZWJ 序列、箭头、实心符号等)
+EMOJI_RE = re.compile(
+    r'[\U0001F000-\U0001FAFF]'      # emoji 主区 + 扩展
+    r'|[\u2600-\u27BF]'             # 杂项符号/箭头/CJK 符号(如 ⚡✅◆★)
+    r'|[\uFE0F\u200D]'              # 变体选择符 / 零宽连接符(ZwJ)
+    r'|[\U0001F1E6-\U0001F1FF]'     # 国旗
+)
 PAD_LEFT = int(W * 0.08)          # 左侧留白
 PAD_RIGHT = int(W * 0.85)         # 右缘上限(右侧安全区)
 SAFE_RIGHT_X = int(W * 0.85)      # 右侧安全区:元素右缘不得超过此值
@@ -42,6 +51,19 @@ MIN_TOP = int(H * 0.08)           # 最上 ≥8%
 
 def load_font(size):
     return ImageFont.truetype(FONT_PATH, size)
+
+
+def load_emoji_font(size):
+    """加载彩色 emoji 字体;失败时回退到主字体,保证不崩"""
+    try:
+        return ImageFont.truetype(EMOJI_FONT_PATH, size)
+    except Exception:
+        return ImageFont.truetype(FONT_PATH, size)
+
+
+def _char_has_emoji(ch):
+    """判断单个字符是否为 emoji/特殊符号(含 ZWJ 序列里的 emoji)"""
+    return bool(EMOJI_RE.match(ch))
 
 
 # 数字/百分比/区间 + 英文单词/英文串视为「原子 token」
@@ -69,8 +91,31 @@ def tokenize(text):
 
 def wrap_text(draw, text, font, max_w):
     """按 token 断行,数字/百分号/区间不被拆开,返回行列表,每行宽 ≤ max_w"""
+    # 逐字符扫描,把 emoji 序列(含 ZWJ/变体选择符)当作整体 token,避免 emoji 被拆开
+    # 其余仍走 tokenize 逻辑(英文单词/数字/区间保持整体)
+    tokens = []
+    i = 0
+    n = len(text)
+    while i < n:
+        if _char_has_emoji(text[i]):
+            seq = text[i]
+            j = i + 1
+            while j < n and (_char_has_emoji(text[j]) or text[j] in '\uFE0F\u200D'):
+                seq += text[j]
+                j += 1
+            tokens.append(seq)
+            i = j
+        else:
+            # 复用原子 token 规则切英文/数字,其余单字符
+            m = ATOM_TOKEN.match(text, i)
+            if m:
+                tokens.append(m.group())
+                i = m.end()
+            else:
+                tokens.append(text[i])
+                i += 1
     lines, cur = [], ''
-    for tok in tokenize(text):
+    for tok in tokens:
         if tok == '\n':                    # 显式换行符直接断行
             lines.append(cur)
             cur = ''
@@ -85,6 +130,75 @@ def wrap_text(draw, text, font, max_w):
     if cur:
         lines.append(cur)
     return lines
+
+
+def _align_dy(main_font, emoji_font, seq):
+    """计算 emoji 相对主字体的垂直偏移量,让两者视觉中心(box 中心)对齐"""
+    # 不同字体字形中心不同;取主字体代表字符「中」与 emoji 各自 bbox 中心差作为下移量
+    # 实测:中文字符中心 y≈32,emoji 中心 y≈17.5,故需下移约 13~14px,否则 emoji 偏上
+    mb = main_font.getbbox('中')
+    eb = emoji_font.getbbox(seq)
+    main_cy = (mb[1] + mb[3]) / 2
+    emo_cy = (eb[1] + eb[3]) / 2
+    return int(round(main_cy - emo_cy))
+
+
+def draw_mixed(draw, x, y, text, font_main, emoji_font, fill):
+    """绘制一行文本,普通字符用主字体,emoji 用彩色 emoji 字体(垂直对齐校正)"""
+    main_cy = (font_main.getbbox('中')[1] + font_main.getbbox('中')[3]) / 2  # 主字体代表字符中心
+    # 逐字符扫描;emoji 序列(含 ZWJ/变体)用 emoji 字体,其余用主字体
+    n = len(text)
+    i = 0
+    cx = x
+    while i < n:
+        if _char_has_emoji(text[i]):
+            seq = text[i]
+            j = i + 1
+            while j < n and (_char_has_emoji(text[j]) or text[j] in '\uFE0F\u200D'):
+                seq += text[j]
+                j += 1
+            dy = _align_dy(font_main, emoji_font, seq)  # 按该 emoji 序列自身中心对齐
+            draw.text((cx, y + dy), seq, font=emoji_font, fill=fill, embedded_color=True)
+            cx += draw.textbbox((0, 0), seq, font=emoji_font)[2]
+            i = j
+        else:
+            ch = text[i]
+            draw.text((cx, y), ch, font=font_main, fill=fill)
+            cx += draw.textbbox((0, 0), ch, font=font_main)[2]
+            i += 1
+    return cx
+
+
+def draw_mixed_colored(draw, x, y, text, font_main, emoji_font, fill, num_font, num_fill):
+    """绘制一行,并对数字段覆盖高亮色(如亮黄);emoji 走彩色字体并垂直对齐校正"""
+    n = len(text)
+    i = 0
+    cx = x
+    while i < n:
+        if _char_has_emoji(text[i]):
+            seq = text[i]
+            j = i + 1
+            while j < n and (_char_has_emoji(text[j]) or text[j] in '\uFE0F\u200D'):
+                seq += text[j]
+                j += 1
+            dy = _align_dy(font_main, emoji_font, seq)  # 按该 emoji 序列自身中心对齐
+            draw.text((cx, y + dy), seq, font=emoji_font, fill=fill, embedded_color=True)
+            cx += draw.textbbox((0, 0), seq, font=emoji_font)[2]
+            i = j
+        else:
+            # 数字/百分比段用高亮色
+            m = re.match(r'[0-9]+(?:\.[0-9]+)?%?', text[i:])
+            if m:
+                seg = m.group()
+                draw.text((cx, y), seg, font=num_font, fill=num_fill)
+                cx += draw.textbbox((0, 0), seg, font=num_font)[2]
+                i += len(seg)
+            else:
+                ch = text[i]
+                draw.text((cx, y), ch, font=font_main, fill=fill)
+                cx += draw.textbbox((0, 0), ch, font=font_main)[2]
+                i += 1
+    return cx
 
 
 def parse_pages(md_path):
@@ -162,6 +276,8 @@ def draw_card(page_no, title, bullets, out_path):
 
     f_title = load_font(title_size)
     f_body = load_font(body_size)
+    f_emoji_t = load_emoji_font(title_size)   # 标题 emoji 字体
+    f_emoji_b = load_emoji_font(body_size)    # 正文 emoji 字体
     line_h_body = int(body_size * 1.6)
     line_h_title = int(title_size * 1.25)
 
@@ -183,7 +299,7 @@ def draw_card(page_no, title, bullets, out_path):
         d.rectangle([x, y + 6, x + 8, y + line_h_title - 10], fill=GREEN)
         tx = x + 24
         for ln in title_lines:
-            d.text((tx, y), ln, font=f_title, fill=GREEN, spacing=0)
+            draw_mixed(d, tx, y, ln, f_title, f_emoji_t, GREEN)
             y += line_h_title
         y += gap
 
@@ -200,10 +316,8 @@ def draw_card(page_no, title, bullets, out_path):
         # 逐行绘制:先整行浅字打底,再对数字段覆盖亮黄,保证数字/结论突出
         wrapped = wrap_text(d, orig, f_body, SAFE_RIGHT_X - bx)
         for ln in wrapped:
-            d.text((bx, y), ln, font=f_body, fill=FG)  # 整行浅字打底
-            for mch in re.finditer(r'[0-9]+(?:\.[0-9]+)?%?', ln):
-                pre_w = d.textbbox((0, 0), ln[:mch.start()], font=f_body)[2]  # 数字前文字宽度
-                d.text((bx + pre_w, y), mch.group(), font=f_body, fill=YELLOW)  # 数字覆盖亮黄
+            # 整行浅字打底 + emoji 彩色渲染;数字段覆盖亮黄
+            draw_mixed_colored(d, bx, y, ln, f_body, f_emoji_b, FG, f_body, YELLOW)
             y += line_h_body
         y += gap
         idx += 1
