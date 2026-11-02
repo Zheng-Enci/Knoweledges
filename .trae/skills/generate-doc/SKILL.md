@@ -1,9 +1,11 @@
 ---
 name: generate-doc
-description: 按文档写作铁律生成一篇技术文档，一次产出母稿加抖音变体两个 md。Use when the user asks to generate or write a new knowledge-base article or 文档生成. Do not use for publishing existing docs.
+description: 文档生成子 skill。用于按文档写作铁律生成一篇技术文档，一次产出母稿加抖音变体两个 md。当用户说「生成文档 / 文档生成」时触发；也可由 /文档生成 command 引用。负责按写作铁律产出母稿 + 抖音变体，并按 Git 规范提交。
 ---
 
 # 文档生成（generate-doc）
+
+> 👉 **触发方式**：可由用户说「生成文档 / 文档生成」等关键词**独立触发**；也可由 `/文档生成` command 引用。两种方式都会执行本 skill。
 
 > 📄 **完整规范参考**：本 skill 的全文流程、平台变体规则、关键词高亮、互动钩子、硬约束全部以 [generate-doc.md](../../commands/generate-doc.md)（本仓库 command 文件）为准。本文件作为入口与铁律兜底，执行时先读该 command 文件，再按步骤执行。
 
