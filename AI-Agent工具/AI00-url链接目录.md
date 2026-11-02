@@ -34,3 +34,7 @@
 ## AI09-Agent架构怎么选
 
 - [掘金 - Agent 架构怎么选：从单 Agent 到多 Agent 编排的选型决策指南](https://juejin.cn/post/7702483654677364774)
+
+## AI10-Agent规则管理让Memory做索引Skill存规则
+
+- [抖音 - 规则写进 Memory 还是 Skill](https://www.douyin.com/note/)（审核中，2026-11-02 发布，链接待审核通过后补全）
