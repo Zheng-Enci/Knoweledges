@@ -37,4 +37,5 @@
 
 ## AI10-Agent规则管理让Memory做索引Skill存规则
 
+- [掘金 - Agent 规则管理：让 Memory 做索引、让 Skill 存规则——上下文上限实测与分工方案](https://juejin.cn/post/7703445535818317833)
 - [抖音 - 规则写进 Memory 还是 Skill](https://www.douyin.com/note/)（审核中，2026-11-02 发布，链接待审核通过后补全）
