@@ -1,11 +1,11 @@
 ---
 name: publish-douyin
-description: 抖音平台发布子 skill。用于将最新技术文档发布到抖音（creator.douyin.com）。当用户说「发布到抖音 / 发抖音 / 抖音发布 / 发抖音文章 / 抖音图文 / douyin」时触发；也可由 publish-latest-doc command 在用户选择「抖音」时引用。负责抖音的通道选择、卡片生成、发布步骤、选曲规范、抖音平台问题库，并内联三平台共用前置流程。
+description: 抖音平台发布子 skill。用于将最新技术文档发布到抖音（creator.douyin.com）。当用户说「发布最新文档到抖音 / 发布到抖音 / 发抖音 / douyin」时触发；也可由 publish-latest-doc command 在用户选择「抖音」时引用。负责抖音的通道选择、卡片生成、发布步骤、选曲规范、抖音平台问题库，并内联三平台共用前置流程。
 ---
 
 # 发布到抖音（publish-douyin）
 
-> 👉 **触发方式**：可由用户说「发布到抖音 / 发抖音 / 抖音发布 / 抖音图文 / douyin」等关键词**独立触发**；也可由 `publish-latest-doc` command 第 0️⃣ 步用户选定「抖音」时，由 command 引导读取本 skill。两种方式都会执行本 skill。
+> 👉 **触发方式**：可由用户说「发布最新文档到抖音 / 发布到抖音 / 发抖音 / douyin」等关键词**独立触发**；也可由 `publish-latest-doc` command 第 0️⃣ 步用户选定「抖音」时，由 command 引导读取本 skill。两种方式都会执行本 skill。
 
 ## 📌 通道铁律（强制）
 

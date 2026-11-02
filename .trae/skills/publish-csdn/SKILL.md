@@ -1,11 +1,11 @@
 ---
 name: publish-csdn
-description: CSDN 平台发布子 skill。用于将最新技术文档发布到 CSDN（csdn.net）。当用户说「发布到CSDN / 发CSDN / CSDN发布 / 发CSDN文章 / csdn」时触发；也可由 publish-latest-doc command 在用户选择「CSDN」时引用。负责 CSDN 的通道选择、发布步骤、CSDN 平台问题库，并内联三平台共用前置流程。
+description: CSDN 平台发布子 skill。用于将最新技术文档发布到 CSDN（csdn.net）。当用户说「发布最新文档到CSDN / 发布到CSDN / 发CSDN / csdn」时触发；也可由 publish-latest-doc command 在用户选择「CSDN」时引用。负责 CSDN 的通道选择、发布步骤、CSDN 平台问题库，并内联三平台共用前置流程。
 ---
 
 # 发布到 CSDN（publish-csdn）
 
-> 👉 **触发方式**：可由用户说「发布到CSDN / 发CSDN / CSDN发布 / csdn」等关键词**独立触发**；也可由 `publish-latest-doc` command 第 0️⃣ 步用户选定「CSDN」时，由 command 引导读取本 skill。两种方式都会执行本 skill。
+> 👉 **触发方式**：可由用户说「发布最新文档到CSDN / 发布到CSDN / 发CSDN / csdn」等关键词**独立触发**；也可由 `publish-latest-doc` command 第 0️⃣ 步用户选定「CSDN」时，由 command 引导读取本 skill。两种方式都会执行本 skill。
 
 ## 📌 通道铁律（强制）
 
