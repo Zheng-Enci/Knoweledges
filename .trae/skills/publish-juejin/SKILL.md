@@ -242,6 +242,7 @@ GitCode Raw 图片首次访问可能空白或返回占位图，必须验证后�
 | 39 | 掘金 | 发布面板弹出后，面板内元素坐标全为**负值 / 视口 0x0**，`browser_click` 报 `Click target intercepted` | 编辑器正文区被滚动（`scrollY≈800`），发布弹窗内控件坐标相对视口计算，页面滚动后元素落在视口外 | ①先 `window.scrollTo(0,0)` 把页面拉回顶部；②点击偏移控件前用 `browser_evaluate` 对目标元素调 `.focus()` / `.scrollIntoView({block:'center'})`；③被拦截时改用 `browser_evaluate` 对元素 `.click()` | 2026-10-31 |
 | 1 | 掘金 / CSDN | 发出去的其实是抖音短文：标题 21 字、正文末尾带 `#话题` | 选文按 mtime 取最新 `.md`，`-抖音.md` 永远是最新的那个 | `find` 里加 4 条 `-not -name "*-平台名.md"` 排除；发布前校验变体 front-matter `source` 等于母稿完整文件名 | 2026-10-27 |
 | 2 | 掘金 / CSDN | 正文顶部多出 `platform:` `title:` `summary:` 等 YAML 行 | 变体首部 front-matter 没剥离就整篇粘贴 | 生成发布稿第 1 步先删 `---` 包裹的整段 YAML，母稿跳过本步 | 2026-10-27 |
+| 48 | 掘金 | 发布面板「收录至专栏」填不存在的专栏名，输入框下方**无「新建」入口**、候选为空，点候选报 `element did not become interactive`；且旧专栏管理路由 `/creator/content/column/manage` 404 | 掘金专栏候选只匹配**已存在**专栏；新建专栏需走专栏管理页，且新建后专栏处于「审核中」，发布面板**暂时不可收录** | ①新建：创作中心 → 专栏管理（路由 `https://juejin.cn/creator/content/column?status=all`，非 `/column/manage`）→「新建专栏」→ 填名称+简介 →「确认」，提示「新建专栏需要一定的审核时间」；②审核通过前发布面板不可选该专栏，**先发布文章**（不选专栏）；③文章发布/审核通过后，回到草稿编辑器 →「更新」→ 发布面板选该专栏 →「确定并更新」，即可补挂 | 2026-11-03 |
 
 ### 🌐 全平台通用问题库（内联）
 
