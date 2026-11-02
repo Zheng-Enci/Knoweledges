@@ -163,23 +163,70 @@ def _escape(html_text):
     return html_text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
-# LaTeX 兜底:把 $...$ 内的常用命令转成可读 Unicode 数学,避免 HTML 渲染反斜杠源码
+# LaTeX 兜底:把 $...$ 内的常用命令转成数学排版,避免 HTML 渲染反斜杠源码
+# 分式用 HTML 上下结构渲染成真分数,其余命令→Unicode 符号;支持上下标
 _GREEK = {r'\alpha': 'α', r'\beta': 'β', r'\gamma': 'γ', r'\Delta': 'Δ', r'\delta': 'δ',
           r'\theta': 'θ', r'\lambda': 'λ', r'\mu': 'μ', r'\rho': 'ρ', r'\sigma': 'σ',
-          r'\phi': 'φ', r'\omega': 'ω', r'\epsilon': 'ε', r'\pi': 'π'}
+          r'\phi': 'φ', r'\omega': 'ω', r'\epsilon': 'ε', r'\pi': 'π', r'\eta': 'η',
+          r'\Omega': 'Ω', r'\Sigma': 'Σ'}
 _OPS = {r'\cdot': '·', r'\times': '×', r'\pm': '±', r'\infty': '∞', r'\leq': '≤',
-        r'\geq': '≥', r'\approx': '≈', r'\neq': '≠', r'\sqrt': '√', r'\le': '≤', r'\ge': '≥'}
+        r'\geq': '≥', r'\approx': '≈', r'\neq': '≠', r'\sqrt': '√', r'\le': '≤', r'\ge': '≥',
+        r'\leftarrow': '←', r'\rightarrow': '→', r'\leftrightarrow': '↔', r'\to': '→',
+        r'\propto': '∝', r'\sum': 'Σ', r'\nabla': '∇', r'\Delta': 'Δ'}
+# 分式渲染:分子在上、横线居中、分母在下,形成真分数排版(非除式)
+_FRAC_BLOCK = ('<span style="display:inline-flex;flex-direction:column;'
+               'vertical-align:middle;text-align:center;margin:0 3px;line-height:1.25">'
+               '<span style="border-bottom:2px solid currentColor;padding:0 6px 2px">{num}</span>'
+               '<span style="padding-top:2px">{den}</span></span>')
+
+
+def _apply_map(s, mapping):
+    """按命令名长度降序替换，避免箭头命令（如 leftarrow 含 leq 前缀）被误吞；返回替换后的字符串"""
+    for cmd in sorted(mapping, key=len, reverse=True):
+        s = s.replace(cmd, mapping[cmd])
+    return s
+
+
+def _latex_subscripts(s):
+    """把 `_{...}` / `_{...}^{...}` / `^...` 转成 HTML 上下标,增强数学排版感"""
+    # 先处理带上下标的 `x_{i}^{2}` 形态:合并成上标在上、下标在下
+    s = re.sub(r'_\{([^{}]*)\}\^\{([^{}]*)\}',
+               r'<sub>\1</sub><sup>\2</sup>', s)
+    s = re.sub(r'\^\{([^{}]*)\}_\{([^{}]*)\}',
+               r'<sup>\1</sup><sub>\2</sub>', s)
+    s = re.sub(r'_\{([^{}]*)\}', r'<sub>\1</sub>', s)   # 下标
+    s = re.sub(r'\^\{([^{}]*)\}', r'<sup>\1</sup>', s)  # 上标
+    s = s.replace('^', '')                               # 残留的裸 ^ 直接去掉
+    return s
 
 
 def _latex_to_html(html_text):
-    """把 $...$ 包裹的 LaTeX 公式转成可读的 Unicode 文本,供 HTML 直接显示"""
+    """把 $...$ 包裹的 LaTeX 公式转成可读数学排版,供 HTML 直接显示"""
     def conv(m):
         s = m.group(1)
-        s = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}', r'(\1) / (\2)', s)   # 分式→除式 (x-μ) / (σ)
-        for cmd, ch in _OPS.items():    s = s.replace(cmd, ch)             # 运算符命令→符号
-        for cmd, ch in _GREEK.items():  s = s.replace(cmd, ch)             # 希腊字母命令→Unicode
-        s = s.replace('^', '').replace('{', '').replace('}', '')           # 去掉幂记号与花括号
-        s = s.replace('\\', '').replace('$', '').replace("'", '′')         # 清残留反斜杠/撇转成撇号
+        # ① 分式 → 真分数(上下结构);支持嵌套一层,分子/分母内部先做简单转换
+        def frac_repl(mm):
+            num = _frac_inner(mm.group(1))
+            den = _frac_inner(mm.group(2))
+            return _FRAC_BLOCK.format(num=num, den=den)
+        def _frac_inner(part):
+            part = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}',
+                          lambda mm: _FRAC_BLOCK.format(num=_frac_inner(mm.group(1)),
+                                                        den=_frac_inner(mm.group(2))),
+                          part)
+            part = _latex_subscripts(part)
+            part = _apply_map(part, _OPS)
+            part = _apply_map(part, _GREEK)
+            return part
+        s = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}', frac_repl, s)
+        # ② 上下标
+        s = _latex_subscripts(s)
+        # ③ 运算符 / 希腊字母 → Unicode(按命令名长度降序,避免前缀误吞)
+        s = _apply_map(s, _OPS)
+        s = _apply_map(s, _GREEK)
+        # ④ 清理残留:花括号、反斜杠、美元符;撇号转成撇号
+        s = s.replace('{', '').replace('}', '').replace('\\', '').replace('$', '')
+        s = s.replace("'", '′')
         return s.strip()
     # 仅处理成对 $...$;未闭合的 $ 保持原样,不破坏页面
     return re.sub(r'\$(.+?)\$', conv, html_text)
