@@ -197,14 +197,21 @@ def build_html(page_no, title, bullets, is_cover):
     items = []
     if is_cover and bullets:
         # 首条 = 封面大标题;用大字号 .cover-title,去序号
-        cover_title = _add_highlight(_emoji_wrap(_escape(bullets[0])))
-        title_block = f'<div class="cover-title">{cover_title}</div>'
-        # 其余条目作为列表,保留序号但更紧凑
+        # 测宽铁律:按可用内容宽(约 77% 画布宽)估算标题字符宽,自动收缩字号,防止主题词被断行
+        raw = bullets[0]
+        cn = sum(1 for ch in raw if '\u4e00' <= ch <= '\u9fff')
+        other = len(raw) - cn
+        units = cn + other * 0.55 + 0.15 * len(raw)          # 中文宽 + 西文宽 + 字距估算
+        cover_size = int((W * 0.77) / max(1, units))         # 自动收缩到不超右缘
+        cover_size = max(44, min(78, cover_size))            # 限幅:最小 44,最大 78
+        cover_title = _add_highlight(_emoji_wrap(_escape(raw)))
+        title_block = f'<div class="cover-title" style="font-size:{cover_size}px;margin-bottom:96px">{cover_title}</div>'
+        # 其余条目作为列表,保留序号,但封面大标题已去序号,故副标题/核心数字从 ① 重新计
         rest = bullets[1:]
-        for idx, b in enumerate(rest, start=2):
+        for idx, b in enumerate(rest, start=1):
             seq = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][idx - 1] if idx <= 10 else f'{idx}.'
             txt_html = _add_highlight(_emoji_wrap(_escape(b)))
-            items.append(f'<div class="item"><div class="idx">{seq}</div><div class="txt">{txt_html}</div></div>')
+            items.append(f'<div class="item" style="font-size:54px;line-height:1.75;margin-top:44px"><div class="idx">{seq}</div><div class="txt">{txt_html}</div></div>')
     else:
         # 正文页:给非封面且有标题的页补一个标题块
         if title and not is_cover and '封面' not in title:
