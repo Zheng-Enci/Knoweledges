@@ -163,6 +163,28 @@ def _escape(html_text):
     return html_text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
+# LaTeX 兜底:把 $...$ 内的常用命令转成可读 Unicode 数学,避免 HTML 渲染反斜杠源码
+_GREEK = {r'\alpha': 'α', r'\beta': 'β', r'\gamma': 'γ', r'\Delta': 'Δ', r'\delta': 'δ',
+          r'\theta': 'θ', r'\lambda': 'λ', r'\mu': 'μ', r'\rho': 'ρ', r'\sigma': 'σ',
+          r'\phi': 'φ', r'\omega': 'ω', r'\epsilon': 'ε', r'\pi': 'π'}
+_OPS = {r'\cdot': '·', r'\times': '×', r'\pm': '±', r'\infty': '∞', r'\leq': '≤',
+        r'\geq': '≥', r'\approx': '≈', r'\neq': '≠', r'\sqrt': '√', r'\le': '≤', r'\ge': '≥'}
+
+
+def _latex_to_html(html_text):
+    """把 $...$ 包裹的 LaTeX 公式转成可读的 Unicode 文本,供 HTML 直接显示"""
+    def conv(m):
+        s = m.group(1)
+        s = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}', r'(\1) / (\2)', s)   # 分式→除式 (x-μ) / (σ)
+        for cmd, ch in _OPS.items():    s = s.replace(cmd, ch)             # 运算符命令→符号
+        for cmd, ch in _GREEK.items():  s = s.replace(cmd, ch)             # 希腊字母命令→Unicode
+        s = s.replace('^', '').replace('{', '').replace('}', '')           # 去掉幂记号与花括号
+        s = s.replace('\\', '').replace('$', '').replace("'", '′')         # 清残留反斜杠/撇转成撇号
+        return s.strip()
+    # 仅处理成对 $...$;未闭合的 $ 保持原样,不破坏页面
+    return re.sub(r'\$(.+?)\$', conv, html_text)
+
+
 def parse_pages(md_path):
     """解析 -抖音.md,返回 [(page_no, title, bullets, is_cover)] 列表"""
     with open(md_path, 'r', encoding='utf-8') as f:
@@ -184,6 +206,7 @@ def parse_pages(md_path):
                 b = line.lstrip('-').strip()
                 b = re.sub(r'\*\*', '**', b)      # 保留高亮标记,交给 HTML 层解析
                 b = b.replace('`', '')
+                b = re.sub(r'^(大标题|副标题|核心数字)[:：]\s*', '', b)   # 剥离 P01 字段前缀标签,只留内容
                 if b:
                     bullets.append(b)
         pages.append((page_no, title, bullets, '封面' in title))
@@ -204,13 +227,13 @@ def build_html(page_no, title, bullets, is_cover):
         units = cn + other * 0.55 + 0.15 * len(raw)          # 中文宽 + 西文宽 + 字距估算
         cover_size = int((W * 0.77) / max(1, units))         # 自动收缩到不超右缘
         cover_size = max(44, min(78, cover_size))            # 限幅:最小 44,最大 78
-        cover_title = _add_highlight(_emoji_wrap(_escape(raw)))
+        cover_title = _add_highlight(_emoji_wrap(_latex_to_html(_escape(raw))))
         title_block = f'<div class="cover-title" style="font-size:{cover_size}px;margin-bottom:96px">{cover_title}</div>'
         # 其余条目作为列表,保留序号,但封面大标题已去序号,故副标题/核心数字从 ① 重新计
         rest = bullets[1:]
         for idx, b in enumerate(rest, start=1):
             seq = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][idx - 1] if idx <= 10 else f'{idx}.'
-            txt_html = _add_highlight(_emoji_wrap(_escape(b)))
+            txt_html = _add_highlight(_emoji_wrap(_latex_to_html(_escape(b))))
             items.append(f'<div class="item" style="font-size:54px;line-height:1.75;margin-top:44px"><div class="idx">{seq}</div><div class="txt">{txt_html}</div></div>')
     else:
         # 正文页:给非封面且有标题的页补一个标题块
@@ -218,7 +241,7 @@ def build_html(page_no, title, bullets, is_cover):
             title_block = f'<div class="title">{_escape(title)}</div>'
         for idx, b in enumerate(bullets, start=1):
             seq = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][idx - 1] if idx <= 10 else f'{idx}.'
-            txt_html = _add_highlight(_emoji_wrap(_escape(b)))
+            txt_html = _add_highlight(_emoji_wrap(_latex_to_html(_escape(b))))
             items.append(f'<div class="item"><div class="idx">{seq}</div><div class="txt">{txt_html}</div></div>')
     html = TEMPLATE
     html = html.replace('@TITLE_BLOCK@', title_block)
