@@ -1,11 +1,11 @@
 ---
 name: publish-juejin
-description: 掘金平台发布子 skill。仅供 publish-latest-doc command 在用户选择「掘金」时引用，勿被单独触发。负责掘金的通道选择、发布步骤、掘金平台问题库，并内联三平台共用前置流程。
+description: 掘金平台发布子 skill。用于将最新技术文档发布到掘金（juejin.cn）。当用户说「发布到掘金 / 发掘金 / 掘金发布 / 发掘金文章 / juejin」时触发；也可由 publish-latest-doc command 在用户选择「掘金」时引用。负责掘金的通道选择、发布步骤、掘金平台问题库，并内联三平台共用前置流程。
 ---
 
 # 发布到掘金（publish-juejin）
 
-> ⚠️ **本 skill 不单独触发**：仅当 `publish-latest-doc` command 第 0️⃣ 步用户选定「掘金」时，由 command 引导读取本 skill。description 不含独立触发词。
+> 👉 **触发方式**：可由用户说「发布到掘金 / 发掘金 / 掘金发布 / juejin」等关键词**独立触发**；也可由 `publish-latest-doc` command 第 0️⃣ 步用户选定「掘金」时，由 command 引导读取本 skill。两种方式都会执行本 skill。
 
 ## 📌 通道铁律（强制）
 
