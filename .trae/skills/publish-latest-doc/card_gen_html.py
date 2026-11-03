@@ -110,8 +110,20 @@ body {
 </html>'''
 
 # ---------- 工具函数 ----------
+def _sub_outside_tags(text, pattern, repl):
+    """只在 <...> 标签之外应用 pattern→repl 替换,跳过已生成的 HTML 标签内部,避免污染公式/样式源码"""
+    parts = []
+    pos = 0
+    for tm in re.finditer(r'<[^>]*>', text):
+        parts.append(pattern.sub(repl, text[pos:tm.start()]))   # 标签前文本
+        parts.append(tm.group(0))                                # 原样保留标签
+        pos = tm.end()
+    parts.append(pattern.sub(repl, text[pos:]))                  # 末尾文本
+    return ''.join(parts)
+
+
 def _add_highlight(html_text):
-    """把文本中 `**x**` 高亮段和数字段转换成带语义色的 HTML span"""
+    """把文本中 `**x**` 高亮段和数字段转换成带语义色的 HTML span(仅作用于标签外)"""
     # 只允许两种实际着色:数字类=亮黄(.num),结论/判断类=强调绿(.verdict)
     # 其余高亮段(如纯术语名)保持默认浅色,不染色,避免颜色泛滥失焦
     def repl_bold(m):
@@ -125,10 +137,12 @@ def _add_highlight(html_text):
     # 未加 ** 包裹的裸露数字段(区间/百分比/绝对值)也染亮黄
     def repl_num(m):
         return f'<span class="num">{m.group(0)}</span>'
-    s = re.sub(r'\*\*(.+?)\*\*', repl_bold, html_text)
+    # 两个替换都限定在标签外,防止把 _latex_to_html 生成的分式/上下标 style 属性里的数字染坏
+    s = _sub_outside_tags(html_text, re.compile(r'\*\*(.+?)\*\*'), repl_bold)
     # 只匹配:数字前是行首或非文字字符(避免"到/点水"里的零宽数字误伤);跳过已是 span 内数字
-    s = re.sub(r'(?<![\w\u4e00-\u9fff%<])([0-9]+(?:\.[0-9]+)?\s*%?)(?:\s*[–—-]\s*[0-9]+(?:\.[0-9]+)?\s*%?)?',
-               repl_num, s)
+    s = _sub_outside_tags(s, re.compile(
+        r'(?<![\w\u4e00-\u9fff%<])([0-9]+(?:\.[0-9]+)?\s*%?)(?:\s*[–—-]\s*[0-9]+(?:\.[0-9]+)?\s*%?)?'),
+        repl_num)
     return s
 
 
