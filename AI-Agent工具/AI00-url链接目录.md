@@ -39,3 +39,8 @@
 
 - [掘金 - Agent 规则管理：让 Memory 做索引、让 Skill 存规则——上下文上限实测与分工方案](https://juejin.cn/post/7703445535818317833)
 - [抖音 - 规则写进 Memory 还是 Skill](https://www.douyin.com/note/)（审核中，2026-11-02 发布，链接待审核通过后补全）
+
+## AI11-Agent自动化系统怎么搭
+
+- [CSDN - Agent 自动化系统怎么搭：从 Super-agent 架构到事件驱动调度（全文可跑）](https://blog.csdn.net/2301_79239314/article/details/169944521)
+- [抖音 - Agent自动化系统怎么搭？让AI当主管你只拍板](https://www.douyin.com/note/)（审核中，2026-11-03 发布，链接待审核通过后补全）
