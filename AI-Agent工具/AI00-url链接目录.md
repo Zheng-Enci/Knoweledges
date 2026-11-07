@@ -45,3 +45,7 @@
 - [掘金 - Agent 自动化系统怎么搭：从 Super-agent 架构到事件驱动调度（全文可跑）](https://juejin.cn/post/7703762818152415258)
 - [CSDN - Agent 自动化系统怎么搭：从 Super-agent 架构到事件驱动调度（全文可跑）](https://blog.csdn.net/2301_79239314/article/details/169944521)
 - [抖音 - Agent自动化系统怎么搭？让AI当主管你只拍板](https://www.douyin.com/note/)（审核中，2026-11-03 发布，链接待审核通过后补全）
+
+## AI12-Agent评测体系是什么
+
+- [抖音 - Agent 评测体系是什么？三层评测看懂](https://www.douyin.com/note/)（审核中，2026-11-07 发布，链接待审核通过后补全）
