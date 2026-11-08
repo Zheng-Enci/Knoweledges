@@ -69,3 +69,7 @@
 - [CSDN - Agent 工具怎么折叠海量输出才「爽」：Trae、Claude Code 的渐进式披露设计原理](https://blog.csdn.net/2301_79239314/article/details/170295522)
 - [掘金 - Agent 工具怎么折叠海量输出才「爽」：Trae、Claude Code 的渐进式披露设计原理](https://juejin.cn/spost/7705443340624085055)（审核中，2026-11-08 发布，链接待审核通过后更新）
 - [抖音 - Agent 海量输出怎么折叠才爽？](https://www.douyin.com/note/)（审核中，2026-11-08 发布，链接待审核通过后补全）
+
+## AI16-Agent上下文太长怎么办
+
+- [掘金 - Agent 上下文太长怎么办：四类压缩策略、最近上下文怎么传与记忆保持的分层架构](https://juejin.cn/spost/7705376708413718555)（审核中，2026-11-09 发布，链接待审核通过后更新）
