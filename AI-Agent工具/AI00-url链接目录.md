@@ -61,23 +61,23 @@
 ## AI14-Agent面试为什么几乎不聊高并发
 
 - [CSDN - Agent 面试为什么几乎不聊高并发：从瓶颈转移到考察维度的真相](https://blog.csdn.net/2301_79239314/article/details/170295382)
-- [掘金 - Agent 面试为什么几乎不聊高并发：从瓶颈转移到考察维度的真相](https://juejin.cn/spost/7705457731822026788)（审核中，2026-11-08 发布，链接待审核通过后更新）
+- [掘金 - Agent 面试为什么几乎不聊高并发：从瓶颈转移到考察维度的真相](https://juejin.cn/post/7705457731822026788)
 - [抖音 - Agent 面试为什么不聊高并发？](https://www.douyin.com/note/)（审核中，2026-11-08 发布，链接待审核通过后补全）
 
 ## AI15-Agent工具怎么折叠海量输出才爽
 
 - [CSDN - Agent 工具怎么折叠海量输出才「爽」：Trae、Claude Code 的渐进式披露设计原理](https://blog.csdn.net/2301_79239314/article/details/170295522)
-- [掘金 - Agent 工具怎么折叠海量输出才「爽」：Trae、Claude Code 的渐进式披露设计原理](https://juejin.cn/spost/7705443340624085055)（审核中，2026-11-08 发布，链接待审核通过后更新）
+- [掘金 - Agent 工具怎么折叠海量输出才「爽」：Trae、Claude Code 的渐进式披露设计原理](https://juejin.cn/post/7705443340624085055)
 - [抖音 - Agent 海量输出怎么折叠才爽？](https://www.douyin.com/note/)（审核中，2026-11-08 发布，链接待审核通过后补全）
 
 ## AI16-Agent上下文太长怎么办
 
 - [CSDN - Agent 上下文太长怎么办：四类压缩策略、最近上下文怎么传与记忆保持的分层架构](https://blog.csdn.net/2301_79239314/article/details/170299003)
-- [掘金 - Agent 上下文太长怎么办：四类压缩策略、最近上下文怎么传与记忆保持的分层架构](https://juejin.cn/spost/7705376708413718555)（审核中，2026-11-09 发布，链接待审核通过后更新）
+- [掘金 - Agent 上下文太长怎么办：四类压缩策略、最近上下文怎么传与记忆保持的分层架构](https://juejin.cn/post/7705376708413718555)
 - [抖音 - Agent 上下文太长怎么办？](https://www.douyin.com/note/)（审核中，2026-11-09 发布，链接待审核通过后补全）
 
 ## AI17-如何给Agent加一个askQuestion提问工具
 
 - [CSDN - 如何给 Agent 加一个 askQuestion 提问工具：从工具 Schema 到中断恢复的完整实现](https://blog.csdn.net/2301_79239314/article/details/170347219)
-- [掘金 - 如何给 Agent 加一个 askQuestion 提问工具：从工具 Schema 到中断恢复的完整实现](https://juejin.cn/spost/7705866348404326409)（审核中，2026-11-09 发布，链接待审核通过后更新）
+- [掘金 - 如何给 Agent 加一个 askQuestion 提问工具：从工具 Schema 到中断恢复的完整实现](https://juejin.cn/post/7705866348404326409)
 - [抖音 - 怎么给 Agent 加一个提问工具？](https://www.douyin.com/note/)（审核中，2026-11-09 发布，链接待审核通过后补全）
