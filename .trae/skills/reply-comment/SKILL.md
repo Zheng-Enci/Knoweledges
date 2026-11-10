@@ -56,6 +56,8 @@ description: 评论回复子 skill。用于回复读者或作者在平台评论�
 
 ### CSDN（已沉淀）
 
+> ⚠️ **通道铁律**：CSDN 评论回复**必须使用 TRAE 内置沙盒浏览器**（= TRAE Browser Control / chrome 插件通道，`browser_tabs` / `browser_navigate` / `browser_evaluate` / `browser_snapshot` 系列），**禁止用 chrome-devtools MCP**。原因同 `publish-csdn`：CSDN 对未登录的隔离 profile 必触发图形验证码 / 风控。两套通道互斥，严禁混用。
+
 **① 评论回复页面固定** 💬
 
 - CSDN 评论回复统一在 `https://mp.csdn.net/mp_blog/manage/comment`（内容管理 → 评论）完成。
