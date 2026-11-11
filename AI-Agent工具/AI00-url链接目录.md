@@ -81,3 +81,7 @@
 - [CSDN - 如何给 Agent 加一个 askQuestion 提问工具：从工具 Schema 到中断恢复的完整实现](https://blog.csdn.net/2301_79239314/article/details/170347219)
 - [掘金 - 如何给 Agent 加一个 askQuestion 提问工具：从工具 Schema 到中断恢复的完整实现](https://juejin.cn/post/7705866348404326409)
 - [抖音 - 怎么给 Agent 加一个提问工具？](https://www.douyin.com/note/)（审核中，2026-11-09 发布，链接待审核通过后补全）
+
+## AI18-Agent如何动态挂载相关知识
+
+- [掘金 - Agent 如何动态挂载相关知识：三层渐进加载 + 路由机制把自动化再提一档](https://juejin.cn/spost/7706740008509898762)（审核中，2026-11-11 发布，链接待审核通过后更新）
