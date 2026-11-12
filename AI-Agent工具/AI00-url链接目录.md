@@ -93,3 +93,7 @@
 - [CSDN - Agent 如何动态存储运行时经验：从反思沉淀到场景化复用的完整闭环](https://blog.csdn.net/2301_79239314/article/details/170554302)（2026-11-11 发布）
 - [掘金 - Agent 如何动态存储运行时经验：从反思沉淀到场景化复用的完整闭环](https://juejin.cn/post/7706762779600830490)
 - [抖音 - Agent 怎么存运行时经验？](https://www.douyin.com/note/)（审核中，2026-11-11 发布，链接待审核通过后补全）
+
+## AI20-Agent任务规划怎么选
+
+- [掘金 - Agent 任务规划怎么选：ReAct 与 Plan-and-Execute 的成本账与适用边界](https://juejin.cn/spost/7706812748685033499)（审核中，2026-11-12 发布，链接待审核通过后更新）
