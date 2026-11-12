@@ -12,7 +12,7 @@ description: Git操作规范与代码注释规范，规定文件变更提交流�
 
 每次修改、创建或删除文件后，**必须自动执行** ✅ `git add` 和 `git commit`（提交信息使用英文）。
 
-> ⚠️ 注意：禁止自动执行 `git push` ❌
+> ⚠️ 注意：`git push` 默认禁止自动执行 ❌；**唯一例外**：向 GitCode 上传图片 / 资源文件（HTML 对比截图、封面图、配套资源等）时，允许自动 `git push`，以便 raw URL 可正常访问 🔒
 
 ### 🤖 自动执行授权（Auto Execution，免确认）
 
@@ -20,7 +20,7 @@ description: Git操作规范与代码注释规范，规定文件变更提交流�
 
 - `git status`、`git diff`、`git add`、`git commit` 等本地命令，直接执行，**禁止**调用 `AskUserQuestion` 之类的确认工具 ✅
 - 提交前不等待用户确认，一次任务内连续完成「diff 审阅 → add → commit」全流程 ⚡
-- 该授权**不覆盖** `git push`、`git reset --hard`、`git push --force` 等远程或破坏性操作，这些仍需用户明确指示 ❌
+- 该授权**不覆盖** `git reset --hard`、`git push --force` 等破坏性操作，这些仍需用户明确指示 ❌；`git push` 仅在「上传图片 / 资源到 GitCode」场景放行 ✅
 - 本条款优先于 `system-prompt.md` 0.0 中「git commit 前必须使用 `ask_user_question` 确认」的旧表述，两者冲突时以本条为准 🔒
 
 ## 🔧 用户修改代码后执行 Git

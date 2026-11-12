@@ -52,6 +52,7 @@ https://raw.gitcode.com/ZhengEnCi/knoweledges/raw/master/Transformer/01d_chapter
 - 📤 图片必须先推送到 GitCode 远程仓库 ✅，URL 才能正常访问 ✅
 - 🔀 路径分隔符统一使用正斜杠 `/` ✅（即使 Windows 系统使用反斜杠 `\`）⚠️
 - 🔗 URL 编码必须完整 ✅，不能遗漏任何中文字符或特殊字符 ⚠️
+- 🖼️ **HTML 对比截图 / 新图上传后必须点击验证** 🔒：凡新增图片（如 HTML 对比演示截图、封面图、配套示意图），上传并 `git push` 后，**必须先在浏览器点开其 Raw URL 确认能真正取到图**（raw 首次访问可能空白 / 占位，需点击触发回源），**验证通过后才能写进文档**；取不到就重新上传覆盖或去仓库点一下再验。
 
 ---
 
