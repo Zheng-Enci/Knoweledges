@@ -102,6 +102,7 @@
 
 ### 发布链接
 
+- [Q12-Hono4多库多模型Monorepo目录结构 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/170654221)（2026-11-12 发布）
 - [Q12-Hono4多库多模型Monorepo目录结构 -- 掘金](https://juejin.cn/spost/7707143341481558070)（审核中，2026-11-12 发布，链接待审核通过后更新）
 - [企业级 Monorepo 目录怎么放？ -- 抖音](https://www.douyin.com/note/)（审核中，2026-11-12 发布，链接待审核通过后补全）
 
