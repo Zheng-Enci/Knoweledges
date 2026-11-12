@@ -96,4 +96,5 @@
 
 ## AI20-Agent任务规划怎么选
 
+- [CSDN - Agent 任务规划怎么选：ReAct 与 Plan-and-Execute 的成本账与适用边界](https://blog.csdn.net/2301_79239314/article/details/170602539)（2026-11-12 发布）
 - [掘金 - Agent 任务规划怎么选：ReAct 与 Plan-and-Execute 的成本账与适用边界](https://juejin.cn/spost/7706812748685033499)（审核中，2026-11-12 发布，链接待审核通过后更新）
