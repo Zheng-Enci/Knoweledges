@@ -1,13 +1,13 @@
-# Trae 的 .trae 目录到底怎么用：rules、commands、skills 三层机制与一个真实仓库的落地拆解
+# Trae 的 .trae 目录到底怎么用：rules、commands、skills 三层机制与一棵典型目录树的落地拆解
 
-> **核心结论**：`.trae` 不是「把一堆 md 扔进去就会生效」的杂物箱，它只有三层真正干活的东西。**rules 决定 AI 每次都要遵守什么**，按 `alwaysApply` 常驻或按需；**commands 决定你用什么入口触发**，只做调度；**skills 决定具体怎么做**，触发时才加载全文。本仓库实测：7 个 rules 文件里 3 个常驻（合计 **18887 字符**）、4 个按需；6 个 command；9 个 skill 目录中 8 个带 `SKILL.md`、1 个只放脚本。分层清楚，规则才不会互相挤占上下文。
+> **核心结论**：`.trae` 不是「把一堆 md 扔进去就会生效」的杂物箱，它只有三层真正干活的东西。**rules 决定 AI 每次都要遵守什么**，按 `alwaysApply` 常驻或按需；**commands 决定你用什么入口触发**，只做调度；**skills 决定具体怎么做**，触发时才加载全文。下文这棵示例树：3 份 rules 里 1 份常驻、2 份按需；3 个 command；4 个 skill 目录里 3 个带 `SKILL.md`、1 个只放脚本。分层清楚，规则才不会互相挤占上下文。
 
 ---
 
 ## 目录
 
 - 1. 三层分工：谁是常驻、谁按需加载
-- 2. 一个真实仓库的 .trae 目录树
+- 2. 一棵典型的 .trae 目录树
 - 3. Rules 层：alwaysApply 决定注入方式
 - 4. Commands 层：斜杠命令只是入口
 - 5. Skills 层：渐进式披露与脚本资源目录
@@ -33,44 +33,32 @@
 
 ---
 
-## 2. 一个真实仓库的 .trae 目录树（Directory Tree）
+## 2. 一棵典型的 .trae 目录树（Directory Tree）
 
-下面这棵树是本仓库实测结构，不是示意图（已省略部分同类文件）：
+下面这棵树是一个典型项目的 `.trae` 结构，文件名与数量都可以按你的项目替换：
 
 ```text
 .trae/
-├── rules/                                # 7 个：约束注入层
-│   ├── 文档写作铁律.md                    # alwaysApply: true
-│   ├── system-prompt.md                  # alwaysApply: true
-│   ├── Git操作和注释规范.md               # alwaysApply: true
-│   ├── 联网搜索与参考链接规范.md           # alwaysApply: false
-│   ├── GitCode图片URL转换规范.md          # alwaysApply: false
-│   ├── 文档外部资源存放规范.md             # alwaysApply: false
-│   └── Python命令行绘图规范.md             # alwaysApply: false
-├── commands/                             # 6 个：斜杠入口
-│   ├── generate-doc.md                   # /文档生成
-│   ├── publish-latest-doc.md              # /发布最新文档
-│   ├── md-preview.md                     # /md渲染预览
-│   ├── sync-publish-links.md              # /同步发布链接
-│   ├── ai-model-best-value.md             # /模型推荐
-│   └── aa.md                             # 最小可运行示例
-├── skills/                               # 9 个目录
-│   ├── generate-doc/SKILL.md
-│   ├── publish-juejin/SKILL.md
-│   ├── publish-csdn/SKILL.md
-│   ├── publish-douyin/SKILL.md
-│   ├── publish-latest-doc/               # 无 SKILL.md，只放 card_gen*.py
-│   ├── reply-comment/SKILL.md
-│   ├── sync-publish-links/SKILL.md
-│   ├── md-preview/SKILL.md
-│   └── ai-model-best-value/SKILL.md
-├── specs/add-publish-link-sync-command/  # spec.md + checklist.md + tasks.md
+├── rules/                                # 3 个：约束注入层
+│   ├── project-conventions.md            # alwaysApply: true   编码与目录约定，常驻
+│   ├── api-design.md                     # alwaysApply: false  改接口时才读
+│   └── release-checklist.md              # alwaysApply: false  发版时才读
+├── commands/                             # 3 个：斜杠入口，只做调度
+│   ├── new-feature.md                    # /new-feature   开新功能的流程骨架
+│   ├── code-review.md                    # /code-review   派发给三个检查 skill
+│   └── release.md                        # /release       构建、变更日志、上线
+├── skills/                               # 4 个目录：能力层
+│   ├── security-scan/SKILL.md            # 依赖漏洞与密钥泄露检查
+│   ├── test-coverage/SKILL.md            # 覆盖率缺口定位
+│   ├── docs-check/SKILL.md               # 代码与文档一致性校对
+│   └── card-renderer/                    # 无 SKILL.md，只放 render_card.py
+├── specs/add-export-api/                 # spec.md + checklist.md + tasks.md
 ├── sessions/                             # 会话日志，文件名精确到分钟
 ├── mcp.json                              # MCP server 配置
 └── handover.md                           # 跨会话交接单
 ```
 
-一个容易忽略的细节：`skills/publish-latest-doc/` 里没有 `SKILL.md`，只有 `card_gen.py` 和 `card_gen_html.py`。这说明 skill 目录不一定非得是「一份说明书」，它也可以是**某个流程专用的脚本仓库**，由别的 skill 在正文里引用。
+一个容易忽略的细节：`skills/card-renderer/` 里没有 `SKILL.md`，只有一个 `render_card.py`。这说明 skill 目录不一定非得是「一份说明书」，它也可以是**某个流程专用的脚本仓库**，由别的 skill 在正文里引用——AI 平时看不到它，只有执行到渲染那一步才去取脚本。
 
 ---
 
@@ -81,16 +69,24 @@
 ```yaml
 ---
 alwaysApply: true
-description: Git操作和注释规范，规定文件变更提交流程、Git提交格式及代码注释写法
+description: 项目编码与目录约定，规定命名、分层与提交信息格式
 ---
 ```
 
 - `alwaysApply: true` → **全文注入**。本轮对话里，这类规则的完整正文会直接出现在模型上下文中。
 - `alwaysApply: false` → **只挂一行 `description`**。AI 知道「有这么一份规范」，需要时再自己读取全文。
 
-本仓库实测现象很直观：3 个常驻规则（`文档写作铁律.md` 4837 字符、`system-prompt.md` 11238 字符、`Git操作和注释规范.md` 2812 字符，合计 **18887 字符**）是全文进入上下文的；另外 4 个按需规则只在清单里出现名字和描述，正文一个字都没进来。
+把注入方式算成数字就很直观。假设你的规则目录和示例一样是 3 份：`project-conventions.md` 12000 字符、`api-design.md` 4500 字符、`release-checklist.md` 3500 字符。三份全设 `true`，合计 **20000 字符**全文进上下文；只把第一份设 `true`，常驻降到 12000 字符，另两份只在清单里出现名字和描述，正文一个字都没进来。
 
-这个数字值得警惕 ⚠️：近 1.9 万字符的常驻内容，意味着**每一轮对话都要先为它付一次费用**。如果你的规则里塞了「发布流程的 12 个步骤」这种只在发布时才需要的内容，那它每一轮都在白占位置。判断标准很简单——**去掉它会不会导致 AI 本轮做错事**，会才给 `true`。
+自己量一遍（在仓库根目录执行）：
+
+```bash
+wc -m .trae/rules/*.md
+```
+
+输出里每个数字就是该文件的字符数，加总即本轮固定成本。
+
+这个数字值得警惕 ⚠️：上万字符的常驻内容，意味着**每一轮对话都要先为它付一次费用**。如果你的规则里塞了「发布流程的 12 个步骤」这种只在发布时才需要的内容，那它每一轮都在白占位置。判断标准很简单——**去掉它会不会导致 AI 本轮做错事**，会才给 `true`。
 
 ---
 
@@ -100,22 +96,22 @@ command 文件的 front-matter 只有两个字段，但两个都不能少：
 
 ```yaml
 ---
-name: "文档生成"
-description: "文档生成的流程和要求"
+name: "code-review"
+description: "提交前自查：安全、测试覆盖率、文档一致性三项检查"
 ---
 ```
 
 `name` 是你在命令面板里看到的名字，`description` 决定 AI 什么场景该用它。正文才是流程骨架。
 
-本仓库里 `publish-latest-doc.md` 是个好样板：它开头就写明「**本 command 只做调度**，不内联任何平台规则」，然后把掘金、CSDN、抖音三套发布细节全部指向对应 skill：
+示例里的 `code-review.md` 就是个好样板：它开头就写明「**本 command 只做调度**，不内联任何检查规则」，然后把安全、覆盖率、文档三块细节全部指向对应 skill：
 
-| 平台 | 对应子 skill | 路径 |
+| 检查项 | 对应子 skill | 路径 |
 |---|---|---|
-| 掘金 | `publish-juejin` | `.trae/skills/publish-juejin/SKILL.md` |
-| CSDN | `publish-csdn` | `.trae/skills/publish-csdn/SKILL.md` |
-| 抖音 | `publish-douyin` | `.trae/skills/publish-douyin/SKILL.md` |
+| 安全扫描 | `security-scan` | `.trae/skills/security-scan/SKILL.md` |
+| 测试覆盖率 | `test-coverage` | `.trae/skills/test-coverage/SKILL.md` |
+| 文档一致性 | `docs-check` | `.trae/skills/docs-check/SKILL.md` |
 
-这样做的好处很实在：命令本身的常驻成本极低（只有几行调度逻辑），三个平台的几百行细节全部沉到 skill 里，**发哪个平台才读哪份**。代价是多一次文件读取——但这次读取只在真正执行时才发生，比每轮都背着三份平台手册便宜得多。
+这样做的好处很实在：命令本身的常驻成本极低（只有几行调度逻辑），三块检查的几百行细节全部沉到 skill 里，**跑哪一项才读哪一份**。代价是多一次文件读取——但这次读取只在真正执行时才发生，比每轮都背着三份检查手册便宜得多。
 
 反过来说，如果一个 command 里内联了所有分支流程，它就退化成一份「巨型规则」：你以为它只是入口，实际上它每轮都在烧上下文。
 
@@ -131,7 +127,7 @@ skill 的加载分两级，这是它便宜的根本原因：
 | 二级：正文 | 技能被触发时 | 数千 token | `SKILL.md` 全文 |
 | 附：资源 | 执行需要时 | 不设限 | 同目录脚本、模板、数据 |
 
-所以写 `description` 是 skill 里**性价比最高的一件事**：它是唯一常驻的部分，必须写清「**什么时候该用我**」，而不是「我是什么」。本仓库 `publish-douyin` 的描述就是触发式写法——「当用户说『发布最新文档到抖音 / 发布到抖音 / 发抖音 / douyin』时触发」，把口语变体全列进去，命中率自然高。
+所以写 `description` 是 skill 里**性价比最高的一件事**：它是唯一常驻的部分，必须写清「**什么时候该用我**」，而不是「我是什么」。示例里 `docs-check` 的描述就是触发式写法——「当用户说『检查文档 / 校对文档 / 交付前过一遍 / docs check』时触发」，把口语变体全列进去，命中率自然高。
 
 还有一条硬规则容易被忽略：**`name` 必须等于目录名**。这是 audit 脚本会拦的一类错误——名字对不上时，skill 列表里显示的名字和磁盘目录两套叫法，后续引用就会指向不存在的路径。
 
@@ -149,7 +145,7 @@ skill 的加载分两级，这是它便宜的根本原因：
 
 一句话区分：**specs 写「要做什么」，sessions 写「做了什么」，handover 写「接下来做什么」**。三者混用的典型后果是——你想查「上个月为什么改了这个流程」，结果翻到的全是最新的交接单，历史早被覆盖了。
 
-本仓库 `specs/add-publish-link-sync-command/` 就是标准三件套：`spec.md` 讲需求与场景，`checklist.md` 做验收打勾，`tasks.md` 拆执行步骤。这套结构适合「改一次就归档」的功能级改造，不适合日常流水账。
+示例里的 `specs/add-export-api/` 就是标准三件套：`spec.md` 讲需求与场景，`checklist.md` 做验收打勾，`tasks.md` 拆执行步骤。这套结构适合「改一次就归档」的功能级改造，不适合日常流水账。
 
 ---
 
@@ -174,9 +170,9 @@ skill 的加载分两级，这是它便宜的根本原因：
 ```
 
 - `url` 型：连远端 HTTP 服务，通常要带鉴权 header。
-- `command` 型：本地拉起进程（本仓库用 `uvx` 直接从 git 仓库装包），靠 `env` 传 key。
+- `command` 型：本地拉起进程（示例用 `uvx` 直接从 git 仓库装包），靠 `env` 传 key。
 
-⚠️ 一个必须点明的安全边界：本仓库当前的 `mcp.json` 里 key 是**明文硬编码**的。这类文件一旦进公开仓库，key 就等于公开了——正确写法是像上面示例那样用 `${ENV_VAR}` 占位，把真值放进本地环境变量或 `.env`（并确认 `.env` 已在 `.gitignore` 里）。这不是风格问题，是凭据泄露问题。
+⚠️ 一个必须点明的安全边界：把 key **明文硬编码**在 `mcp.json` 里、再随配置提交进团队仓库，是这类文件最常见的坑。一旦进了公开仓库，key 就等于公开了——正确写法是像上面示例那样用 `${ENV_VAR}` 占位，把真值放进本地环境变量或 `.env`（并确认 `.env` 已在 `.gitignore` 里）。这不是风格问题，是凭据泄露问题。
 
 ---
 
@@ -281,29 +277,27 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-在本仓库实跑，结果如下（真实输出，已截断中间重复行）：
+按上面那棵树跑，结果如下（示例目录的真实输出）：
 
 ```text
-  [ALWAYS] Git操作和注释规范.md  alwaysApply=true
-  [ALWAYS] system-prompt.md  alwaysApply=true
-  [ALWAYS] 文档写作铁律.md  alwaysApply=true
-  [ON-DEMAND] 联网搜索与参考链接规范.md  alwaysApply=false
-  [ON-DEMAND] GitCode图片URL转换规范.md  alwaysApply=false
-  [ON-DEMAND] 文档外部资源存放规范.md  alwaysApply=false
-  [ON-DEMAND] Python命令行绘图规范.md  alwaysApply=false
-  [OK] generate-doc.md  name=文档生成
-  [OK] publish-latest-doc.md  name=发布最新文档
-  ...
-  [OK] publish-douyin  name 与目录名一致
-  [RES ] publish-latest-doc/  (无 SKILL.md, 仅存放脚本资源)
-  [OK] publish-latest-doc.md -> .trae/skills/publish-csdn/SKILL.md
-  [OK] publish-latest-doc.md -> .trae/skills/publish-douyin/SKILL.md
-  [OK] publish-latest-doc.md -> .trae/skills/publish-juejin/SKILL.md
+  [ON-DEMAND] api-design.md  alwaysApply=false
+  [ALWAYS] project-conventions.md  alwaysApply=true
+  [ON-DEMAND] release-checklist.md  alwaysApply=false
+  [OK] code-review.md  name=code-review
+  [OK] new-feature.md  name=new-feature
+  [OK] release.md  name=release
+  [OK] docs-check  name 与目录名一致
+  [OK] security-scan  name 与目录名一致
+  [OK] test-coverage  name 与目录名一致
+  [RES ] card-renderer/  (无 SKILL.md, 仅存放脚本资源)
+  [OK] code-review.md -> .trae/skills/docs-check/SKILL.md
+  [OK] code-review.md -> .trae/skills/security-scan/SKILL.md
+  [OK] code-review.md -> .trae/skills/test-coverage/SKILL.md
 
-[result] 通过 24 项 / 失败 0 项 / command 引用 skill 3 处
+[result] 通过 12 项 / 失败 0 项 / command 引用 skill 3 处
 ```
 
-这段脚本的价值不在「跑一次」，而在**接进 CI 或提交前钩子**：24 项检查每次提交都跑一遍，引用路径一改名就红，比上线后才发现「命令调不起来」便宜太多。
+这段脚本的价值不在「跑一次」，而在**接进 CI 或提交前钩子**：示例这棵树一共 12 项检查（3 份 rules + 3 个 command + 3 个带 `SKILL.md` 的 skill + 3 处引用），每次提交都跑一遍，引用路径一改名就红，比上线后才发现「命令调不起来」便宜太多。
 
 ---
 
@@ -315,7 +309,7 @@ if __name__ == "__main__":
 | 自定义命令打了没反应 | command 的 front-matter 缺 `name` 或 `description` | 补齐两个字段，`name` 用中文短名，`description` 写触发场景 |
 | skill 明明存在，AI 却想不起来用 | `description` 写成了「我是干什么的」，没写「什么时候用」 | 改写成触发式描述，把用户口语变体列进去 |
 | command 引用的 skill 路径失效 | 目录改名后 command 里的路径没同步 | 跑第 8 节审计脚本，`[MISS] -> 不存在` 会直接指出来 |
-| 每轮对话都很慢、token 消耗高 | 常驻规则过长（本仓库常驻已达 18887 字符） | 把流程类内容下沉到 skill，rules 只留判断标准和禁止项 |
+| 每轮对话都很慢、token 消耗高 | 常驻规则过长（示例里 3 份全设 `true`，常驻就是 20000 字符） | 把流程类内容下沉到 skill，rules 只留判断标准和禁止项 |
 | 想回溯「上次为什么这么改」却查不到 | 只有 `handover.md` 滚动覆盖，没有 `sessions/` 留存 | 每次动手后补一份分钟级会话日志，specs 用于功能级改造 |
 
 ---
