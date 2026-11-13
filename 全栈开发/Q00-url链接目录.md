@@ -113,7 +113,7 @@
 ### 发布链接
 
 - [Q13-React19加Vite6企业级前端项目目录结构 -- CSDN](https://blog.csdn.net/2301_79239314/article/details/170700201)（2026-11-13 发布）
-- [Q13-React19加Vite6企业级前端项目目录结构 -- 掘金](https://juejin.cn/spost/7707218987332075571)（审核中，2026-11-13 发布，链接待审核通过后更新）
+- [Q13-React19加Vite6企业级前端项目目录结构 -- 掘金](https://juejin.cn/post/7707218987332075571)
 - [React 项目目录凭什么按业务域分？ -- 抖音](https://www.douyin.com/note/)（审核中，2026-11-13 发布，链接待审核通过后补全）
 
 ---

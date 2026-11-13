@@ -98,3 +98,7 @@
 
 - [CSDN - Agent 任务规划怎么选：ReAct 与 Plan-and-Execute 的成本账与适用边界](https://blog.csdn.net/2301_79239314/article/details/170602539)（2026-11-12 发布）
 - [掘金 - Agent 任务规划怎么选：ReAct 与 Plan-and-Execute 的成本账与适用边界](https://juejin.cn/post/7706812748685033499)
+
+## AI20-Trae的.trae目录到底怎么用
+
+- [掘金 - Trae 的 .trae 目录到底怎么用：rules、commands、skills 三层机制与一棵典型目录树的落地拆解](https://juejin.cn/spost/7707226332463169545)（审核中，2026-11-13 发布，链接待审核通过后更新）
