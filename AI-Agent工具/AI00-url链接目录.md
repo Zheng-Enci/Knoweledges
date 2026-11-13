@@ -107,4 +107,5 @@
 
 ## AI21-Agent查不出代码Bug怎么办
 
+- [CSDN - Agent 查不出代码 Bug 怎么办：一份带时间戳的调试日志与读日志排查流程](https://blog.csdn.net/2301_79239314/article/details/170711390)（2026-11-13 发布）
 - [抖音 - AI 查不出代码 Bug 怎么办？](https://www.douyin.com/note/)（审核中，2026-11-13 发布，链接待审核通过后补全）
