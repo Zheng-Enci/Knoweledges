@@ -102,3 +102,4 @@
 ## AI20-Trae的.trae目录到底怎么用
 
 - [掘金 - Trae 的 .trae 目录到底怎么用：rules、commands、skills 三层机制与一棵典型目录树的落地拆解](https://juejin.cn/spost/7707226332463169545)（审核中，2026-11-13 发布，链接待审核通过后更新）
+- [抖音 - Trae 的 .trae 目录到底怎么用](https://www.douyin.com/note/)（审核中，2026-11-13 发布，链接待审核通过后补全）
