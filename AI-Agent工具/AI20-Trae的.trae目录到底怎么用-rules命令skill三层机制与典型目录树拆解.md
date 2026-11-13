@@ -13,9 +13,8 @@
 - 5. Skills 层：渐进式披露与脚本资源目录
 - 6. specs、sessions、handover：三种记忆别混用
 - 7. mcp.json：外部能力的接线板
-- 8. 一段可直接跑的 .trae 审计脚本
-- 9. 对照表：症状 → 原因 → 解法
-- 10. 该用 / 不该用的判据
+- 8. 对照表：症状 → 原因 → 解法
+- 9. 该用 / 不该用的判据
 
 ---
 
@@ -129,7 +128,7 @@ skill 的加载分两级，这是它便宜的根本原因：
 
 所以写 `description` 是 skill 里**性价比最高的一件事**：它是唯一常驻的部分，必须写清「**什么时候该用我**」，而不是「我是什么」。示例里 `docs-check` 的描述就是触发式写法——「当用户说『检查文档 / 校对文档 / 交付前过一遍 / docs check』时触发」，把口语变体全列进去，命中率自然高。
 
-还有一条硬规则容易被忽略：**`name` 必须等于目录名**。这是 audit 脚本会拦的一类错误——名字对不上时，skill 列表里显示的名字和磁盘目录两套叫法，后续引用就会指向不存在的路径。
+还有一条硬规则容易被忽略：**`name` 必须等于目录名**。这是「写了但没接上」的典型——名字对不上时，skill 列表里显示的名字和磁盘目录两套叫法，后续引用就会指向不存在的路径。
 
 ---
 
@@ -176,145 +175,20 @@ skill 的加载分两级，这是它便宜的根本原因：
 
 ---
 
-## 8. 一段可直接跑的 .trae 审计脚本（Audit Script）
-
-规则写多了，最容易出的不是「写错」，而是「写了但没接上」：rule 少了 `alwaysApply`、command 少了 `description`、command 里引用的 skill 路径早就改名了。这些错误肉眼很难扫，脚本一扫就出来。
-
-把下面这段存成 `audit_trae.py` 放在**仓库根目录**，直接 `python audit_trae.py` 就能跑，零第三方依赖：
-
-```python
-"""审计 .trae 目录：检查 rules / commands / skills 的 front-matter 与相互引用是否完整."""
-import re
-import sys
-from pathlib import Path
-
-TRAE = Path(".trae")                                      # 待审计的配置目录
-FM_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)      # 抓取开头那段 ---...--- 块
-
-
-def parse_front_matter(path):
-    """解析单个 md 文件头部的 front-matter，返回扁平字典.
-
-    参数:
-        path: md 文件路径（Path 对象）
-    返回:
-        dict: 形如 {"name": "xxx", "description": "yyy"}；无 front-matter 时返回空字典
-    """
-    text = path.read_text(encoding="utf-8", errors="ignore")   # 整文件读入，忽略编码噪声
-    match = FM_RE.match(text)                                 # 只认文件最开头的那段
-    if not match:                                             # 没有 front-matter 就直接空返回
-        return {}
-    data = {}
-    for line in match.group(1).splitlines():                   # 逐行解析 key: value
-        if ":" in line and not line.startswith((" ", "\t")):   # 跳过缩进续行与空行
-            key, value = line.split(":", 1)                    # 只在第一个冒号处切一刀
-            data[key.strip()] = value.strip().strip('"').strip("'")  # 去掉引号包裹
-    return data
-
-
-def main():
-    """跑三类检查并汇总结果，返回进程退出码（0 通过 / 1 有失败）."""
-    ok, bad, lines = 0, 0, []                              # 计数器 + 报告行缓冲
-
-    # 1) rules：有 front-matter 则按 alwaysApply 判定常驻或按需；没 front-matter 视为全文常驻
-    for path in sorted((TRAE / "rules").glob("*.md")):      # 遍历全部规则文件
-        fm = parse_front_matter(path)                       # 读元数据
-        if not fm:                                          # 无元数据 -> 整篇注入上下文
-            lines.append(f"  [ALWAYS] {path.name}  (无 front-matter, 全文常驻)")
-        else:                                               # 有元数据 -> 只看 alwaysApply
-            flag = fm.get("alwaysApply", "?").lower()       # 缺字段时标记为 "?"
-            mode = "ALWAYS" if flag == "true" else "ON-DEMAND"   # true 常驻，其余按需
-            lines.append(f"  [{mode}] {path.name}  alwaysApply={flag}")
-            if flag == "?" or not fm.get("description"):    # 开关或描述缺失即判失败
-                bad += 1                                    # 记一次失败
-                continue                                    # 不再计通过
-        ok += 1                                             # 该规则文件合格
-
-    # 2) commands：必须有 name + description，斜杠命令靠这两个字段被识别
-    for path in sorted((TRAE / "commands").glob("*.md")):   # 遍历全部命令文件
-        fm = parse_front_matter(path)                       # 读元数据
-        if fm.get("name") and fm.get("description"):        # 两个字段齐全才算合规
-            lines.append(f"  [OK] {path.name}  name={fm['name']}")
-            ok += 1                                         # 计一次通过
-        else:                                               # 缺字段则无法被命令面板列出
-            lines.append(f"  [MISS] {path.name}  front-matter 缺 name / description")
-            bad += 1                                        # 计一次失败
-
-    # 3) skills：目录名必须等于 front-matter 的 name，且必须有 description 供自动触发
-    for skill_dir in sorted(p for p in (TRAE / "skills").iterdir() if p.is_dir()):
-        skill_md = skill_dir / "SKILL.md"                   # 每个技能目录的入口文件
-        if not skill_md.exists():                           # 只放脚本、无 SKILL.md 的资源目录
-            lines.append(f"  [RES ] {skill_dir.name}/  (无 SKILL.md, 仅存放脚本资源)")
-            continue                                        # 资源目录不参与合规判定
-        fm = parse_front_matter(skill_md)                   # 读技能元数据
-        if fm.get("name") == skill_dir.name and fm.get("description"):
-            lines.append(f"  [OK] {skill_dir.name}  name 与目录名一致")
-            ok += 1                                         # 计一次通过
-        else:                                               # 名字错位或描述缺失会漏触发
-            lines.append(f"  [MISS] {skill_dir.name}  name 与目录名不一致或缺 description")
-            bad += 1                                        # 计一次失败
-
-    # 4) 引用完整性：command 里写到的 SKILL.md 路径必须真实存在
-    ref_count = 0                                           # 统计被引用的 skill 路径数量
-    for path in sorted((TRAE / "commands").glob("*.md")):   # 扫全部命令文件
-        text = path.read_text(encoding="utf-8", errors="ignore")       # 读正文找路径
-        for rel in set(re.findall(r"\.trae/skills/[A-Za-z0-9_\-/]+SKILL\.md", text)):
-            ref_count += 1                                  # 命中的引用计数
-            if Path(rel).exists():                           # 引用的文件真实存在
-                lines.append(f"  [OK] {path.name} -> {rel}")
-                ok += 1                                     # 计一次通过
-            else:                                           # 指向不存在的 skill
-                lines.append(f"  [MISS] {path.name} -> {rel} 不存在")
-                bad += 1                                    # 计一次失败
-
-    # 5) 汇总输出
-    print("\n".join(lines))                                 # 先打明细
-    print(f"\n[result] 通过 {ok} 项 / 失败 {bad} 项 / command 引用 skill {ref_count} 处")
-    return 0 if bad == 0 else 1                             # 有失败就返回非零退出码
-
-
-if __name__ == "__main__":
-    sys.exit(main())
-```
-
-按上面那棵树跑，结果如下（示例目录的真实输出）：
-
-```text
-  [ON-DEMAND] api-design.md  alwaysApply=false
-  [ALWAYS] project-conventions.md  alwaysApply=true
-  [ON-DEMAND] release-checklist.md  alwaysApply=false
-  [OK] code-review.md  name=code-review
-  [OK] new-feature.md  name=new-feature
-  [OK] release.md  name=release
-  [OK] docs-check  name 与目录名一致
-  [OK] security-scan  name 与目录名一致
-  [OK] test-coverage  name 与目录名一致
-  [RES ] card-renderer/  (无 SKILL.md, 仅存放脚本资源)
-  [OK] code-review.md -> .trae/skills/docs-check/SKILL.md
-  [OK] code-review.md -> .trae/skills/security-scan/SKILL.md
-  [OK] code-review.md -> .trae/skills/test-coverage/SKILL.md
-
-[result] 通过 12 项 / 失败 0 项 / command 引用 skill 3 处
-```
-
-这段脚本的价值不在「跑一次」，而在**接进 CI 或提交前钩子**：示例这棵树一共 12 项检查（3 份 rules + 3 个 command + 3 个带 `SKILL.md` 的 skill + 3 处引用），每次提交都跑一遍，引用路径一改名就红，比上线后才发现「命令调不起来」便宜太多。
-
----
-
-## 9. 对照表：症状 → 原因 → 解法
+## 8. 对照表：症状 → 原因 → 解法（Symptom Table）
 
 | 症状 | 原因 | 解法 |
 |---|---|---|
 | 规则写了一大堆，AI 却总漏掉某几条 | 所有规则都设 `alwaysApply: true`，后面的被长上下文稀释 | 只把「每轮都必须遵守」的留 `true`，其余改 `false` + 写清 `description` |
 | 自定义命令打了没反应 | command 的 front-matter 缺 `name` 或 `description` | 补齐两个字段，`name` 用中文短名，`description` 写触发场景 |
 | skill 明明存在，AI 却想不起来用 | `description` 写成了「我是干什么的」，没写「什么时候用」 | 改写成触发式描述，把用户口语变体列进去 |
-| command 引用的 skill 路径失效 | 目录改名后 command 里的路径没同步 | 跑第 8 节审计脚本，`[MISS] -> 不存在` 会直接指出来 |
+| command 引用的 skill 路径失效 | 目录改名后 command 里的路径没同步 | 改名时全局搜索旧名逐处替换，保持「目录名 = `SKILL.md` 里的 `name` = 引用路径」三处一致 |
 | 每轮对话都很慢、token 消耗高 | 常驻规则过长（示例里 3 份全设 `true`，常驻就是 20000 字符） | 把流程类内容下沉到 skill，rules 只留判断标准和禁止项 |
 | 想回溯「上次为什么这么改」却查不到 | 只有 `handover.md` 滚动覆盖，没有 `sessions/` 留存 | 每次动手后补一份分钟级会话日志，specs 用于功能级改造 |
 
 ---
 
-## 10. 该用 / 不该用的判据（Verdict）
+## 9. 该用 / 不该用的判据（Verdict）
 
 **什么时候该用这套三层结构**：你的项目里已经出现过「规则太多 AI 记不住」「同一条流程每次都要重新解释」「不同平台的细节互相干扰」这三类问题之一，就该分层——约束进 rules、入口进 commands、流程进 skills，三层各管一段上下文。
 
