@@ -31,6 +31,11 @@
 
 三层的差别不在「文件放哪」，而在**上下文成本**：rules 常驻意味着每一轮对话都为它付费；skill 按需意味着平时只付一行摘要的钱。所以判断一条内容放哪层，只看一句话——**它是不是每次对话都必须在场**。
 
+三层机制的官方定义：
+- [规则（Rule）-- TRAE 文档](https://docs.trae.ai/ide/rules?_lang=zh) ⭐值得阅读
+- [命令 -- TRAE 文档](https://docs.trae.ai/ide/slash-commands?_lang=zh) ⭐值得阅读
+- [技能（Skill）-- TRAE 文档](https://docs.trae.ai/ide/skills?_lang=zh) ⭐值得阅读
+
 ---
 
 ## 2. 一棵典型的 .trae 目录树（Directory Tree）
@@ -171,6 +176,9 @@ skill 的加载分两级，这是它便宜的根本原因：
 
 - `url` 型：连远端 HTTP 服务，通常要带鉴权 header。
 - `command` 型：本地拉起进程（示例用 `uvx` 直接从 git 仓库装包），靠 `env` 传 key。
+
+MCP Server 配置与变量引用的官方说明：
+- [添加 MCP Server -- TRAE 文档](https://docs.trae.ai/ide/add-mcp-servers?_lang=zh) ⭐值得阅读
 
 ⚠️ 一个必须点明的安全边界：把 key **明文硬编码**在 `mcp.json` 里、再随配置提交进团队仓库，是这类文件最常见的坑。一旦进了公开仓库，key 就等于公开了——正确写法是像上面示例那样用 `${ENV_VAR}` 占位，把真值放进本地环境变量或 `.env`（并确认 `.env` 已在 `.gitignore` 里）。这不是风格问题，是凭据泄露问题。
 
