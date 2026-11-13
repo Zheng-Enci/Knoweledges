@@ -31,7 +31,6 @@ find . -name "*.md" \
   -not -path "*/resources/*" \
   -not -name "README.md" \
   -not -name "*url链接目录*" \
-  -not -name "*目录.md" \
   -mtime -1 \
   -printf "%T@ %TY-%Tm-%Td %TH:%TM %p\n" \
   | sort -rn
