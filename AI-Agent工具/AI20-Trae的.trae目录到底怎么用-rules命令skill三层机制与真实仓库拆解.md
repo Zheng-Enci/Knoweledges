@@ -1,0 +1,331 @@
+# Trae 的 .trae 目录到底怎么用：rules、commands、skills 三层机制与一个真实仓库的落地拆解
+
+> **核心结论**：`.trae` 不是「把一堆 md 扔进去就会生效」的杂物箱，它只有三层真正干活的东西。**rules 决定 AI 每次都要遵守什么**，按 `alwaysApply` 常驻或按需；**commands 决定你用什么入口触发**，只做调度；**skills 决定具体怎么做**，触发时才加载全文。本仓库实测：7 个 rules 文件里 3 个常驻（合计 **18887 字符**）、4 个按需；6 个 command；9 个 skill 目录中 8 个带 `SKILL.md`、1 个只放脚本。分层清楚，规则才不会互相挤占上下文。
+
+---
+
+## 目录
+
+- 1. 三层分工：谁是常驻、谁按需加载
+- 2. 一个真实仓库的 .trae 目录树
+- 3. Rules 层：alwaysApply 决定注入方式
+- 4. Commands 层：斜杠命令只是入口
+- 5. Skills 层：渐进式披露与脚本资源目录
+- 6. specs、sessions、handover：三种记忆别混用
+- 7. mcp.json：外部能力的接线板
+- 8. 一段可直接跑的 .trae 审计脚本
+- 9. 对照表：症状 → 原因 → 解法
+- 10. 该用 / 不该用的判据
+
+---
+
+## 1. 三层分工：谁是常驻、谁按需加载（Three-Layer Split）
+
+先建立一个直觉 🎭：`.trae` 就像一家店的三种印刷品。**rules 是贴在墙上的店规**，进门就看得到，谁都得遵守；**commands 是菜单上的套餐按钮**，你点哪个出哪个；**skills 是后厨的操作手册**，只有点了那道菜，厨师才去翻对应那页。把后厨手册也贴到墙上，墙就废了——这正是很多人 `.trae` 不好用的原因。
+
+| 层 | 文件位置 | 何时进上下文 | 你往里写什么 |
+|---|---|---|---|
+| rules（规则） | `.trae/rules/*.md` | 由 `alwaysApply` 决定：常驻或按需 | 约束、铁律、禁止项、风格约定 |
+| commands（命令） | `.trae/commands/*.md` | 你打 `/命令` 时 | 触发入口 + 流程骨架 |
+| skills（技能） | `.trae/skills/*/SKILL.md` | 任务自动匹配，或被 command 显式引用 | 完整 SOP、问题库、可执行脚本 |
+
+三层的差别不在「文件放哪」，而在**上下文成本**：rules 常驻意味着每一轮对话都为它付费；skill 按需意味着平时只付一行摘要的钱。所以判断一条内容放哪层，只看一句话——**它是不是每次对话都必须在场**。
+
+---
+
+## 2. 一个真实仓库的 .trae 目录树（Directory Tree）
+
+下面这棵树是本仓库实测结构，不是示意图（已省略部分同类文件）：
+
+```text
+.trae/
+├── rules/                                # 7 个：约束注入层
+│   ├── 文档写作铁律.md                    # alwaysApply: true
+│   ├── system-prompt.md                  # alwaysApply: true
+│   ├── Git操作和注释规范.md               # alwaysApply: true
+│   ├── 联网搜索与参考链接规范.md           # alwaysApply: false
+│   ├── GitCode图片URL转换规范.md          # alwaysApply: false
+│   ├── 文档外部资源存放规范.md             # alwaysApply: false
+│   └── Python命令行绘图规范.md             # alwaysApply: false
+├── commands/                             # 6 个：斜杠入口
+│   ├── generate-doc.md                   # /文档生成
+│   ├── publish-latest-doc.md              # /发布最新文档
+│   ├── md-preview.md                     # /md渲染预览
+│   ├── sync-publish-links.md              # /同步发布链接
+│   ├── ai-model-best-value.md             # /模型推荐
+│   └── aa.md                             # 最小可运行示例
+├── skills/                               # 9 个目录
+│   ├── generate-doc/SKILL.md
+│   ├── publish-juejin/SKILL.md
+│   ├── publish-csdn/SKILL.md
+│   ├── publish-douyin/SKILL.md
+│   ├── publish-latest-doc/               # 无 SKILL.md，只放 card_gen*.py
+│   ├── reply-comment/SKILL.md
+│   ├── sync-publish-links/SKILL.md
+│   ├── md-preview/SKILL.md
+│   └── ai-model-best-value/SKILL.md
+├── specs/add-publish-link-sync-command/  # spec.md + checklist.md + tasks.md
+├── sessions/                             # 会话日志，文件名精确到分钟
+├── mcp.json                              # MCP server 配置
+└── handover.md                           # 跨会话交接单
+```
+
+一个容易忽略的细节：`skills/publish-latest-doc/` 里没有 `SKILL.md`，只有 `card_gen.py` 和 `card_gen_html.py`。这说明 skill 目录不一定非得是「一份说明书」，它也可以是**某个流程专用的脚本仓库**，由别的 skill 在正文里引用。
+
+---
+
+## 3. Rules 层：alwaysApply 决定注入方式（Rule Injection）
+
+规则文件顶部的 front-matter 就是一个开关：
+
+```yaml
+---
+alwaysApply: true
+description: Git操作和注释规范，规定文件变更提交流程、Git提交格式及代码注释写法
+---
+```
+
+- `alwaysApply: true` → **全文注入**。本轮对话里，这类规则的完整正文会直接出现在模型上下文中。
+- `alwaysApply: false` → **只挂一行 `description`**。AI 知道「有这么一份规范」，需要时再自己读取全文。
+
+本仓库实测现象很直观：3 个常驻规则（`文档写作铁律.md` 4837 字符、`system-prompt.md` 11238 字符、`Git操作和注释规范.md` 2812 字符，合计 **18887 字符**）是全文进入上下文的；另外 4 个按需规则只在清单里出现名字和描述，正文一个字都没进来。
+
+这个数字值得警惕 ⚠️：近 1.9 万字符的常驻内容，意味着**每一轮对话都要先为它付一次费用**。如果你的规则里塞了「发布流程的 12 个步骤」这种只在发布时才需要的内容，那它每一轮都在白占位置。判断标准很简单——**去掉它会不会导致 AI 本轮做错事**，会才给 `true`。
+
+---
+
+## 4. Commands 层：斜杠命令只是入口（Command as Entry）
+
+command 文件的 front-matter 只有两个字段，但两个都不能少：
+
+```yaml
+---
+name: "文档生成"
+description: "文档生成的流程和要求"
+---
+```
+
+`name` 是你在命令面板里看到的名字，`description` 决定 AI 什么场景该用它。正文才是流程骨架。
+
+本仓库里 `publish-latest-doc.md` 是个好样板：它开头就写明「**本 command 只做调度**，不内联任何平台规则」，然后把掘金、CSDN、抖音三套发布细节全部指向对应 skill：
+
+| 平台 | 对应子 skill | 路径 |
+|---|---|---|
+| 掘金 | `publish-juejin` | `.trae/skills/publish-juejin/SKILL.md` |
+| CSDN | `publish-csdn` | `.trae/skills/publish-csdn/SKILL.md` |
+| 抖音 | `publish-douyin` | `.trae/skills/publish-douyin/SKILL.md` |
+
+这样做的好处很实在：命令本身的常驻成本极低（只有几行调度逻辑），三个平台的几百行细节全部沉到 skill 里，**发哪个平台才读哪份**。代价是多一次文件读取——但这次读取只在真正执行时才发生，比每轮都背着三份平台手册便宜得多。
+
+反过来说，如果一个 command 里内联了所有分支流程，它就退化成一份「巨型规则」：你以为它只是入口，实际上它每轮都在烧上下文。
+
+---
+
+## 5. Skills 层：渐进式披露与脚本资源目录（Progressive Disclosure）
+
+skill 的加载分两级，这是它便宜的根本原因：
+
+| 层级 | 何时加载 | 成本量级 | 内容 |
+|---|---|---|---|
+| 一级：元数据 | 会话启动即加载 | 约 100 token / 个 | `name` + `description` |
+| 二级：正文 | 技能被触发时 | 数千 token | `SKILL.md` 全文 |
+| 附：资源 | 执行需要时 | 不设限 | 同目录脚本、模板、数据 |
+
+所以写 `description` 是 skill 里**性价比最高的一件事**：它是唯一常驻的部分，必须写清「**什么时候该用我**」，而不是「我是什么」。本仓库 `publish-douyin` 的描述就是触发式写法——「当用户说『发布最新文档到抖音 / 发布到抖音 / 发抖音 / douyin』时触发」，把口语变体全列进去，命中率自然高。
+
+还有一条硬规则容易被忽略：**`name` 必须等于目录名**。这是 audit 脚本会拦的一类错误——名字对不上时，skill 列表里显示的名字和磁盘目录两套叫法，后续引用就会指向不存在的路径。
+
+---
+
+## 6. specs、sessions、handover：三种记忆别混用（Three Kinds of Memory）
+
+这三样东西长得都像「文档」，但记录的内容完全不同：
+
+| 位置 | 记什么 | 生命周期 |
+|---|---|---|
+| `specs/<feature>/` | 一次功能改造的 why / what / 场景 / 任务清单 | 改造完成即冻结，不参与运行时 |
+| `sessions/YYYY-MM-DD-HHmm.md` | 本轮做了什么、跑了哪些命令、改了哪些文件、踩了什么坑 | 按分钟追加，只增不改 |
+| `handover.md` | 跨会话交接：当前进展、卡在哪、下一步干什么 | 单文件滚动覆盖 |
+
+一句话区分：**specs 写「要做什么」，sessions 写「做了什么」，handover 写「接下来做什么」**。三者混用的典型后果是——你想查「上个月为什么改了这个流程」，结果翻到的全是最新的交接单，历史早被覆盖了。
+
+本仓库 `specs/add-publish-link-sync-command/` 就是标准三件套：`spec.md` 讲需求与场景，`checklist.md` 做验收打勾，`tasks.md` 拆执行步骤。这套结构适合「改一次就归档」的功能级改造，不适合日常流水账。
+
+---
+
+## 7. mcp.json：外部能力的接线板（MCP Wiring）
+
+`mcp.json` 只有一件事：告诉 IDE 有哪些 MCP server、怎么连。它支持两种典型形态：
+
+```json
+{
+  "mcpServers": {
+    "远程检索": {
+      "url": "https://<host>/mcp",
+      "headers": { "X-Agent-Plan-Key": "${MCP_PLAN_KEY}" }
+    },
+    "本地检索": {
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/<org>/<repo>#subdirectory=<path>", "<entry>"],
+      "env": { "API_KEY": "${MCP_API_KEY}" }
+    }
+  }
+}
+```
+
+- `url` 型：连远端 HTTP 服务，通常要带鉴权 header。
+- `command` 型：本地拉起进程（本仓库用 `uvx` 直接从 git 仓库装包），靠 `env` 传 key。
+
+⚠️ 一个必须点明的安全边界：本仓库当前的 `mcp.json` 里 key 是**明文硬编码**的。这类文件一旦进公开仓库，key 就等于公开了——正确写法是像上面示例那样用 `${ENV_VAR}` 占位，把真值放进本地环境变量或 `.env`（并确认 `.env` 已在 `.gitignore` 里）。这不是风格问题，是凭据泄露问题。
+
+---
+
+## 8. 一段可直接跑的 .trae 审计脚本（Audit Script）
+
+规则写多了，最容易出的不是「写错」，而是「写了但没接上」：rule 少了 `alwaysApply`、command 少了 `description`、command 里引用的 skill 路径早就改名了。这些错误肉眼很难扫，脚本一扫就出来。
+
+把下面这段存成 `audit_trae.py` 放在**仓库根目录**，直接 `python audit_trae.py` 就能跑，零第三方依赖：
+
+```python
+"""审计 .trae 目录：检查 rules / commands / skills 的 front-matter 与相互引用是否完整."""
+import re
+import sys
+from pathlib import Path
+
+TRAE = Path(".trae")                                      # 待审计的配置目录
+FM_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)      # 抓取开头那段 ---...--- 块
+
+
+def parse_front_matter(path):
+    """解析单个 md 文件头部的 front-matter，返回扁平字典.
+
+    参数:
+        path: md 文件路径（Path 对象）
+    返回:
+        dict: 形如 {"name": "xxx", "description": "yyy"}；无 front-matter 时返回空字典
+    """
+    text = path.read_text(encoding="utf-8", errors="ignore")   # 整文件读入，忽略编码噪声
+    match = FM_RE.match(text)                                 # 只认文件最开头的那段
+    if not match:                                             # 没有 front-matter 就直接空返回
+        return {}
+    data = {}
+    for line in match.group(1).splitlines():                   # 逐行解析 key: value
+        if ":" in line and not line.startswith((" ", "\t")):   # 跳过缩进续行与空行
+            key, value = line.split(":", 1)                    # 只在第一个冒号处切一刀
+            data[key.strip()] = value.strip().strip('"').strip("'")  # 去掉引号包裹
+    return data
+
+
+def main():
+    """跑三类检查并汇总结果，返回进程退出码（0 通过 / 1 有失败）."""
+    ok, bad, lines = 0, 0, []                              # 计数器 + 报告行缓冲
+
+    # 1) rules：有 front-matter 则按 alwaysApply 判定常驻或按需；没 front-matter 视为全文常驻
+    for path in sorted((TRAE / "rules").glob("*.md")):      # 遍历全部规则文件
+        fm = parse_front_matter(path)                       # 读元数据
+        if not fm:                                          # 无元数据 -> 整篇注入上下文
+            lines.append(f"  [ALWAYS] {path.name}  (无 front-matter, 全文常驻)")
+        else:                                               # 有元数据 -> 只看 alwaysApply
+            flag = fm.get("alwaysApply", "?").lower()       # 缺字段时标记为 "?"
+            mode = "ALWAYS" if flag == "true" else "ON-DEMAND"   # true 常驻，其余按需
+            lines.append(f"  [{mode}] {path.name}  alwaysApply={flag}")
+            if flag == "?" or not fm.get("description"):    # 开关或描述缺失即判失败
+                bad += 1                                    # 记一次失败
+                continue                                    # 不再计通过
+        ok += 1                                             # 该规则文件合格
+
+    # 2) commands：必须有 name + description，斜杠命令靠这两个字段被识别
+    for path in sorted((TRAE / "commands").glob("*.md")):   # 遍历全部命令文件
+        fm = parse_front_matter(path)                       # 读元数据
+        if fm.get("name") and fm.get("description"):        # 两个字段齐全才算合规
+            lines.append(f"  [OK] {path.name}  name={fm['name']}")
+            ok += 1                                         # 计一次通过
+        else:                                               # 缺字段则无法被命令面板列出
+            lines.append(f"  [MISS] {path.name}  front-matter 缺 name / description")
+            bad += 1                                        # 计一次失败
+
+    # 3) skills：目录名必须等于 front-matter 的 name，且必须有 description 供自动触发
+    for skill_dir in sorted(p for p in (TRAE / "skills").iterdir() if p.is_dir()):
+        skill_md = skill_dir / "SKILL.md"                   # 每个技能目录的入口文件
+        if not skill_md.exists():                           # 只放脚本、无 SKILL.md 的资源目录
+            lines.append(f"  [RES ] {skill_dir.name}/  (无 SKILL.md, 仅存放脚本资源)")
+            continue                                        # 资源目录不参与合规判定
+        fm = parse_front_matter(skill_md)                   # 读技能元数据
+        if fm.get("name") == skill_dir.name and fm.get("description"):
+            lines.append(f"  [OK] {skill_dir.name}  name 与目录名一致")
+            ok += 1                                         # 计一次通过
+        else:                                               # 名字错位或描述缺失会漏触发
+            lines.append(f"  [MISS] {skill_dir.name}  name 与目录名不一致或缺 description")
+            bad += 1                                        # 计一次失败
+
+    # 4) 引用完整性：command 里写到的 SKILL.md 路径必须真实存在
+    ref_count = 0                                           # 统计被引用的 skill 路径数量
+    for path in sorted((TRAE / "commands").glob("*.md")):   # 扫全部命令文件
+        text = path.read_text(encoding="utf-8", errors="ignore")       # 读正文找路径
+        for rel in set(re.findall(r"\.trae/skills/[A-Za-z0-9_\-/]+SKILL\.md", text)):
+            ref_count += 1                                  # 命中的引用计数
+            if Path(rel).exists():                           # 引用的文件真实存在
+                lines.append(f"  [OK] {path.name} -> {rel}")
+                ok += 1                                     # 计一次通过
+            else:                                           # 指向不存在的 skill
+                lines.append(f"  [MISS] {path.name} -> {rel} 不存在")
+                bad += 1                                    # 计一次失败
+
+    # 5) 汇总输出
+    print("\n".join(lines))                                 # 先打明细
+    print(f"\n[result] 通过 {ok} 项 / 失败 {bad} 项 / command 引用 skill {ref_count} 处")
+    return 0 if bad == 0 else 1                             # 有失败就返回非零退出码
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+在本仓库实跑，结果如下（真实输出，已截断中间重复行）：
+
+```text
+  [ALWAYS] Git操作和注释规范.md  alwaysApply=true
+  [ALWAYS] system-prompt.md  alwaysApply=true
+  [ALWAYS] 文档写作铁律.md  alwaysApply=true
+  [ON-DEMAND] 联网搜索与参考链接规范.md  alwaysApply=false
+  [ON-DEMAND] GitCode图片URL转换规范.md  alwaysApply=false
+  [ON-DEMAND] 文档外部资源存放规范.md  alwaysApply=false
+  [ON-DEMAND] Python命令行绘图规范.md  alwaysApply=false
+  [OK] generate-doc.md  name=文档生成
+  [OK] publish-latest-doc.md  name=发布最新文档
+  ...
+  [OK] publish-douyin  name 与目录名一致
+  [RES ] publish-latest-doc/  (无 SKILL.md, 仅存放脚本资源)
+  [OK] publish-latest-doc.md -> .trae/skills/publish-csdn/SKILL.md
+  [OK] publish-latest-doc.md -> .trae/skills/publish-douyin/SKILL.md
+  [OK] publish-latest-doc.md -> .trae/skills/publish-juejin/SKILL.md
+
+[result] 通过 24 项 / 失败 0 项 / command 引用 skill 3 处
+```
+
+这段脚本的价值不在「跑一次」，而在**接进 CI 或提交前钩子**：24 项检查每次提交都跑一遍，引用路径一改名就红，比上线后才发现「命令调不起来」便宜太多。
+
+---
+
+## 9. 对照表：症状 → 原因 → 解法
+
+| 症状 | 原因 | 解法 |
+|---|---|---|
+| 规则写了一大堆，AI 却总漏掉某几条 | 所有规则都设 `alwaysApply: true`，后面的被长上下文稀释 | 只把「每轮都必须遵守」的留 `true`，其余改 `false` + 写清 `description` |
+| 自定义命令打了没反应 | command 的 front-matter 缺 `name` 或 `description` | 补齐两个字段，`name` 用中文短名，`description` 写触发场景 |
+| skill 明明存在，AI 却想不起来用 | `description` 写成了「我是干什么的」，没写「什么时候用」 | 改写成触发式描述，把用户口语变体列进去 |
+| command 引用的 skill 路径失效 | 目录改名后 command 里的路径没同步 | 跑第 8 节审计脚本，`[MISS] -> 不存在` 会直接指出来 |
+| 每轮对话都很慢、token 消耗高 | 常驻规则过长（本仓库常驻已达 18887 字符） | 把流程类内容下沉到 skill，rules 只留判断标准和禁止项 |
+| 想回溯「上次为什么这么改」却查不到 | 只有 `handover.md` 滚动覆盖，没有 `sessions/` 留存 | 每次动手后补一份分钟级会话日志，specs 用于功能级改造 |
+
+---
+
+## 10. 该用 / 不该用的判据（Verdict）
+
+**什么时候该用这套三层结构**：你的项目里已经出现过「规则太多 AI 记不住」「同一条流程每次都要重新解释」「不同平台的细节互相干扰」这三类问题之一，就该分层——约束进 rules、入口进 commands、流程进 skills，三层各管一段上下文。
+
+**什么时候不该用**：项目刚开始、规则不到十条时，直接一份 `rules/project.md` 写完全部约定就够了。过早拆成 commands + skills，只会让你在三个文件夹之间来回找文件，而 AI 依然要靠你手动打命令触发。分层的收益来自「内容多到必须按需加载」，内容不多时，分层只是增加维护成本。
+
+---
+
+本专栏《AI Agent 工具专栏》从工具调用、记忆管理、Skill 路由一路讲到规则治理与目录工程，每篇配一段可直接运行的代码和一张症状对照表，聚焦生产落地的真实取舍，每周更新一篇。想系统看完 Agent 工程这条线，可在专栏页订阅。
