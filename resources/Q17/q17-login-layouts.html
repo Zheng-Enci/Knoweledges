@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>登录页桌面端 5 种布局方案对照</title>
+<style>
+  /* ===== 全局设计变量：所有方案共用，改一处即可整体换肤 ===== */
+  :root {
+    --ink: #0f1115;            /* 主文字色 */
+    --sub: #6b7280;            /* 次级文字色 */
+    --line: #e6e7eb;           /* 分割线 / 描边色 */
+    --brand: #4f46e5;          /* 品牌主色 */
+    --radius: 14px;            /* 通用圆角 */
+    --font: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { font-family: var(--font); color: var(--ink); background: #0b0d12; overflow: hidden; }
+
+  /* ===== 方案切换条（仅 demo 用，截图时隐藏） ===== */
+  .switcher {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+    display: flex; gap: 6px; padding: 6px; border-radius: 999px;
+    background: rgba(16, 18, 26, .82); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, .14); z-index: 99;
+  }
+  .switcher button {
+    border: 0; background: transparent; color: #c9cbd6; font-size: 12px;
+    padding: 7px 13px; border-radius: 999px; cursor: pointer; font-family: var(--font);
+  }
+  .switcher button.on { background: #fff; color: #0f1115; font-weight: 600; }
+
+  /* ===== 屏幕容器：一次只显示一个方案 ===== */
+  .screen { position: fixed; inset: 0; display: none; overflow: hidden; }
+  .screen.on { display: flex; }
+
+  /* ===== 通用表单原子 ===== */
+  .field { margin-top: 18px; }
+  .field > label { display: block; font-size: 13px; color: var(--sub); margin-bottom: 7px; }
+  .field input {
+    width: 100%; height: 46px; padding: 0 14px; font-size: 14px; font-family: var(--font);
+    border: 1px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); outline: none;
+  }
+  .field input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(79, 70, 229, .12); }
+  .btn-primary {
+    width: 100%; height: 46px; margin-top: 24px; border: 0; border-radius: 10px;
+    background: var(--brand); color: #fff; font-size: 15px; font-weight: 600;
+    font-family: var(--font); cursor: pointer;
+  }
+  .row-between { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; font-size: 13px; }
+  .row-between a { color: var(--brand); text-decoration: none; }
+  .check { display: flex; align-items: center; gap: 7px; color: var(--sub); }
+  .divider-text { display: flex; align-items: center; gap: 12px; margin: 22px 0; color: #9aa0ac; font-size: 12px; }
+  .divider-text::before, .divider-text::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .social { display: flex; gap: 10px; }
+  .social button {
+    flex: 1; height: 42px; border: 1px solid var(--line); border-radius: 10px; background: #fff;
+    font-size: 13px; color: var(--ink); font-family: var(--font); cursor: pointer; display: flex;
+    align-items: center; justify-content: center; gap: 8px;
+  }
+  .dot-ico { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); }
+  .foot-note { margin-top: 26px; text-align: center; font-size: 13px; color: var(--sub); }
+  .foot-note a { color: var(--brand); text-decoration: none; }
+
+  /* ============ V0：AI 默认产出——表单孤零零漂在空白里 ============ */
+  .screen[data-v="v0"] { background: #fff; align-items: center; justify-content: center; }
+  .v0-box { width: 340px; }
+  .v0-box h1 { font-size: 22px; font-weight: 600; text-align: center; margin-bottom: 28px; }
+
+  /* ============ V1：左右分栏，左品牌右表单 ============ */
+  .screen[data-v="v1"] { display: none; }
+  .screen[data-v="v1"].on { display: grid; grid-template-columns: 54% 46%; }
+  .v1-left {
+    position: relative; padding: 56px 64px; color: #fff; overflow: hidden;
+    background: radial-gradient(120% 90% at 85% 15%, #4c1d95 0%, #241b5e 45%, #0b1026 100%);
+    display: flex; flex-direction: column;
+  }
+  /* 品牌区光斑：不用图，纯 CSS 造氛围 */
+  .v1-left::before {
+    content: ""; position: absolute; width: 520px; height: 520px; right: -160px; top: -120px;
+    border-radius: 50%; background: radial-gradient(circle, rgba(139, 92, 246, .55), transparent 65%);
+  }
+  .v1-left::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 56px 56px; mask-image: linear-gradient(160deg, #000 30%, transparent 78%);
+  }
+  .v1-brand { position: relative; display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
+  .v1-mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, #a78bfa, #6366f1); }
+  .v1-copy { position: relative; margin-top: auto; margin-bottom: auto; max-width: 460px; }
+  .v1-copy h2 { font-size: 40px; line-height: 1.22; letter-spacing: -1px; font-weight: 700; }
+  .v1-copy p { margin-top: 18px; font-size: 15px; line-height: 1.75; color: rgba(255,255,255,.68); }
+  .v1-points { position: relative; margin-top: 34px; display: grid; gap: 14px; }
+  .v1-point { display: flex; gap: 12px; align-items: flex-start; font-size: 14px; color: rgba(255,255,255,.82); }
+  .v1-point span { width: 20px; height: 20px; border-radius: 6px; background: rgba(255,255,255,.14); flex: none; }
+  .v1-logos { position: relative; display: flex; gap: 22px; opacity: .42; font-size: 13px; letter-spacing: 1px; }
+  .v1-right { background: #fff; display: flex; align-items: center; justify-content: center; }
+  .v1-form { width: 380px; }
+  .v1-form h3 { font-size: 26px; font-weight: 700; letter-spacing: -.4px; }
+  .v1-form .lead { margin-top: 8px; font-size: 14px; color: var(--sub); }
+
+  /* ============ V2：居中卡片 + 氛围渐变 ============ */
+  .screen[data-v="v2"] { background: #070a14; align-items: center; justify-content: center; }
+  .screen[data-v="v2"]::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(520px 420px at 22% 18%, rgba(124, 58, 237, .40), transparent 70%),
+                radial-gradient(560px 460px at 82% 82%, rgba(34, 211, 238, .26), transparent 72%);
+  }
+  .screen[data-v="v2"]::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(circle at 50% 50%, #000 20%, transparent 78%);
+  }
+  .v2-card {
+    position: relative; width: 420px; padding: 40px 36px 34px; border-radius: 22px;
+    background: rgba(255, 255, 255, .055); border: 1px solid rgba(255, 255, 255, .13);
+    backdrop-filter: blur(18px); color: #fff; box-shadow: 0 40px 90px rgba(0, 0, 0, .55);
+  }
+  .v2-card .v1-mark { width: 40px; height: 40px; border-radius: 12px; }
+  .v2-card h3 { margin-top: 20px; font-size: 24px; font-weight: 700; }
+  .v2-card .lead { margin-top: 7px; font-size: 13px; color: rgba(255,255,255,.55); }
+  .v2-card label { display: block; font-size: 12px; color: rgba(255,255,255,.55); margin-bottom: 7px; }
+  .v2-card .field { margin-top: 18px; }
+  .v2-card input {
+    width: 100%; height: 46px; padding: 0 14px; font-size: 14px; font-family: var(--font);
+    border-radius: 10px; border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06); color: #fff; outline: none;
+  }
+  .v2-card .btn-primary { background: linear-gradient(135deg, #8b5cf6, #22d3ee); color: #080b14; }
+  .v2-card .row-between { color: rgba(255,255,255,.55); }
+  .v2-card .row-between a { color: #a5b4fc; }
+  .v2-card .divider-text { color: rgba(255,255,255,.4); }
+  .v2-card .divider-text::before, .v2-card .divider-text::after { background: rgba(255,255,255,.14); }
+  .v2-card .social button { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.14); color: #fff; }
+
+  /* ============ V3：极简单栏 + 大留白 ============ */
+  .screen[data-v="v3"] { background: #fafaf9; align-items: center; justify-content: center; }
+  .v3-side {
+    position: absolute; left: 56px; top: 50%; transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl; font-size: 11px; letter-spacing: 4px; color: #b8b3ad;
+  }
+  .v3-box { width: 420px; }
+  .v3-wordmark { font-size: 13px; letter-spacing: 7px; color: #a8a29e; text-transform: uppercase; }
+  .v3-box h3 { margin-top: 22px; font-size: 46px; line-height: 1.08; letter-spacing: -1.6px; font-weight: 600; }
+  .v3-box .lead { margin-top: 16px; font-size: 14px; color: #78716c; }
+  .v3-box .field { margin-top: 30px; }
+  .v3-box .field > label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+  .v3-box input { height: 44px; padding: 0 2px; border: 0; border-bottom: 1px solid #ddd8d2; border-radius: 0; background: transparent; }
+  .v3-box input:focus { box-shadow: none; border-color: #1c1917; }
+  .v3-box .btn-primary { height: 48px; border-radius: 0; background: #1c1917; margin-top: 34px; letter-spacing: 2px; font-size: 13px; }
+  .v3-box .foot-note { text-align: left; margin-top: 30px; font-size: 12px; color: #a8a29e; }
+
+  /* ============ V4：满屏产品视觉 + 玻璃卡片 ============ */
+  .screen[data-v="v4"] { background: #0a0f1c; align-items: center; }
+  .screen[data-v="v4"]::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(700px 520px at 18% 22%, rgba(56, 189, 248, .22), transparent 70%),
+                radial-gradient(760px 560px at 66% 86%, rgba(217, 70, 239, .24), transparent 72%),
+                linear-gradient(140deg, #060912 0%, #0e1524 60%, #101827 100%);
+  }
+  .v4-stage { position: relative; flex: 1; padding: 0 0 0 72px; color: #fff; }
+  .v4-eyebrow { font-size: 12px; letter-spacing: 3px; color: rgba(255,255,255,.45); text-transform: uppercase; }
+  .v4-stage h2 { margin-top: 18px; font-size: 42px; line-height: 1.18; letter-spacing: -1.2px; max-width: 520px; }
+  .v4-stage p { margin-top: 16px; max-width: 460px; font-size: 14px; line-height: 1.8; color: rgba(255,255,255,.6); }
+  /* 纯 CSS 伪造的产品界面，制造「满屏」密度 */
+  .v4-app {
+    margin-top: 40px; width: 560px; height: 260px; border-radius: 16px; overflow: hidden;
+    background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 40px 90px rgba(0,0,0,.5); display: flex;
+  }
+  .v4-app .side { width: 132px; border-right: 1px solid rgba(255,255,255,.09); padding: 16px 12px; display: grid; gap: 10px; align-content: start; }
+  .v4-app .side i { height: 9px; border-radius: 5px; background: rgba(255,255,255,.14); display: block; }
+  .v4-app .side i:first-child { background: rgba(56,189,248,.6); width: 70%; }
+  .v4-app .main { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .v4-app .kpis { display: flex; gap: 10px; }
+  .v4-app .kpis div { flex: 1; height: 52px; border-radius: 10px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08); }
+  .v4-app .chart { flex: 1; display: flex; align-items: flex-end; gap: 9px; }
+  .v4-app .chart b {
+    flex: 1; border-radius: 5px 5px 0 0;
+    background: linear-gradient(180deg, rgba(56,189,248,.85), rgba(56,189,248,.18));
+  }
+  .v4-panel {
+    width: 440px; flex: none; margin-right: 84px; padding: 38px 34px;
+    border-radius: 20px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(20px); color: #fff; box-shadow: 0 40px 90px rgba(0,0,0,.55);
+  }
+  .v4-panel h3 { font-size: 22px; font-weight: 700; }
+  .v4-panel .lead { margin-top: 6px; font-size: 13px; color: rgba(255,255,255,.55); }
+  .v4-panel label { display: block; font-size: 12px; color: rgba(255,255,255,.55); margin-bottom: 7px; }
+  .v4-panel input {
+    width: 100%; height: 44px; padding: 0 14px; font-size: 14px; font-family: var(--font);
+    border-radius: 10px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06); color: #fff; outline: none;
+  }
+  .v4-panel .btn-primary { margin-top: 22px; background: #fff; color: #0b1220; }
+  .v4-panel .foot-note { color: rgba(255,255,255,.5); }
+  .v4-panel .foot-note a { color: #7dd3fc; }
+
+  /* ============ V5：品牌叙事分屏 + 分步表单 ============ */
+  .screen[data-v="v5"].on { display: grid; grid-template-columns: 44% 56%; }
+  .v5-left {
+    position: relative; padding: 52px 56px; background: #101322; color: #fff; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .v5-left::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(440px 380px at 10% 92%, rgba(99, 102, 241, .34), transparent 70%);
+  }
+  .v5-step-tag {
+    position: relative; align-self: flex-start; padding: 5px 12px; border-radius: 999px;
+    font-size: 11px; letter-spacing: 2px; color: #a5b4fc;
+    background: rgba(99, 102, 241, .16); border: 1px solid rgba(99, 102, 241, .35);
+  }
+  .v5-left h2 { position: relative; margin-top: 26px; font-size: 32px; line-height: 1.28; letter-spacing: -.8px; }
+  .v5-left p { position: relative; margin-top: 16px; font-size: 14px; line-height: 1.8; color: rgba(255,255,255,.62); }
+  .v5-quote {
+    position: relative; margin-top: auto; padding: 20px 22px; border-radius: 14px;
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+  }
+  .v5-quote p { margin: 0; font-size: 14px; line-height: 1.75; color: rgba(255,255,255,.85); }
+  .v5-who { margin-top: 14px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: rgba(255,255,255,.5); }
+  .v5-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #818cf8, #22d3ee); }
+  .v5-dots { position: relative; margin-top: 26px; display: flex; gap: 8px; }
+  .v5-dots i { width: 26px; height: 3px; border-radius: 2px; background: rgba(255,255,255,.18); }
+  .v5-dots i:first-child { background: #818cf8; }
+  .v5-right { background: #fff; display: flex; align-items: center; justify-content: center; }
+  .v5-form { width: 400px; }
+  .v5-steps { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #9aa0ac; margin-bottom: 30px; }
+  .v5-steps b {
+    width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; background: #eef0ff; color: var(--brand); font-weight: 700;
+  }
+  .v5-steps .done b { background: var(--brand); color: #fff; }
+  .v5-steps .bar { flex: 1; height: 1px; background: var(--line); }
+  .v5-form h3 { font-size: 24px; font-weight: 700; letter-spacing: -.4px; }
+  .v5-form .lead { margin-top: 8px; font-size: 14px; color: var(--sub); }
+  .v5-back { margin-top: 20px; font-size: 13px; color: var(--sub); text-decoration: none; display: inline-block; }
+</style>
+</head>
+<body>
+
+<!-- ================= V0：AI 默认产出 ================= -->
+<section class="screen on" data-v="v0">
+  <div class="v0-box">
+    <h1 data-block>欢迎登录</h1>
+    <div class="field" data-block>
+      <label>邮箱</label>
+      <input placeholder="请输入邮箱">
+    </div>
+    <div class="field" data-block>
+      <label>密码</label>
+      <input type="password" placeholder="请输入密码">
+    </div>
+    <button class="btn-primary" data-block>登录</button>
+  </div>
+</section>
+
+<!-- ================= V1：左右分栏 ================= -->
+<section class="screen" data-v="v1">
+  <div class="v1-left">
+    <div class="v1-brand" data-block><i class="v1-mark"></i> Aurora</div>
+    <div class="v1-copy">
+      <h2 data-block>把团队的每一次<br>决策都留在同一页</h2>
+      <p data-block>项目、文档与讨论聚合在一个工作区，新成员第一天就能看到全部上下文。</p>
+      <div class="v1-points">
+        <div class="v1-point" data-block><span></span>300 人团队实测，周会时长缩短 40%</div>
+        <div class="v1-point" data-block><span></span>权限精细到单个文档，外部协作可控</div>
+        <div class="v1-point" data-block><span></span>全量操作留痕，审计一键导出</div>
+      </div>
+    </div>
+    <div class="v1-logos" data-block>ACME　NORTHWIND　LINEAR　VANTA</div>
+  </div>
+  <div class="v1-right">
+    <div class="v1-form">
+      <h3 data-block>登录 Aurora</h3>
+      <p class="lead" data-block>继续使用你的工作邮箱</p>
+      <div class="field" data-block><label>工作邮箱</label><input placeholder="name@company.com"></div>
+      <div class="field" data-block><label>密码</label><input type="password" placeholder="••••••••"></div>
+      <div class="row-between" data-block>
+        <span class="check"><input type="checkbox" style="width:14px;height:14px">记住我 7 天</span>
+        <a href="#">忘记密码</a>
+      </div>
+      <button class="btn-primary" data-block>登录</button>
+      <div class="divider-text" data-block>或</div>
+      <div class="social" data-block>
+        <button><i class="dot-ico"></i>企业微信</button>
+        <button><i class="dot-ico"></i>飞书</button>
+      </div>
+      <p class="foot-note" data-block>还没有账号？<a href="#">申请试用</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= V2：居中卡片 + 氛围渐变 ================= -->
+<section class="screen" data-v="v2">
+  <div class="v2-card">
+    <i class="v1-mark" data-block></i>
+    <h3 data-block>欢迎回来</h3>
+    <p class="lead" data-block>登录你的 Nimbus 工作台</p>
+    <div class="field" data-block><label>邮箱</label><input placeholder="name@company.com"></div>
+    <div class="field" data-block><label>密码</label><input type="password" placeholder="••••••••"></div>
+    <div class="row-between" data-block>
+      <span class="check"><input type="checkbox" style="width:14px;height:14px">保持登录</span>
+      <a href="#">找回密码</a>
+    </div>
+    <button class="btn-primary" data-block>进入工作台</button>
+    <div class="divider-text" data-block>或使用以下方式</div>
+    <div class="social" data-block>
+      <button><i class="dot-ico"></i>Google</button>
+      <button><i class="dot-ico"></i>GitHub</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= V3：极简单栏 + 大留白 ================= -->
+<section class="screen" data-v="v3">
+  <div class="v3-side" data-block>SIGN IN — 01</div>
+  <div class="v3-box">
+    <div class="v3-wordmark" data-block>Monolith</div>
+    <h3 data-block>少一点，<br>就清楚一点。</h3>
+    <p class="lead" data-block>一个只做笔记的产品。没有提醒、没有红点、没有推送。</p>
+    <div class="field" data-block><label>Email</label><input placeholder="you@domain.com"></div>
+    <div class="field" data-block><label>Password</label><input type="password" placeholder="••••••••"></div>
+    <button class="btn-primary" data-block>继续</button>
+    <p class="foot-note" data-block>没有账号？<a href="#">创建</a>　·　<a href="#">忘记密码</a></p>
+  </div>
+</section>
+
+<!-- ================= V4：满屏产品视觉 + 玻璃卡片 ================= -->
+<section class="screen" data-v="v4">
+  <div class="v4-stage">
+    <div class="v4-eyebrow" data-block>Observability Platform</div>
+    <h2 data-block>每条链路都看得见，<br>每次故障都能追。</h2>
+    <p data-block>接入 3 行 SDK，指标、日志与追踪自动关联到同一个 trace。</p>
+    <div class="v4-app" data-block>
+      <div class="side"><i></i><i style="width:88%"></i><i style="width:64%"></i><i style="width:76%"></i><i style="width:52%"></i></div>
+      <div class="main">
+        <div class="kpis"><div></div><div></div><div></div></div>
+        <div class="chart">
+          <b style="height:42%"></b><b style="height:66%"></b><b style="height:38%"></b><b style="height:82%"></b>
+          <b style="height:54%"></b><b style="height:94%"></b><b style="height:48%"></b><b style="height:72%"></b>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="v4-panel">
+    <h3 data-block>登录控制台</h3>
+    <p class="lead" data-block>支持 SSO 与多因子验证</p>
+    <div class="field" data-block><label>企业邮箱</label><input placeholder="name@company.com"></div>
+    <div class="field" data-block><label>密码</label><input type="password" placeholder="••••••••"></div>
+    <button class="btn-primary" data-block>登录</button>
+    <p class="foot-note" data-block>首次使用？<a href="#">用邀请码开通</a></p>
+  </div>
+</section>
+
+<!-- ================= V5：品牌叙事分屏 + 分步表单 ================= -->
+<section class="screen" data-v="v5">
+  <div class="v5-left">
+    <div class="v5-step-tag" data-block>STEP 1 OF 3</div>
+    <h2 data-block>先确认是谁，<br>再谈怎么用。</h2>
+    <p data-block>整个过程三步，第一次登录大约 40 秒。之后可以直接用设备指纹免密进入。</p>
+    <div class="v5-quote" data-block>
+      <p>「上线两周，客服工单里跟登录相关的少了七成。」</p>
+      <div class="v5-who"><i class="v5-avatar"></i>某 SaaS 平台 · 技术负责人</div>
+    </div>
+    <div class="v5-dots" data-block><i></i><i></i><i></i></div>
+  </div>
+  <div class="v5-right">
+    <div class="v5-form">
+      <div class="v5-steps" data-block>
+        <span class="done"><b>1</b></span>账号
+        <span class="bar"></span>
+        <span><b>2</b></span>验证
+        <span class="bar"></span>
+        <span><b>3</b></span>完成
+      </div>
+      <h3 data-block>输入登录账号</h3>
+      <p class="lead" data-block>我们会向该邮箱发送 6 位验证码</p>
+      <div class="field" data-block><label>企业邮箱</label><input placeholder="name@company.com"></div>
+      <div class="field" data-block><label>密码</label><input type="password" placeholder="••••••••"></div>
+      <button class="btn-primary" data-block>下一步</button>
+      <a class="v5-back" href="#" data-block>← 使用 SSO 登录</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 方案切换条 ================= -->
+<nav class="switcher">
+  <button data-t="v0" class="on">V0 空</button>
+  <button data-t="v1">V1 分栏</button>
+  <button data-t="v2">V2 卡片</button>
+  <button data-t="v3">V3 极简</button>
+  <button data-t="v4">V4 满屏</button>
+  <button data-t="v5">V5 分步</button>
+</nav>
+
+<script>
+// 切换到指定方案：隐藏其它屏幕，同时同步切换条高亮状态
+function setView(v) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.dataset.v === v));  // 只保留目标屏幕
+  document.querySelectorAll('.switcher button').forEach(b => b.classList.toggle('on', b.dataset.t === v));  // 同步高亮
+}
+document.querySelectorAll('.switcher button').forEach(b => b.addEventListener('click', () => setView(b.dataset.t)));  // 绑定点击
+window.__setView = setView;  // 暴露给截图脚本调用
+
+// 量化当前方案：内容块数量、空白占比、表单区面积占比、视觉重心偏移
+function measure(v) {
+  setView(v);                                                              // 先切到目标屏幕
+  const screen = document.querySelector(`.screen[data-v="${v}"]`);
+  const vw = innerWidth, vh = innerHeight;                                  // 当前视口尺寸
+  const blocks = [...screen.querySelectorAll('[data-block]')]
+    .map(el => el.getBoundingClientRect())                                  // 取每块的包围盒
+    .filter(r => r.width > 0 && r.height > 0);
+  // 用 6px 网格采样估算「内容占屏比」，重叠区域只算一次
+  const step = 6; let filled = 0, total = 0;
+  for (let y = step / 2; y < vh; y += step) {
+    for (let x = step / 2; x < vw; x += step) {
+      total++;
+      if (blocks.some(r => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom)) filled++;
+    }
+  }
+  // 视觉重心：所有内容块包围盒的并集中心，相对视口中心的偏移
+  const left = Math.min(...blocks.map(r => r.left)), right = Math.max(...blocks.map(r => r.right));
+  const top = Math.min(...blocks.map(r => r.top)), bottom = Math.max(...blocks.map(r => r.bottom));
+  const cx = (left + right) / 2 - vw / 2, cy = (top + bottom) / 2 - vh / 2;
+  return {
+    view: v,                                                               // 方案编号
+    blocks: blocks.length,                                                 // 内容块数量
+    coverage: +(filled / total * 100).toFixed(1),                          // 内容占屏比 %
+    whitespace: +(100 - filled / total * 100).toFixed(1),                   // 空白占比 %
+    centerOffsetX: Math.round(cx),                                          // 横向重心偏移 px
+    contentBox: `${Math.round(right - left)}x${Math.round(bottom - top)}`   // 内容包围盒尺寸
+  };
+}
+window.__metrics = v => measure(v);
+window.__allMetrics = () => ['v0','v1','v2','v3','v4','v5'].map(measure);
+document.querySelector('.switcher').dataset.hide = '1';  // 截图时可隐藏切换条
+</script>
+</body>
+</html>

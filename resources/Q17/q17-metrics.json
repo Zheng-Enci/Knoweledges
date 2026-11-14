@@ -1,0 +1,50 @@
+[
+  {
+    "view": "v0",
+    "blocks": 4,
+    "coverage": 5.8,
+    "whitespace": 94.2,
+    "centerOffsetX": 0,
+    "contentBox": "340x286"
+  },
+  {
+    "view": "v1",
+    "blocks": 16,
+    "coverage": 19.6,
+    "whitespace": 80.4,
+    "centerOffsetX": -39,
+    "contentBox": "1235x788"
+  },
+  {
+    "view": "v2",
+    "blocks": 8,
+    "coverage": 8.1,
+    "whitespace": 91.9,
+    "centerOffsetX": 0,
+    "contentBox": "346x433"
+  },
+  {
+    "view": "v3",
+    "blocks": 8,
+    "coverage": 11.1,
+    "whitespace": 88.9,
+    "centerOffsetX": -227,
+    "contentBox": "874x493"
+  },
+  {
+    "view": "v4",
+    "blocks": 10,
+    "coverage": 24.8,
+    "whitespace": 75.2,
+    "centerOffsetX": -23,
+    "contentBox": "1249x474"
+  },
+  {
+    "view": "v5",
+    "blocks": 12,
+    "coverage": 17.5,
+    "whitespace": 82.5,
+    "centerOffsetX": -74,
+    "contentBox": "1181x796"
+  }
+]
