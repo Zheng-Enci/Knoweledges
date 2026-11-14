@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">                                              <!-- 声明 UTF-8，否则中文会变乱码 -->
+<meta name="viewport" content="width=device-width, initial-scale=1"> <!-- 让手机按真实宽度渲染，不加会整体缩小 -->
+<title>云图设计 | 让品牌被看见</title>                                <!-- 浏览器标签页标题，也是搜索结果标题 -->
+<style>
+  /* ① 全局变量：只改这 8 个值就能换掉整套配色与圆角 */
+  :root {
+    --ink: #0b1020;                                                 /* 主文字色：接近墨黑，比纯黑柔和 */
+    --body: #4a5468;                                                /* 次要文字色：正文段落用它 */
+    --line: #e6eaf2;                                                /* 分隔线 / 描边色 */
+    --bg: #f6f8fc;                                                  /* 浅色底：卡片与区块背景 */
+    --brand: #4f7cff;                                               /* 品牌主色：按钮、强调 */
+    --brand2: #7c5cff;                                              /* 品牌辅色：与主色做渐变 */
+    --radius: 16px;                                                 /* 统一圆角，全站只用这一个值 */
+    --max: 1120px;                                                  /* 内容最大宽度，防止大屏上一行太长 */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }              /* 宽度含内边距，布局不再算错 */
+  body {                                                            /* 全站基础排版 */
+    font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; /* 系统字体，零外部请求 */
+    color: var(--ink);                                              /* 默认文字色取变量 */
+    background: #fff;                                               /* 页面底色纯白 */
+    line-height: 1.65;                                              /* 中文正文行高，1.6 左右最舒服 */
+    -webkit-font-smoothing: antialiased;                            /* Mac 上文字更细腻 */
+  }
+  a { color: inherit; text-decoration: none; }                      /* 链接继承颜色，去掉默认下划线 */
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; } /* 所有区块共用容器，保证左右对齐 */
+  .eyebrow {                                                        /* 小标签：首屏上方的胶囊 */
+    display: inline-flex; align-items: center; gap: 8px;            /* 图标与文字水平排列 */
+    padding: 6px 14px; border-radius: 999px;                        /* 胶囊形 */
+    background: rgba(79,124,255,.1); color: var(--brand);           /* 主色 10% 底 + 主色字 */
+    font-size: 13px; font-weight: 600;                              /* 小字但加粗，当标签用 */
+  }
+  .btn {                                                            /* 按钮基础样式，主次按钮共用 */
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 46px; padding: 0 24px; border-radius: 10px;             /* 46px 高，手指点得准 */
+    font-size: 15px; font-weight: 600; cursor: pointer;             /* 手型光标，明确可点 */
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; } /* 主按钮：品牌渐变 */
+  .btn-ghost { border: 1px solid var(--line); color: var(--ink); }  /* 次按钮：描边，不抢主按钮焦点 */
+
+  /* ② 导航栏：滚动时吸顶 + 半透明模糊 */
+  header {
+    position: sticky; top: 0; z-index: 10;                          /* 吸顶并压在内容之上 */
+    background: rgba(255,255,255,.82); backdrop-filter: blur(12px); /* 半透明白 + 背景模糊 */
+    border-bottom: 1px solid transparent; transition: border-color .2s; /* 边框默认透明，滚动后出现 */
+  }
+  header.scrolled { border-bottom-color: var(--line); }             /* 滚动超过 8px 时加分隔线（JS 控制） */
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 68px; } /* 左 logo 右菜单 */
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -.2px; }
+  .logo i {                                                          /* logo 图形：纯 CSS 渐变方块，不用图片 */
+    width: 26px; height: 26px; border-radius: 8px; display: block;
+    background: linear-gradient(135deg, var(--brand), var(--brand2));
+  }
+  nav ul { display: flex; gap: 30px; list-style: none; font-size: 15px; color: var(--body); }
+  nav a:hover { color: var(--ink); }                                 /* 悬停加深，给出可点反馈 */
+
+  /* ③ 首屏：左文案右视觉，两栏各占一半 */
+  .hero { padding: 84px 0 96px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 56px; align-items: center; }
+  .hero h1 { font-size: clamp(34px, 4.6vw, 56px); line-height: 1.15; letter-spacing: -1px; margin: 20px 0 18px; }
+  .hero h1 em { font-style: normal; background: linear-gradient(120deg, var(--brand), var(--brand2)); -webkit-background-clip: text; background-clip: text; color: transparent; } /* 关键词渐变字 */
+  .hero p { font-size: 17px; color: var(--body); max-width: 460px; }  /* 副标题限制宽度，一行别太长 */
+  .hero-actions { display: flex; gap: 12px; margin-top: 30px; }
+  .visual {                                                          /* 右侧视觉：渐变卡片 + 玻璃小卡 */
+    position: relative; height: 360px; border-radius: 24px;
+    background: linear-gradient(150deg, #dfe8ff, #efe6ff 60%, #fff); /* 三色渐变当背景图，零图片依赖 */
+    overflow: hidden;
+  }
+  .visual::after {                                                   /* 叠一层柔光球，增加层次 */
+    content: ""; position: absolute; width: 260px; height: 260px; border-radius: 50%;
+    right: -60px; bottom: -80px; background: radial-gradient(circle, rgba(124,92,255,.45), transparent 70%);
+  }
+  .glass {                                                           /* 玻璃卡：演示产品截图位 */
+    position: absolute; left: 34px; top: 44px; right: 34px; padding: 20px;
+    border-radius: 16px; background: rgba(255,255,255,.72); border: 1px solid #fff;
+    box-shadow: 0 18px 40px rgba(30,50,120,.14); backdrop-filter: blur(8px);
+  }
+  .glass b { display: block; font-size: 15px; margin-bottom: 10px; }
+  .bar { height: 8px; border-radius: 4px; background: #e8ecf7; margin: 8px 0; } /* 占位条，代替真实截图 */
+  .bar.s { width: 62%; }                                             /* 短条，制造错落 */
+  .bar.m { width: 84%; }
+  .badge { position: absolute; right: 26px; bottom: 30px; background: #fff; border-radius: 12px; padding: 12px 16px; font-size: 13px; box-shadow: 0 10px 24px rgba(30,50,120,.16); }
+
+  /* ④ 服务卡片区：三列网格 */
+  .section { padding: 88px 0; }
+  .section.alt { background: var(--bg); }                            /* 交替底色，区块之间自带分隔 */
+  .head { max-width: 620px; margin-bottom: 44px; }
+  .head h2 { font-size: clamp(26px, 3vw, 36px); letter-spacing: -.6px; margin-bottom: 12px; }
+  .head p { color: var(--body); }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .card {                                                            /* 服务卡：白底 + 细边 + 悬停抬升 */
+    background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(30,50,120,.1); }
+  .card .num { font-size: 13px; font-weight: 700; color: var(--brand); letter-spacing: 1px; }
+  .card h3 { font-size: 19px; margin: 14px 0 8px; }
+  .card p { font-size: 14.5px; color: var(--body); }
+
+  /* ⑤ 数据条：深色横带，用来放“证明” */
+  .stats { background: var(--ink); color: #fff; padding: 56px 0; }
+  .stats .wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; text-align: center; }
+  .stats b { display: block; font-size: clamp(28px, 3.4vw, 40px); letter-spacing: -1px; }
+  .stats span { font-size: 14px; color: rgba(255,255,255,.62); }     /* 说明文字降低对比，突出数字 */
+
+  /* ⑥ 联系区：渐变底 + 居中收口 */
+  .cta { padding: 88px 0; }
+  .cta-box { border-radius: 24px; padding: 60px 32px; text-align: center; background: linear-gradient(135deg, var(--brand), var(--brand2)); color: #fff; }
+  .cta-box h2 { font-size: clamp(24px, 3vw, 34px); margin-bottom: 12px; }
+  .cta-box p { color: rgba(255,255,255,.86); margin-bottom: 26px; }
+  .cta-box .btn { background: #fff; color: var(--brand); }           /* 反色按钮，在渐变底上最清楚 */
+
+  /* ⑦ 页脚：版权 + 联系方式 */
+  footer { padding: 40px 0; border-top: 1px solid var(--line); font-size: 14px; color: var(--body); }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  /* ⑧ 手机 / 平板：900px 以下全部塌成单列 */
+  @media (max-width: 900px) {
+    .hero .wrap, .grid3, .stats .wrap { grid-template-columns: 1fr; } /* 三栏与两栏都变一栏 */
+    .hero { padding: 48px 0 64px; }
+    .visual { height: 280px; }
+    .section, .cta { padding: 60px 0; }
+    nav ul { display: none; }                                        /* 小屏隐藏菜单，靠按钮展开 */
+    .nav .btn { display: none; }                                     /* 小屏也隐藏导航里的主按钮，避免拥挤 */
+  }
+</style>
+</head>
+<body>
+
+<!-- ① 导航：logo + 锚点菜单 + 主按钮 -->
+<header id="top">
+  <div class="wrap nav">
+    <a class="logo" href="#top"><i></i>云图设计</a>
+    <nav>
+      <ul id="menu">
+        <li><a href="#service">服务</a></li>
+        <li><a href="#proof">案例</a></li>
+        <li><a href="#contact">联系</a></li>
+      </ul>
+    </nav>
+    <a class="btn btn-primary" href="#contact">预约咨询</a>
+  </div>
+</header>
+
+<!-- ② 首屏：一句话说清“你是谁、给谁、解决什么” -->
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">品牌视觉 · 官网设计</span>
+      <h1>让中小品牌的<em>第一眼</em>，就有专业感</h1>
+      <p>我们只做一件事：把一款产品、一家门店、一个工作室，做成一张能自己说话的网页。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contact">免费看方案</a>
+        <a class="btn btn-ghost" href="#service">看看怎么做的</a>
+      </div>
+    </div>
+    <div class="visual">
+      <div class="glass">
+        <b>首页结构预览</b>
+        <div class="bar"></div><div class="bar s"></div><div class="bar m"></div>
+      </div>
+      <div class="badge">平均 7 天交付 ⚡</div>
+    </div>
+  </div>
+</section>
+
+<!-- ③ 服务：三张卡，每张一句话，别写成小作文 -->
+<section class="section alt" id="service">
+  <div class="wrap">
+    <div class="head">
+      <h2>三件事，做到位就够了</h2>
+      <p>不堆功能，不加花活。首页、产品页、联系入口，三块把话说清楚。</p>
+    </div>
+    <div class="grid3">
+      <div class="card"><div class="num">01</div><h3>首屏定调</h3><p>一句主标题、一句副标题、一个按钮，访客三秒知道你是做什么的。</p></div>
+      <div class="card"><div class="num">02</div><h3>结构讲清</h3><p>服务、案例、价格按顺序排，让访客自己往下读，不用猜。</p></div>
+      <div class="card"><div class="num">03</div><h3>入口收口</h3><p>每个区块后面都留一个联系入口，想咨询的人随时能找到你。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ④ 证明：数字比形容词可信 -->
+<section class="stats" id="proof">
+  <div class="wrap">
+    <div><b>120+</b><span>已交付的官网</span></div>
+    <div><b>7 天</b><span>从需求到上线</span></div>
+    <div><b>98%</b><span>客户复购或转介绍</span></div>
+  </div>
+</section>
+
+<!-- ⑤ 联系：整页只留一个真正的主按钮 -->
+<section class="cta" id="contact">
+  <div class="wrap">
+    <div class="cta-box">
+      <h2>先把你的想法说给我们听</h2>
+      <p>留个邮箱，48 小时内给你一页结构草案，不收费。</p>
+      <a class="btn" href="mailto:hello@example.com">hello@example.com</a>
+    </div>
+  </div>
+</section>
+
+<!-- ⑥ 页脚：版权与年份由 JS 填 -->
+<footer>
+  <div class="wrap">
+    <span>© <span id="year">2026</span> 云图设计 · 保留所有权利</span>
+    <span>hello@example.com · 周一至周五 10:00–19:00</span>
+  </div>
+</footer>
+
+<script>
+  // 滚动超过 8px 时给导航加分隔线，避免首屏白底与导航糊在一起
+  const header = document.querySelector('header');                  // 取导航容器
+  addEventListener('scroll', () => {                                 // 监听整页滚动
+    header.classList.toggle('scrolled', scrollY > 8);                // 滚过 8px 加类，回到顶部去掉
+  });
+
+  // 页脚年份自动取当前年，避免每年手动改
+  document.getElementById('year').textContent = new Date().getFullYear();  // 2026 → 2027 自动更新
+
+  // 点击菜单链接后收起（本页为单页锚点，此处仅为后续加移动菜单预留）
+  document.getElementById('menu').addEventListener('click', (e) => { // 监听菜单点击
+    if (e.target.tagName === 'A') e.target.blur();                   // 点击后移除焦点，避免样式残留
+  });
+</script>
+</body>
+</html>
