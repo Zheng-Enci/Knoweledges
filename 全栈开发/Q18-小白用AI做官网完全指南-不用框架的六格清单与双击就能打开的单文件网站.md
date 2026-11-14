@@ -153,6 +153,12 @@
 
 兜底一条：AI 工具没有联网能力，就把 2 个你喜欢的官网链接贴给它，让它先拆解结构再写。**「先拆再写」比「直接写」稳定一个量级。**
 
+AI 研究 UI 参考资料：
+
+- [Awwwards 获奖网站集合 -- Awwwards](https://www.awwwards.com/) ⭐值得阅读
+- [Dribbble 设计作品与搜索 -- Dribbble](https://dribbble.com/) ⭐值得阅读
+- [SiteInspire 网页设计灵感库 -- SiteInspire](https://www.siteinspire.com/)
+
 ## 7. 完整可运行代码（Runnable Demo）
 
 下面这段是完整可运行版（精简掉了注释与部分 hover 细节，视觉与开头资源里的完整版一致）。复制 → 记事本 → 另存为 `index.html`（编码选 UTF-8）→ 双击，就能看到整页。
@@ -299,6 +305,11 @@
 
 **⑥ 想发给别人。** 右键 `website` 文件夹 → 发送到 → 压缩文件夹，把 zip 发过去。对方解压后双击同一个 `index.html` 即可。这一步能成立的前提，正是第 4 节第 ⑤ 格要求的「单文件 + 零外链」。
 
+本地打开与 CORS 参考资料：
+
+- [CORS request not HTTP（本地文件跨域报错说明） -- MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Guides/CORS/Errors/CORSRequestNotHttp) ⭐值得阅读
+- [跨源资源共享（CORS）总览 -- MDN](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS)
+
 ## 9. 对照表：症状 → 原因 → 解法（Troubleshooting）
 
 | 症状 | 原因 | 解法 |
@@ -329,5 +340,3 @@
 - [ ] 断网状态下刷新，页面依然完整（证明零外链）
 
 有品牌文案、有产品图，就走「首屏两栏 + 满屏视觉」；只有公司名和一个电话，就把六块压到四块，用留白和字号层级撑住第一屏。**官网好不好看，从来不是素材多少决定的，是结构清不清楚决定的。**
-
-本专栏《全栈开发》覆盖前端工程、UI 设计与开发工具链，每篇配可直接运行的代码与实战讲解，每周更新一篇。想按顺序读完，可在专栏页订阅。
